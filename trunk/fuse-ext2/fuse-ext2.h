@@ -122,6 +122,8 @@ int op_statfs(const char *path, struct statvfs *buf);
 
 /* write support */
 
+int op_create (const char *path, mode_t mode, struct fuse_file_info *fi);
+
 int op_flush (const char *path, struct fuse_file_info *fi);
 
 int op_fsync (const char *path, int datasync, struct fuse_file_info *fi);

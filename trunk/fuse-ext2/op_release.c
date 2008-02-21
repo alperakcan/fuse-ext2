@@ -25,7 +25,11 @@ int op_release (const char *path, struct fuse_file_info *fi)
 	ext2_file_t efile = (void *)(unsigned long)fi->fh;
 
 	debugf("enter");
-	debugf("path = %s", path);
+	debugf("path = %s (%p)", path, efile);
+	
+	if (efile == NULL) {
+		return -ENOENT;
+	}
 
 	rc = ext2fs_file_close(efile);
 	if (rc) {
