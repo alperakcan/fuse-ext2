@@ -39,6 +39,13 @@ fuse_ext2_LDADD =							\
 	../e2fsprogs-1.40.6/et/libcom_err.a		\
 	-lfuse
 
+if DARWIN
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
 	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount_ext2"
+endif
+if LINUX
+install-exec-local:
+	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
+	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount.fuse-ext2"
+endif
