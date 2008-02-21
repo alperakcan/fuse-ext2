@@ -24,7 +24,11 @@ struct private_s priv;
 
 static const char *HOME = "http://home.home.net";
 
+#if __FreeBSD__ == 10
 static char def_opts[] = "allow_other,local,";
+#else
+static char def_opts[] = "";
+#endif
 
 static const char *usage_msg = 
 "\n"
@@ -225,6 +229,7 @@ static char * parse_mount_options (const char *orig_opts)
 	}
 	strcat(ret, "fsname=");
 	strcat(ret, opts.device);
+#if __FreeBSD__ == 10
 	strcat(ret, ",fstypename=");
 	strcat(ret, "ext2");
 	strcat(ret, ",volname=");
@@ -234,6 +239,7 @@ static char * parse_mount_options (const char *orig_opts)
 	} else { 
 		strcat(ret, opts.device);
 	}
+#endif
 exit:
 	free(options);
 	return ret;
