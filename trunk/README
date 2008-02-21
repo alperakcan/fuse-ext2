@@ -20,6 +20,7 @@ Build
 -----	
 
 - Linux:
+	$ ./autogen.sh
 	$ ./configure
 	$ make
 	$ sudo make install
@@ -29,11 +30,13 @@ Build
 
 - Mac OS:
 	Standart build:
+	$ ./autogen.sh
 	$ ./configure
 	$ make
 	$ sudo make install
 
 	Universal build:
+	$ ./autogen.sh
 	$ CFLAGS="-arch i386 -arch ppc" ../configure --disable-dependency-tracking
 	$ make
 	$ sudo make install

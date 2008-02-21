@@ -36,6 +36,8 @@ void do_fillstatbuf (ext2_ino_t ino, struct ext2_inode *inode, struct stat *st)
 	st->st_atime = inode->i_atime;
 	st->st_mtime = inode->i_mtime;
 	st->st_ctime = inode->i_ctime;
+#if __FreeBSD__ == 10
 	st->st_gen = inode->i_generation;
+#endif
 	debugf("leave");
 }
