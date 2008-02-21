@@ -18,6 +18,7 @@ fuse_ext2_SOURCES =	\
 	op_readlink.c \
 	op_release.c \
 	op_statfs.c \
+	op_create.c \
 	op_flush.c \
 	op_fsync.c \
 	op_mkdir.c \

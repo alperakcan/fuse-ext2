@@ -61,8 +61,9 @@ am_fuse_ext2_OBJECTS = fuse_ext2-fuse-ext2.$(OBJEXT) \
 	fuse_ext2-op_open.$(OBJEXT) fuse_ext2-op_read.$(OBJEXT) \
 	fuse_ext2-op_readdir.$(OBJEXT) fuse_ext2-op_readlink.$(OBJEXT) \
 	fuse_ext2-op_release.$(OBJEXT) fuse_ext2-op_statfs.$(OBJEXT) \
-	fuse_ext2-op_flush.$(OBJEXT) fuse_ext2-op_fsync.$(OBJEXT) \
-	fuse_ext2-op_mkdir.$(OBJEXT) fuse_ext2-op_rmdir.$(OBJEXT)
+	fuse_ext2-op_create.$(OBJEXT) fuse_ext2-op_flush.$(OBJEXT) \
+	fuse_ext2-op_fsync.$(OBJEXT) fuse_ext2-op_mkdir.$(OBJEXT) \
+	fuse_ext2-op_rmdir.$(OBJEXT)
 fuse_ext2_OBJECTS = $(am_fuse_ext2_OBJECTS)
 fuse_ext2_DEPENDENCIES = ../e2fsprogs-1.40.6/ext2fs/libext2fs.a \
 	../e2fsprogs-1.40.6/et/libcom_err.a
@@ -210,6 +211,7 @@ fuse_ext2_SOURCES = \
 	op_readlink.c \
 	op_release.c \
 	op_statfs.c \
+	op_create.c \
 	op_flush.c \
 	op_fsync.c \
 	op_mkdir.c \
@@ -297,6 +299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-do_readinode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-fuse-ext2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_access.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_create.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_destroy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_fgetattr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_flush.Po@am__quote@
@@ -528,6 +531,20 @@ fuse_ext2-op_statfs.obj: op_statfs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_statfs.c' object='fuse_ext2-op_statfs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_statfs.obj `if test -f 'op_statfs.c'; then $(CYGPATH_W) 'op_statfs.c'; else $(CYGPATH_W) '$(srcdir)/op_statfs.c'; fi`
+
+fuse_ext2-op_create.o: op_create.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_create.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_create.Tpo" -c -o fuse_ext2-op_create.o `test -f 'op_create.c' || echo '$(srcdir)/'`op_create.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_create.Tpo" "$(DEPDIR)/fuse_ext2-op_create.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_create.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_create.c' object='fuse_ext2-op_create.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_create.o `test -f 'op_create.c' || echo '$(srcdir)/'`op_create.c
+
+fuse_ext2-op_create.obj: op_create.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_create.obj -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_create.Tpo" -c -o fuse_ext2-op_create.obj `if test -f 'op_create.c'; then $(CYGPATH_W) 'op_create.c'; else $(CYGPATH_W) '$(srcdir)/op_create.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_create.Tpo" "$(DEPDIR)/fuse_ext2-op_create.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_create.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_create.c' object='fuse_ext2-op_create.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_create.obj `if test -f 'op_create.c'; then $(CYGPATH_W) 'op_create.c'; else $(CYGPATH_W) '$(srcdir)/op_create.c'; fi`
 
 fuse_ext2-op_flush.o: op_flush.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_flush.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_flush.Tpo" -c -o fuse_ext2-op_flush.o `test -f 'op_flush.c' || echo '$(srcdir)/'`op_flush.c; \

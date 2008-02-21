@@ -208,7 +208,9 @@ static char * parse_mount_options (const char *orig_opts)
 				goto err_exit;
 			}
 			opts.force = 1;
+#if __FreeBSD__ == 10
 			strcat(ret, "force,");
+#endif
 		} else { /* Probably FUSE option. */
 			strcat(ret, opt);
 			if (val) {
@@ -280,7 +282,7 @@ static const struct fuse_operations ext2fs_ops = {
 	.init		= op_init,
 	.destroy	= op_destroy,
 	.access         = op_access,
-	.create         = NULL,
+	.create         = op_create,
 	.ftruncate      = NULL,
 	.fgetattr       = op_fgetattr,
 	.lock           = NULL,

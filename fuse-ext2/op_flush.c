@@ -27,6 +27,10 @@ int op_flush (const char *path, struct fuse_file_info *fi)
 	debugf("enter");
 	debugf("path = %s (%p)", path, efile);
 	
+	if (efile == NULL) {
+		return -ENOENT;
+	}
+	
 	rc = ext2fs_file_flush(efile);
 	if (rc) {
 		return -EIO;
