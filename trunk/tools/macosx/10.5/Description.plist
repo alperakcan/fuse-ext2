@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IFPkgDescriptionDescription</key>
+	<string>Fuse-ext2 is a EXT2 Filesystem support for FUSE.
+
+Dependencies
+------------
+
+Fuse-ext2 requires at least Fuse version 2.6.0
+
+- Linux:
+	Fuse from http://fuse.sourceforge.net/
+
+- Mac OS:
+	Mac Fuse from http://code.google.com/p/macfuse/
+
+
+Build
+-----	
+
+- Linux:
+	$ ./configure
+	$ make
+	$ sudo make install
+
+	You can use checkinstall or some other equivalent tool to generate install
+	package for your distribution.
+
+- Mac OS:
+	Standart build:
+	$ ./configure
+	$ make
+	$ sudo make install
+
+	Universal build:
+	$ CFLAGS="-arch i386 -arch ppc" ../configure --disable-dependency-tracking
+	$ make
+	$ sudo make install
+
+	Generating package:
+	$ make package
+
+Alper Akcan
+	</string>
+	<key>IFPkgDescriptionTitle</key>
+	<string>Fuse Ext2 Support</string>
+</dict>
+</plist>
