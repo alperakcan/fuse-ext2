@@ -22,11 +22,12 @@
 int op_mkdir (const char *path, mode_t mode)
 {
 	int rt;
-	char *tmp;
-	char *path_parent;
-	char *path_real;
-
 	errcode_t rc;
+
+	char *p_path;
+	char *r_path;
+	char *t_path;
+
 	ext2_ino_t ino;
 	struct ext2_inode inode;
 
@@ -35,46 +36,46 @@ int op_mkdir (const char *path, mode_t mode)
 	debugf("enter");
 	debugf("path = %s, mode: 0%o", path, mode);
 
-	path_parent = strdup(path);
-	if (path_parent == NULL) {
+	p_path = strdup(path);
+	if (p_path == NULL) {
 		return -ENOMEM;
 	}
-	tmp = strrchr(path_parent, '/');
-	if (tmp == NULL) {
+	t_path = strrchr(p_path, '/');
+	if (t_path == NULL) {
 		debugf("this should not happen");
-		free(path_parent);
+		free(p_path);
 		return -ENOENT;
 	}
-	*tmp = '\0';
-	path_real = tmp + 1;
-	debugf("parent: %s, child: %s", path_parent, path_real);
+	*t_path = '\0';
+	r_path = t_path + 1;
+	debugf("parent: %s, child: %s", p_path, r_path);
 	
-	rt = do_readinode(path_parent, &ino, &inode);
+	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
-		debugf("do_readinode(%s, &ino, &inode); failed", path_parent);
-		free(path_parent);
+		debugf("do_readinode(%s, &ino, &inode); failed", p_path);
+		free(p_path);
 		return rt;
 	}
 
 	do {
-		debugf("calling ext2fs_mkdir(priv.fs, %d, 0, %s);", ino, path_real);
-		rc = ext2fs_mkdir(priv.fs, ino, 0, path_real);
+		debugf("calling ext2fs_mkdir(priv.fs, %d, 0, %s);", ino, r_path);
+		rc = ext2fs_mkdir(priv.fs, ino, 0, r_path);
 		if (rc == EXT2_ET_DIR_NO_SPACE) {
 			debugf("calling ext2fs_expand_dir(priv.fs, &d)", ino);
 			if (ext2fs_expand_dir(priv.fs, ino)) {
-				debugf("error while expanding directory %s (%d)", path_parent, ino);
-				free(path_parent);
+				debugf("error while expanding directory %s (%d)", p_path, ino);
+				free(p_path);
 				return -ENOSPC;
 			}
 		}
 	} while (rc == EXT2_ET_DIR_NO_SPACE);
 	if (rc) {
-		debugf("ext2fs_mkdir(priv.fs, %d, 0, %s); failed (%d)", ino, path_real, rc);
+		debugf("ext2fs_mkdir(priv.fs, %d, 0, %s); failed (%d)", ino, r_path, rc);
 		debugf("priv.fs: %p, priv.fs->inode_map: %p", priv.fs, priv.fs->inode_map);
-		free(path_parent);
+		free(p_path);
 		return -EIO;
 	}
-	free(path_parent);
+	free(p_path);
 	
 	rt = do_readinode(path, &ino, &inode);
 	if (rt) {

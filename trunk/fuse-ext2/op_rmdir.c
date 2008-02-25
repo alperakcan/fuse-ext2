@@ -24,48 +24,6 @@ struct rmdir_st {
 	int empty;
 };
 
-static int release_blocks_proc (ext2_filsys fs, blk_t *blocknr, int blockcnt EXT2FS_ATTR((unused)), void *private EXT2FS_ATTR((unused)))
-{
-	blk_t block;
-	
-	debugf("enter");
-
-	block = *blocknr;
-	ext2fs_block_alloc_stats(fs, block, -1);
-	
-	debugf("leave");
-	return 0;
-}
-
-static int kill_file_by_inode (ext2_ino_t ino, struct ext2_inode *inode)
-{
-	errcode_t rc;
-	
-	debugf("enter");
-
-	inode->i_links_count = 0;
-	inode->i_dtime = time(NULL);
-	
-	rc = ext2fs_write_inode(priv.fs, ino, inode);
-	if (rc) {
-		debugf("ext2fs_write_inode(priv.fs, ino, inode); failed");
-		return -EIO;
-	}
-
-	if (!ext2fs_inode_has_valid_blocks(inode)) {
-		debugf("ext2fs_inode_has_valid_blocks(inode); failed");
-		return -EIO;
-	}
-
-	debugf("start block delete for %d", ino);
-
-	ext2fs_block_iterate(priv.fs, ino, 0, NULL, release_blocks_proc, NULL);
-	ext2fs_inode_alloc_stats2(priv.fs, ino, -1, LINUX_S_ISDIR(inode->i_mode));
-	
-	debugf("leave");
-	return 0;
-}
-
 static int rmdir_proc (ext2_ino_t dir EXT2FS_ATTR((unused)),
 		       int entry EXT2FS_ATTR((unused)),
 		       struct ext2_dir_entry *dirent,
@@ -99,11 +57,12 @@ static int rmdir_proc (ext2_ino_t dir EXT2FS_ATTR((unused)),
 int op_rmdir (const char *path)
 {
 	int rt;
-	char *tmp;
-	char *path_parent;
-	char *path_real;
-
 	errcode_t rc;
+
+	char *p_path;
+	char *r_path;
+	char *t_path;
+
 	ext2_ino_t p_ino;
 	struct ext2_inode p_inode;
 	ext2_ino_t r_ino;
@@ -114,36 +73,36 @@ int op_rmdir (const char *path)
 	debugf("enter");
 	debugf("path = %s", path);
 
-	path_parent = strdup(path);
-	if (path_parent == NULL) {
+	p_path = strdup(path);
+	if (p_path == NULL) {
 		return -ENOMEM;
 	}
-	tmp = strrchr(path_parent, '/');
-	if (tmp == NULL) {
+	t_path = strrchr(p_path, '/');
+	if (t_path == NULL) {
 		debugf("this should not happen");
-		free(path_parent);
+		free(p_path);
 		return -ENOENT;
 	}
-	*tmp = '\0';
-	path_real = tmp + 1;
-	debugf("parent: %s, child: %s", path_parent, path_real);
+	*t_path = '\0';
+	r_path = t_path + 1;
+	debugf("parent: %s, child: %s", p_path, r_path);
 	
-	rt = do_readinode(path_parent, &p_ino, &p_inode);
+	rt = do_readinode(p_path, &p_ino, &p_inode);
 	if (rt) {
-		debugf("do_readinode(%s, &p_ino, &p_inode); failed", path_parent);
-		free(path_parent);
+		debugf("do_readinode(%s, &p_ino, &p_inode); failed", p_path);
+		free(p_path);
 		return rt;
 	}
 	rt = do_readinode(path, &r_ino, &r_inode);
 	if (rt) {
 		debugf("do_readinode(%s, &r_ino, &r_inode); failed", path);
-		free(path_parent);
+		free(p_path);
 		return rt;
 		
 	}
 	if(!LINUX_S_ISDIR(r_inode.i_mode)) {
 		debugf("%s is not a directory", path);
-		free(path_parent);
+		free(p_path);
 		return -ENOTDIR;
 	}
 	
@@ -153,35 +112,35 @@ int op_rmdir (const char *path)
 	rc = ext2fs_dir_iterate2(priv.fs, r_ino, 0, 0, rmdir_proc, &rds);
 	if (rc) {
 		debugf("while iterating over directory");
-		free(path_parent);
+		free(p_path);
 		return -EIO;
 	}
 
 	if (rds.empty == 0) {
 		debugf("directory not empty");
-		free(path_parent);
+		free(p_path);
 		return -ENOTEMPTY;
 	}
 
-	rc = ext2fs_unlink(priv.fs, p_ino, path_real, r_ino, 0);
+	rc = ext2fs_unlink(priv.fs, p_ino, r_path, r_ino, 0);
 	if (rc) {
 		debugf("while unlinking ino %d", (int) r_ino);
-		free(path_parent);
+		free(p_path);
 		return -EIO;
 	}
 
-	rt = kill_file_by_inode(r_ino, &r_inode);
+	rt = do_killfilebyinode(r_ino, &r_inode);
 	if (rt) {
-		debugf("kill_file_by_inode(r_ino, &r_inode); failed");
-		free(path_parent);
+		debugf("do_killfilebyinode(r_ino, &r_inode); failed");
+		free(p_path);
 		return rt;
 	}
 
 	if (rds.parent) {
-		rt = do_readinode(path_parent, &p_ino, &p_inode);
+		rt = do_readinode(p_path, &p_ino, &p_inode);
 		if (rt) {
-			debugf("do_readinode(path_parent, &p_ino, &p_inode); failed");
-			free(path_parent);
+			debugf("do_readinode(p_path, &p_ino, &p_inode); failed");
+			free(p_path);
 			return rt;
 		}
 		if (p_inode.i_links_count > 1) {
@@ -190,7 +149,7 @@ int op_rmdir (const char *path)
 		rc = ext2fs_write_inode(priv.fs, p_ino, &p_inode);
 		if (rc) {
 			debugf("ext2fs_write_inode(priv.fs, ino, inode); failed");
-			free(path_parent);
+			free(p_path);
 			return -EIO;
 		}
 	} else {
@@ -198,7 +157,7 @@ int op_rmdir (const char *path)
 		return -EIO;
 	}
 
-	free(path_parent);
+	free(p_path);
 	
 	debugf("leave");
 	return 0;

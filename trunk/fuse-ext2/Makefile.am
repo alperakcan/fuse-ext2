@@ -7,6 +7,7 @@ fuse_ext2_SOURCES =	\
 	fuse-ext2.c \
 	do_fillstatbuf.c \
 	do_readinode.c \
+	do_killfilebyinode.c \
 	op_init.c \
 	op_destroy.c \
 	op_access.c \
@@ -22,7 +23,8 @@ fuse_ext2_SOURCES =	\
 	op_flush.c \
 	op_fsync.c \
 	op_mkdir.c \
-	op_rmdir.c
+	op_rmdir.c \
+	op_unlink.c
 
 fuse_ext2_CFLAGS =						\
 	-Wall								\
