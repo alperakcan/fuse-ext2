@@ -100,6 +100,8 @@ void do_fillstatbuf (ext2_ino_t ino, struct ext2_inode *inode, struct stat *st);
 
 int do_readinode (const char *path, ext2_ino_t *ino, struct ext2_inode *inode);
 
+int do_killfilebyinode (ext2_ino_t ino, struct ext2_inode *inode);
+
 /* read support */
 
 int op_access (const char *path, int mask);
@@ -131,5 +133,7 @@ int op_fsync (const char *path, int datasync, struct fuse_file_info *fi);
 int op_mkdir (const char *path, mode_t mode);
 
 int op_rmdir (const char *path);
+
+int op_unlink (const char *path);
 
 #endif /* FUSEEXT2_H_ */
