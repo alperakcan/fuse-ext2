@@ -19,12 +19,15 @@ fuse_ext2_SOURCES =	\
 	op_readlink.c \
 	op_release.c \
 	op_statfs.c \
+	op_chown.c \
+	op_chmod.c \
 	op_create.c \
 	op_flush.c \
 	op_fsync.c \
 	op_mkdir.c \
 	op_rmdir.c \
-	op_unlink.c
+	op_unlink.c \
+	op_utimens.c
 
 fuse_ext2_CFLAGS =						\
 	-Wall								\

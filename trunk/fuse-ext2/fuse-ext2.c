@@ -261,8 +261,8 @@ static const struct fuse_operations ext2fs_ops = {
 	.symlink        = NULL,
 	.rename         = NULL,
 	.link           = NULL,
-	.chmod          = NULL,
-	.chown          = NULL,
+	.chmod          = op_chmod,
+	.chown          = op_chown,
 	.truncate       = NULL,
 	.open           = op_open,
 	.read           = op_read,
@@ -286,7 +286,7 @@ static const struct fuse_operations ext2fs_ops = {
 	.ftruncate      = NULL,
 	.fgetattr       = op_fgetattr,
 	.lock           = NULL,
-	.utimens        = NULL,
+	.utimens        = op_utimens,
 	.bmap           = NULL,
 };
 
