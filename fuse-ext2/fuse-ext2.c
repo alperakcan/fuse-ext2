@@ -22,7 +22,7 @@
 struct options_s opts;
 struct private_s priv;
 
-static const char *HOME = "http://home.home.net";
+static const char *HOME = "http://sourceforge.net/projects/fuse-ext2/";
 
 #if __FreeBSD__ == 10
 static char def_opts[] = "allow_other,local,";
@@ -30,7 +30,7 @@ static char def_opts[] = "allow_other,local,";
 static char def_opts[] = "";
 #endif
 
-static const char *usage_msg = 
+static const char *usage_msg =
 "\n"
 "%s %s %d - FUSE EXT2FS Driver\n"
 "\n"
@@ -43,38 +43,39 @@ static const char *usage_msg =
 "\n"
 "Example:  fuse-ext2 /dev/sda1 /mnt/sda1 -o force\n"
 "\n"
-"%s";
+"%s\n"
+"\n";
 
 static int strappend (char **dest, const char *append)
 {
 	char *p;
 	size_t size;
-	
+
 	if (!dest) {
 		return -1;
 	}
 	if (!append) {
 		return 0;
 	}
-	
+
 	size = strlen(append) + 1;
 	if (*dest) {
 		size += strlen(*dest);
 	}
-	
+
 	p = realloc(*dest, size);
     	if (!p) {
     		debugf("Memory realloction failed");
 		return -1;
 	}
-	
+
 	if (*dest) {
 		strcat(p, append);
 	} else {
 		strcpy(p, append);
 	}
 	*dest = p;
-	
+
 	return 0;
 }
 
@@ -104,7 +105,7 @@ static int parse_options (int argc, char *argv[])
 				opts.device = malloc(PATH_MAX + 1);
 				if (!opts.device)
 					return -1;
-				
+
 				/* We don't want relative path in /etc/mtab. */
 				if (optarg[0] != '/') {
 					if (!realpath(optarg, opts.device)) {
@@ -164,14 +165,14 @@ static char * parse_mount_options (const char *orig_opts)
 	if (!ret) {
 		return NULL;
 	}
-	
+
 	*ret = 0;
 	options = strdup(orig_opts);
 	if (!options) {
 		debugf("strdup failed");
 		return NULL;
 	}
-	
+
 	s = options;
 	while (s && *s && (val = strsep(&s, ","))) {
 		opt = strsep(&val, "=");
@@ -220,7 +221,7 @@ static char * parse_mount_options (const char *orig_opts)
 			strcat(ret, ",");
 		}
 	}
-	
+
 	if (opts.readonly == 1 || opts.force == 0) {
 		opts.readonly = 1;
 	}
@@ -238,7 +239,7 @@ static char * parse_mount_options (const char *orig_opts)
 	s = strrchr(opts.device, '/');
 	if (s != NULL) {
 		strcat(ret, s + 1);
-	} else { 
+	} else {
 		strcat(ret, opts.device);
 	}
 #endif
@@ -307,18 +308,18 @@ int main (int argc, char *argv[])
 		err = -2;
 		goto err_out;
 	}
-	
+
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);
 		err = -3;
 		goto err_out;
 	}
-	
+
 	debugf("opts.device: %s", opts.device);
 	debugf("opts.mnt_point: %s", opts.mnt_point);
 	debugf("opts.options: %s", opts.options);
 	debugf("parsed_options: %s", parsed_options);
-	
+
 	if (fuse_opt_add_arg(&fargs, PACKAGE) == -1 ||
 	    fuse_opt_add_arg(&fargs, "-o") == -1 ||
 	    fuse_opt_add_arg(&fargs, parsed_options) == -1 ||
@@ -328,14 +329,14 @@ int main (int argc, char *argv[])
 		err = -4;
 		goto err_out;
 	}
-	
+
 	if (opts.readonly == 0) {
 		debugf("mounting read-write");
 	} else {
 		debugf("mounting read-only");
 	}
 	fuse_main(fargs.argc, fargs.argv, &ext2fs_ops, NULL);
-	
+
 err_out:
 	fuse_opt_free_args(&fargs);
 	free(parsed_options);
