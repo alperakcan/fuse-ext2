@@ -54,6 +54,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_fuse_ext2_OBJECTS = fuse_ext2-fuse-ext2.$(OBJEXT) \
+	fuse_ext2-do_probe.$(OBJEXT) \
 	fuse_ext2-do_fillstatbuf.$(OBJEXT) \
 	fuse_ext2-do_readinode.$(OBJEXT) \
 	fuse_ext2-do_killfilebyinode.$(OBJEXT) \
@@ -201,6 +202,7 @@ target_vendor = @target_vendor@
 fuse_ext2_SOURCES = \
 	fuse-ext2.h \
 	fuse-ext2.c \
+	do_probe.c \
 	do_fillstatbuf.c \
 	do_readinode.c \
 	do_killfilebyinode.c \
@@ -305,6 +307,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-do_fillstatbuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-do_killfilebyinode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-do_probe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-do_readinode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-fuse-ext2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_access.Po@am__quote@
@@ -362,6 +365,20 @@ fuse_ext2-fuse-ext2.obj: fuse-ext2.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fuse-ext2.c' object='fuse_ext2-fuse-ext2.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-fuse-ext2.obj `if test -f 'fuse-ext2.c'; then $(CYGPATH_W) 'fuse-ext2.c'; else $(CYGPATH_W) '$(srcdir)/fuse-ext2.c'; fi`
+
+fuse_ext2-do_probe.o: do_probe.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-do_probe.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-do_probe.Tpo" -c -o fuse_ext2-do_probe.o `test -f 'do_probe.c' || echo '$(srcdir)/'`do_probe.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-do_probe.Tpo" "$(DEPDIR)/fuse_ext2-do_probe.Po"; else rm -f "$(DEPDIR)/fuse_ext2-do_probe.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='do_probe.c' object='fuse_ext2-do_probe.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-do_probe.o `test -f 'do_probe.c' || echo '$(srcdir)/'`do_probe.c
+
+fuse_ext2-do_probe.obj: do_probe.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-do_probe.obj -MD -MP -MF "$(DEPDIR)/fuse_ext2-do_probe.Tpo" -c -o fuse_ext2-do_probe.obj `if test -f 'do_probe.c'; then $(CYGPATH_W) 'do_probe.c'; else $(CYGPATH_W) '$(srcdir)/do_probe.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-do_probe.Tpo" "$(DEPDIR)/fuse_ext2-do_probe.Po"; else rm -f "$(DEPDIR)/fuse_ext2-do_probe.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='do_probe.c' object='fuse_ext2-do_probe.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-do_probe.obj `if test -f 'do_probe.c'; then $(CYGPATH_W) 'do_probe.c'; else $(CYGPATH_W) '$(srcdir)/do_probe.c'; fi`
 
 fuse_ext2-do_fillstatbuf.o: do_fillstatbuf.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-do_fillstatbuf.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-do_fillstatbuf.Tpo" -c -o fuse_ext2-do_fillstatbuf.o `test -f 'do_fillstatbuf.c' || echo '$(srcdir)/'`do_fillstatbuf.c; \

@@ -24,10 +24,23 @@ void op_destroy (void *userdata)
 	errcode_t rc;
 
 	debugf("enter");
+	ext2fs_flush(priv.fs);
+	if (priv.fs->flags & EXT2_FLAG_IB_DIRTY) {
+		rc = ext2fs_write_inode_bitmap(priv.fs);
+		if (rc) {
+			debugf("Error while writing inode bitmap");
+		}
+	}
+	if (priv.fs->flags & EXT2_FLAG_BB_DIRTY) {
+		rc = ext2fs_write_block_bitmap(priv.fs);
+		if (rc) {
+			debugf("Error while writing block bitmap");
+		}
+	}
 	rc = ext2fs_close(priv.fs);
 	if (rc) {
 		debugf("Error while trying to close %s", priv.name);
-		exit(1);
 	}
+	priv.fs = NULL;
 	debugf("leave");
 }

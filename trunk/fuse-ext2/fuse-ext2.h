@@ -96,6 +96,8 @@ void op_destroy (void *userdata);
 
 /* helper functions */
 
+int do_probe (void);
+
 void do_fillstatbuf (ext2_ino_t ino, struct ext2_inode *inode, struct stat *st);
 
 int do_readinode (const char *path, ext2_ino_t *ino, struct ext2_inode *inode);

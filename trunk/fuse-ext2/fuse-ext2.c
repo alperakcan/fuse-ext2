@@ -298,6 +298,9 @@ int main (int argc, char *argv[])
 	char *parsed_options = NULL;
 	struct fuse_args fargs = FUSE_ARGS_INIT(0, NULL);
 
+	memset(&opts, 0, sizeof(opts));
+	memset(&priv, 0, sizeof(priv));
+
 	if (parse_options(argc, argv)) {
 		usage();
 		return -1;
@@ -320,13 +323,19 @@ int main (int argc, char *argv[])
 	debugf("opts.options: %s", opts.options);
 	debugf("parsed_options: %s", parsed_options);
 
+	if (do_probe() != 0) {
+		debugf("Probe failed");
+		err = -4;
+		goto err_out;
+	}
+
 	if (fuse_opt_add_arg(&fargs, PACKAGE) == -1 ||
 	    fuse_opt_add_arg(&fargs, "-o") == -1 ||
 	    fuse_opt_add_arg(&fargs, parsed_options) == -1 ||
 	    fuse_opt_add_arg(&fargs, opts.mnt_point) == -1) {
 		debugf("Failed to set FUSE options");
 		fuse_opt_free_args(&fargs);
-		err = -4;
+		err = -5;
 		goto err_out;
 	}
 
@@ -335,6 +344,7 @@ int main (int argc, char *argv[])
 	} else {
 		debugf("mounting read-only");
 	}
+
 	fuse_main(fargs.argc, fargs.argv, &ext2fs_ops, NULL);
 
 err_out:
