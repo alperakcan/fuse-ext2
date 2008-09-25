@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #define _LARGEFILE_SOURCE
 #define _LARGEFILE64_SOURCE
 

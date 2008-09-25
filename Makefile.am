@@ -1,5 +1,5 @@
 
-SUBDIRS  = e2fsprogs-1.40.6
+SUBDIRS  = e2fsprogs-1.41.1
 SUBDIRS += fuse-ext2
 
 EXTRA_DIST =		\
