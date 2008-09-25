@@ -69,8 +69,8 @@ am_fuse_ext2_OBJECTS = fuse_ext2-fuse-ext2.$(OBJEXT) \
 	fuse_ext2-op_mkdir.$(OBJEXT) fuse_ext2-op_rmdir.$(OBJEXT) \
 	fuse_ext2-op_unlink.$(OBJEXT) fuse_ext2-op_utimens.$(OBJEXT)
 fuse_ext2_OBJECTS = $(am_fuse_ext2_OBJECTS)
-fuse_ext2_DEPENDENCIES = ../e2fsprogs-1.40.6/ext2fs/libext2fs.a \
-	../e2fsprogs-1.40.6/et/libcom_err.a
+fuse_ext2_DEPENDENCIES = ../e2fsprogs-1.41.1/ext2fs/libext2fs.a \
+	../e2fsprogs-1.41.1/et/libcom_err.a
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -228,10 +228,10 @@ fuse_ext2_SOURCES = \
 	op_utimens.c
 
 fuse_ext2_CFLAGS = -Wall -DHAVE_CONFIG_H -D_FILE_OFFSET_BITS=64 \
-	-I$(top_srcdir)/e2fsprogs-1.40.6 $(am__append_1)
+	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_1)
 fuse_ext2_LDADD = \
-	../e2fsprogs-1.40.6/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.40.6/et/libcom_err.a		\
+	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
+	../e2fsprogs-1.41.1/et/libcom_err.a	\
 	-lfuse
 
 all: all-am

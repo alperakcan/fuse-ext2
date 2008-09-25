@@ -30,20 +30,20 @@ fuse_ext2_SOURCES =	\
 	op_unlink.c \
 	op_utimens.c
 
-fuse_ext2_CFLAGS =						\
-	-Wall								\
-	-DHAVE_CONFIG_H						\
-	-D_FILE_OFFSET_BITS=64				\
-	-I$(top_srcdir)/e2fsprogs-1.40.6
+fuse_ext2_CFLAGS =				\
+	-Wall					\
+	-DHAVE_CONFIG_H				\
+	-D_FILE_OFFSET_BITS=64			\
+	-I$(top_srcdir)/e2fsprogs-1.41.1
 
 if DARWIN
-fuse_ext2_CFLAGS +=						\
+fuse_ext2_CFLAGS +=				\
 	-D__FreeBSD__=10
 endif
 
-fuse_ext2_LDADD =							\
-	../e2fsprogs-1.40.6/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.40.6/et/libcom_err.a		\
+fuse_ext2_LDADD =				\
+	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
+	../e2fsprogs-1.41.1/et/libcom_err.a	\
 	-lfuse
 
 if DARWIN

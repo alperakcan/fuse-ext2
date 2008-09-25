@@ -37,7 +37,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = e2fsprogs-1.40.6/et
+subdir = e2fsprogs-1.41.1/et
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -209,9 +209,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  e2fsprogs-1.40.6/et/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  e2fsprogs-1.41.1/et/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  e2fsprogs-1.40.6/et/Makefile
+	  $(AUTOMAKE) --foreign  e2fsprogs-1.41.1/et/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
