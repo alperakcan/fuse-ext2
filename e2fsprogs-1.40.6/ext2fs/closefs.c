@@ -1,6 +1,6 @@
 /*
  * closefs.c --- close an ext2 filesystem
- * 
+ *
  * Copyright (C) 1993, 1994, 1995, 1996 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -8,8 +8,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_UNISTD_H
@@ -47,7 +45,20 @@ int ext2fs_bg_has_super(ext2_filsys fs, int group_block)
 	return 0;
 }
 
-int ext2fs_super_and_bgd_loc(ext2_filsys fs, 
+/*
+ * This function returns the location of the superblock, block group
+ * descriptors for a given block group.  It currently returns the
+ * number of free blocks assuming that inode table and allocation
+ * bitmaps will be in the group.  This is not necessarily the case
+ * when the flex_bg feature is enabled, so callers should take care!
+ * It was only really intended for use by mke2fs, and even there it's
+ * not that useful.  In the future, when we redo this function for
+ * 64-bit block numbers, we should probably return the number of
+ * blocks used by the super block and group descriptors instead.
+ *
+ * See also the comment for ext2fs_reserve_super_and_bgd()
+ */
+int ext2fs_super_and_bgd_loc(ext2_filsys fs,
 			     dgrp_t group,
 			     blk_t *ret_super_blk,
 			     blk_t *ret_old_desc_blk,
@@ -56,16 +67,15 @@ int ext2fs_super_and_bgd_loc(ext2_filsys fs,
 {
 	blk_t	group_block, super_blk = 0, old_desc_blk = 0, new_desc_blk = 0;
 	unsigned int meta_bg, meta_bg_size;
-	int	numblocks, has_super;
-	int	old_desc_blocks;
+	blk_t	numblocks, old_desc_blocks;
+	int	has_super;
 
-	group_block = fs->super->s_first_data_block +
-		(group * fs->super->s_blocks_per_group);
+	group_block = ext2fs_group_first_block(fs, group);
 
 	if (fs->super->s_feature_incompat & EXT2_FEATURE_INCOMPAT_META_BG)
 		old_desc_blocks = fs->super->s_first_meta_bg;
 	else
-		old_desc_blocks = 
+		old_desc_blocks =
 			fs->desc_blocks + fs->super->s_reserved_gdt_blocks;
 
 	if (group == fs->group_desc_count-1) {
@@ -83,7 +93,7 @@ int ext2fs_super_and_bgd_loc(ext2_filsys fs,
 		super_blk = group_block;
 		numblocks--;
 	}
-	meta_bg_size = (fs->blocksize / sizeof (struct ext2_group_desc));
+	meta_bg_size = EXT2_DESC_PER_BLOCK(fs->super);
 	meta_bg = group / meta_bg_size;
 
 	if (!(fs->super->s_feature_incompat & EXT2_FEATURE_INCOMPAT_META_BG) ||
@@ -102,7 +112,7 @@ int ext2fs_super_and_bgd_loc(ext2_filsys fs,
 			numblocks--;
 		}
 	}
-		
+
 	numblocks -= 2 + fs->inode_blocks_per_group;
 
 	if (ret_super_blk)
@@ -190,33 +200,35 @@ static errcode_t write_backup_super(ext2_filsys fs, dgrp_t group,
 				    struct ext2_super_block *super_shadow)
 {
 	dgrp_t	sgrp = group;
-	
+
 	if (sgrp > ((1 << 16) - 1))
 		sgrp = (1 << 16) - 1;
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & EXT2_FLAG_SWAP_BYTES)
-		super_shadow->s_block_group_nr = ext2fs_swab16(sgrp);
-	else
+#ifdef WORDS_BIGENDIAN
+	super_shadow->s_block_group_nr = ext2fs_swab16(sgrp);
+#else
+	fs->super->s_block_group_nr = sgrp;
 #endif
-		fs->super->s_block_group_nr = sgrp;
 
-	return io_channel_write_blk(fs->io, group_block, -SUPERBLOCK_SIZE, 
+	return io_channel_write_blk(fs->io, group_block, -SUPERBLOCK_SIZE,
 				    super_shadow);
 }
 
 
 errcode_t ext2fs_flush(ext2_filsys fs)
 {
-	dgrp_t		i,j;
+	dgrp_t		i;
 	errcode_t	retval;
 	unsigned long	fs_state;
 	__u32		feature_incompat;
 	struct ext2_super_block *super_shadow = 0;
 	struct ext2_group_desc *group_shadow = 0;
+#ifdef WORDS_BIGENDIAN
 	struct ext2_group_desc *s, *t;
+	dgrp_t		j;
+#endif
 	char	*group_ptr;
 	int	old_desc_blocks;
-	
+
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
 
 	fs_state = fs->super->s_state;
@@ -224,34 +236,29 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 
 	fs->super->s_wtime = fs->now ? fs->now : time(NULL);
 	fs->super->s_block_group_nr = 0;
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & EXT2_FLAG_SWAP_BYTES) {
-		retval = EXT2_ET_NO_MEMORY;
-		retval = ext2fs_get_mem(SUPERBLOCK_SIZE, &super_shadow);
-		if (retval)
-			goto errout;
-		retval = ext2fs_get_array(fs->blocksize, fs->desc_blocks,
-					&group_shadow);
-		if (retval)
-			goto errout;
-		memset(group_shadow, 0, (size_t) fs->blocksize *
-		       fs->desc_blocks);
+#ifdef WORDS_BIGENDIAN
+	retval = EXT2_ET_NO_MEMORY;
+	retval = ext2fs_get_mem(SUPERBLOCK_SIZE, &super_shadow);
+	if (retval)
+		goto errout;
+	retval = ext2fs_get_array(fs->desc_blocks, fs->blocksize,
+				  &group_shadow);
+	if (retval)
+		goto errout;
+	memset(group_shadow, 0, (size_t) fs->blocksize *
+	       fs->desc_blocks);
 
-		/* swap the group descriptors */
-		for (j=0, s=fs->group_desc, t=group_shadow;
-		     j < fs->group_desc_count; j++, t++, s++) {
-			*t = *s;
-			ext2fs_swap_group_desc(t);
-		}
-	} else {
-		super_shadow = fs->super;
-		group_shadow = fs->group_desc;
+	/* swap the group descriptors */
+	for (j=0, s=fs->group_desc, t=group_shadow;
+	     j < fs->group_desc_count; j++, t++, s++) {
+		*t = *s;
+		ext2fs_swap_group_desc(t);
 	}
 #else
 	super_shadow = fs->super;
 	group_shadow = fs->group_desc;
 #endif
-	
+
 	/*
 	 * Set the state of the FS to be non-valid.  (The state has
 	 * already been backed up earlier, and will be restored after
@@ -259,11 +266,9 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 	 */
 	fs->super->s_state &= ~EXT2_VALID_FS;
 	fs->super->s_feature_incompat &= ~EXT3_FEATURE_INCOMPAT_RECOVER;
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & EXT2_FLAG_SWAP_BYTES) {
-		*super_shadow = *fs->super;
-		ext2fs_swap_super(super_shadow);
-	}
+#ifdef WORDS_BIGENDIAN
+	*super_shadow = *fs->super;
+	ext2fs_swap_super(super_shadow);
 #endif
 
 	/*
@@ -288,7 +293,7 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 		blk_t	super_blk, old_desc_blk, new_desc_blk;
 		int	meta_bg;
 
-		ext2fs_super_and_bgd_loc(fs, i, &super_blk, &old_desc_blk, 
+		ext2fs_super_and_bgd_loc(fs, i, &super_blk, &old_desc_blk,
 					 &new_desc_blk, &meta_bg);
 
 		if (!(fs->flags & EXT2_FLAG_MASTER_SB_ONLY) &&i && super_blk) {
@@ -299,7 +304,7 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 		}
 		if (fs->flags & EXT2_FLAG_SUPER_ONLY)
 			continue;
-		if ((old_desc_blk) && 
+		if ((old_desc_blk) &&
 		    (!(fs->flags & EXT2_FLAG_MASTER_SB_ONLY) || (i == 0))) {
 			retval = io_channel_write_blk(fs->io,
 			      old_desc_blk, old_desc_blocks, group_ptr);
@@ -338,11 +343,9 @@ write_primary_superblock_only:
 	fs->super->s_block_group_nr = 0;
 	fs->super->s_state = fs_state;
 	fs->super->s_feature_incompat = feature_incompat;
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & EXT2_FLAG_SWAP_BYTES) {
-		*super_shadow = *fs->super;
-		ext2fs_swap_super(super_shadow);
-	}
+#ifdef WORDS_BIGENDIAN
+	*super_shadow = *fs->super;
+	ext2fs_swap_super(super_shadow);
 #endif
 
 	retval = io_channel_flush(fs->io);
@@ -355,19 +358,19 @@ write_primary_superblock_only:
 	retval = io_channel_flush(fs->io);
 errout:
 	fs->super->s_state = fs_state;
-	if (fs->flags & EXT2_FLAG_SWAP_BYTES) {
-		if (super_shadow)
-			ext2fs_free_mem(&super_shadow);
-		if (group_shadow)
-			ext2fs_free_mem(&group_shadow);
-	}
+#ifdef WORDS_BIGENDIAN
+	if (super_shadow)
+		ext2fs_free_mem(&super_shadow);
+	if (group_shadow)
+		ext2fs_free_mem(&group_shadow);
+#endif
 	return retval;
 }
 
 errcode_t ext2fs_close(ext2_filsys fs)
 {
 	errcode_t	retval;
-	
+
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
 
 	if (fs->flags & EXT2_FLAG_DIRTY) {

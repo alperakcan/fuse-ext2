@@ -173,6 +173,7 @@ struct ext4_group_desc
 
 #define EXT2_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not initialized */
 #define EXT2_BG_BLOCK_UNINIT	0x0002 /* Block bitmap not initialized */
+#define EXT2_BG_INODE_ZEROED	0x0004 /* On-disk itable initialized to zero */
 
 /*
  * Data structures used by the directory indexing feature
@@ -217,6 +218,13 @@ struct ext2_dx_countlimit {
 /*
  * Macro-instructions used to manage group descriptors
  */
+#define EXT2_MIN_DESC_SIZE             32
+#define EXT2_MIN_DESC_SIZE_64BIT       64
+#define EXT2_MAX_DESC_SIZE             EXT2_MIN_BLOCK_SIZE
+#define EXT2_DESC_SIZE(s)                                                \
+       ((EXT2_SB(s)->s_feature_incompat & EXT4_FEATURE_INCOMPAT_64BIT) ? \
+	(s)->s_desc_size : EXT2_MIN_DESC_SIZE)
+
 #define EXT2_BLOCKS_PER_GROUP(s)	(EXT2_SB(s)->s_blocks_per_group)
 #define EXT2_INODES_PER_GROUP(s)	(EXT2_SB(s)->s_inodes_per_group)
 #define EXT2_INODES_PER_BLOCK(s)	(EXT2_BLOCK_SIZE(s)/EXT2_INODE_SIZE(s))
@@ -227,7 +235,7 @@ struct ext2_dx_countlimit {
 #define EXT2_DESC_PER_BLOCK(s)		(EXT2_SB(s)->s_desc_per_block)
 #define EXT2_DESC_PER_BLOCK_BITS(s)	(EXT2_SB(s)->s_desc_per_block_bits)
 #else
-#define EXT2_DESC_PER_BLOCK(s)		(EXT2_BLOCK_SIZE(s) / sizeof (struct ext2_group_desc))
+#define EXT2_DESC_PER_BLOCK(s)		(EXT2_BLOCK_SIZE(s) / EXT2_DESC_SIZE(s))
 #endif
 
 /*
@@ -263,6 +271,7 @@ struct ext2_dx_countlimit {
 #define EXT2_NOTAIL_FL			0x00008000 /* file tail should not be merged */
 #define EXT2_DIRSYNC_FL 		0x00010000 /* Synchronous directory modifications */
 #define EXT2_TOPDIR_FL			0x00020000 /* Top of directory hierarchies*/
+#define EXT4_HUGE_FILE_FL               0x00040000 /* Set to each huge file */
 #define EXT4_EXTENTS_FL 		0x00080000 /* Inode uses extents */
 #define EXT2_RESERVED_FL		0x80000000 /* reserved for ext2 lib */
 
@@ -284,6 +293,16 @@ struct ext2_new_group_input {
 	__u16 unused;		/* Number of reserved GDT blocks in group */
 };
 
+struct ext4_new_group_input {
+	__u32 group;		/* Group number for this data */
+	__u64 block_bitmap;	/* Absolute block number of block bitmap */
+	__u64 inode_bitmap;	/* Absolute block number of inode bitmap */
+	__u64 inode_table;	/* Absolute block number of inode table start */
+	__u32 blocks_count;	/* Total number of blocks in this group */
+	__u16 reserved_blocks;	/* Number of reserved blocks in this group */
+	__u16 unused;
+};
+
 #ifdef __GNU__			/* Needed for the Hurd */
 #define _IOT_ext2_new_group_input _IOT (_IOTS(__u32), 5, _IOTS(__u16), 2, 0, 0)
 #endif
@@ -296,6 +315,7 @@ struct ext2_new_group_input {
 #define EXT2_IOC_SETVERSION_NEW		_IOW('f', 4, long)
 #define EXT2_IOC_GROUP_EXTEND		_IOW('f', 7, unsigned long)
 #define EXT2_IOC_GROUP_ADD		_IOW('f', 8,struct ext2_new_group_input)
+#define EXT4_IOC_GROUP_ADD		_IOW('f', 8,struct ext4_new_group_input)
 
 /*
  * Structure of an inode on the disk
@@ -319,9 +339,6 @@ struct ext2_inode {
 		struct {
 			__u32  h_i_translator;
 		} hurd1;
-		struct {
-			__u32  m_i_reserved1;
-		} masix1;
 	} osd1;				/* OS dependent 1 */
 	__u32	i_block[EXT2_N_BLOCKS];/* Pointers to blocks */
 	__u32	i_generation;	/* File version (for NFS) */
@@ -331,7 +348,7 @@ struct ext2_inode {
 	union {
 		struct {
 			__u16	l_i_blocks_hi;
-			__u16	i_pad1;
+			__u16	l_i_file_acl_high;
 			__u16	l_i_uid_high;	/* these 2 fields    */
 			__u16	l_i_gid_high;	/* were reserved2[0] */
 			__u32	l_i_reserved2;
@@ -344,12 +361,6 @@ struct ext2_inode {
 			__u16	h_i_gid_high;
 			__u32	h_i_author;
 		} hurd2;
-		struct {
-			__u8	m_i_frag;	/* Fragment number */
-			__u8	m_i_fsize;	/* Fragment size */
-			__u16	m_pad1;
-			__u32	m_i_reserved2[2];
-		} masix2;
 	} osd2;				/* OS dependent 2 */
 };
 
@@ -375,9 +386,6 @@ struct ext2_inode_large {
 		struct {
 			__u32  h_i_translator;
 		} hurd1;
-		struct {
-			__u32  m_i_reserved1;
-		} masix1;
 	} osd1;				/* OS dependent 1 */
 	__u32	i_block[EXT2_N_BLOCKS];/* Pointers to blocks */
 	__u32	i_generation;	/* File version (for NFS) */
@@ -387,7 +395,7 @@ struct ext2_inode_large {
 	union {
 		struct {
 			__u16	l_i_blocks_hi;
-			__u16	i_pad1;
+			__u16	l_i_file_acl_high;
 			__u16	l_i_uid_high;	/* these 2 fields    */
 			__u16	l_i_gid_high;	/* were reserved2[0] */
 			__u32	l_i_reserved2;
@@ -400,12 +408,6 @@ struct ext2_inode_large {
 			__u16	h_i_gid_high;
 			__u32	h_i_author;
 		} hurd2;
-		struct {
-			__u8	m_i_frag;	/* Fragment number */
-			__u8	m_i_fsize;	/* Fragment size */
-			__u16	m_pad1;
-			__u32	m_i_reserved2[2];
-		} masix2;
 	} osd2;				/* OS dependent 2 */
 	__u16	i_extra_isize;
 	__u16	i_pad1;
@@ -414,6 +416,7 @@ struct ext2_inode_large {
 	__u32	i_atime_extra;	/* extra Access time (nsec << 2 | epoch) */
 	__u32	i_crtime;	/* File creation time */
 	__u32	i_crtime_extra;	/* extra File creation time (nsec << 2 | epoch)*/
+	__u32	i_version_hi;	/* high 32 bits for 64-bit version */
 };
 
 #define i_size_high	i_dir_acl
@@ -437,37 +440,20 @@ struct ext2_inode_large {
 #define i_gid_high	osd2.hurd2.h_i_gid_high
 #define i_author	osd2.hurd2.h_i_author
 
-#else
-#if defined(__masix__)
-
-#define i_reserved1	osd1.masix1.m_i_reserved1
-#define i_frag		osd2.masix2.m_i_frag
-#define i_fsize		osd2.masix2.m_i_fsize
-#define i_reserved2	osd2.masix2.m_i_reserved2
-
-#endif  /* __masix__ */
 #endif  /* __GNU__ */
 #endif	/* defined(__KERNEL__) || defined(__linux__) */
 
-#if defined(__masix__)
-#define inode_uid(inode)	((inode).i_uid)
-#define inode_gid(inode)	((inode).i_gid)
-#define ext2fs_set_i_uid_high(inode,x) (x)
-#define ext2fs_set_i_gid_high(inode,x) (x)
-
-#else
 #define inode_uid(inode)	((inode).i_uid | (inode).osd2.linux2.l_i_uid_high << 16)
 #define inode_gid(inode)	((inode).i_gid | (inode).osd2.linux2.l_i_gid_high << 16)
 #define ext2fs_set_i_uid_high(inode,x) ((inode).osd2.linux2.l_i_uid_high = (x))
 #define ext2fs_set_i_gid_high(inode,x) ((inode).osd2.linux2.l_i_gid_high = (x))
-#endif
 
 /*
  * File system states
  */
 #define EXT2_VALID_FS			0x0001	/* Unmounted cleanly */
 #define EXT2_ERROR_FS			0x0002	/* Errors detected */
-#define EXT4_ORPHAN_FS			0x0004	/* Orphans being recovered */
+#define EXT3_ORPHAN_FS			0x0004	/* Orphans being recovered */
 
 /*
  * Misc. filesystem flags
@@ -590,7 +576,10 @@ struct ext2_super_block {
 	__u16   s_mmp_interval;         /* # seconds to wait in MMP checking */
 	__u64   s_mmp_block;            /* Block for multi-mount protection */
 	__u32   s_raid_stripe_width;    /* blocks on all data disks (N*stride)*/
-	__u32   s_reserved[163];        /* Padding to the end of the block */
+	__u8	s_log_groups_per_flex;	/* FLEX_BG group size */
+	__u8    s_reserved_char_pad;
+	__u16	s_reserved_pad;		/* Padding to next 32bits */
+	__u32   s_reserved[162];        /* Padding to the end of the block */
 };
 
 /*
@@ -598,7 +587,7 @@ struct ext2_super_block {
  */
 #define EXT2_OS_LINUX		0
 #define EXT2_OS_HURD		1
-#define EXT2_OS_MASIX		2
+#define EXT2_OBSO_OS_MASIX	2
 #define EXT2_OS_FREEBSD		3
 #define EXT2_OS_LITES		4
 
@@ -653,12 +642,14 @@ struct ext2_super_block {
 #define EXT3_FEATURE_INCOMPAT_EXTENTS		0x0040
 #define EXT4_FEATURE_INCOMPAT_64BIT		0x0080
 #define EXT4_FEATURE_INCOMPAT_MMP		0x0100
+#define EXT4_FEATURE_INCOMPAT_FLEX_BG		0x0200
 
 
 #define EXT2_FEATURE_COMPAT_SUPP	0
 #define EXT2_FEATURE_INCOMPAT_SUPP	(EXT2_FEATURE_INCOMPAT_FILETYPE)
 #define EXT2_FEATURE_RO_COMPAT_SUPP	(EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER| \
 					 EXT2_FEATURE_RO_COMPAT_LARGE_FILE| \
+					 EXT4_FEATURE_RO_COMPAT_DIR_NLINK| \
 					 EXT2_FEATURE_RO_COMPAT_BTREE_DIR)
 
 /*
@@ -675,7 +666,7 @@ struct ext2_super_block {
 #define EXT2_DEFM_XATTR_USER	0x0004
 #define EXT2_DEFM_ACL		0x0008
 #define EXT2_DEFM_UID16		0x0010
-#define EXT3_DEFM_JMODE		0x0060 
+#define EXT3_DEFM_JMODE		0x0060
 #define EXT3_DEFM_JMODE_DATA	0x0020
 #define EXT3_DEFM_JMODE_ORDERED	0x0040
 #define EXT3_DEFM_JMODE_WBACK	0x0060

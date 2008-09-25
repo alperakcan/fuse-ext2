@@ -2,7 +2,7 @@
  * mkjournal.c --- make a journal for a filesystem
  *
  * Copyright (C) 2000 Theodore Ts'o.
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
@@ -137,11 +137,72 @@ errout:
 }
 
 /*
+ * Convenience function which zeros out _num_ blocks starting at
+ * _blk_.  In case of an error, the details of the error is returned
+ * via _ret_blk_ and _ret_count_ if they are non-NULL pointers.
+ * Returns 0 on success, and an error code on an error.
+ *
+ * As a special case, if the first argument is NULL, then it will
+ * attempt to free the static zeroizing buffer.  (This is to keep
+ * programs that check for memory leaks happy.)
+ */
+#define STRIDE_LENGTH 8
+errcode_t ext2fs_zero_blocks(ext2_filsys fs, blk_t blk, int num,
+			     blk_t *ret_blk, int *ret_count)
+{
+	int		j, count;
+	static char	*buf;
+	errcode_t	retval;
+
+	/* If fs is null, clean up the static buffer and return */
+	if (!fs) {
+		if (buf) {
+			free(buf);
+			buf = 0;
+		}
+		return 0;
+	}
+	/* Allocate the zeroizing buffer if necessary */
+	if (!buf) {
+		buf = malloc(fs->blocksize * STRIDE_LENGTH);
+		if (!buf)
+			return ENOMEM;
+		memset(buf, 0, fs->blocksize * STRIDE_LENGTH);
+	}
+	/* OK, do the write loop */
+	j=0;
+	while (j < num) {
+		if (blk % STRIDE_LENGTH) {
+			count = STRIDE_LENGTH - (blk % STRIDE_LENGTH);
+			if (count > (num - j))
+				count = num - j;
+		} else {
+			count = num - j;
+			if (count > STRIDE_LENGTH)
+				count = STRIDE_LENGTH;
+		}
+		retval = io_channel_write_blk(fs->io, blk, count, buf);
+		if (retval) {
+			if (ret_count)
+				*ret_count = count;
+			if (ret_blk)
+				*ret_blk = blk;
+			return retval;
+		}
+		j += count; blk += count;
+	}
+	return 0;
+}
+
+/*
  * Helper function for creating the journal using direct I/O routines
  */
 struct mkjournal_struct {
 	int		num_blocks;
 	int		newblocks;
+	blk_t		goal;
+	blk_t		blk_to_zero;
+	int		zero_count;
 	char		*buf;
 	errcode_t	err;
 };
@@ -155,23 +216,42 @@ static int mkjournal_proc(ext2_filsys	fs,
 {
 	struct mkjournal_struct *es = (struct mkjournal_struct *) priv_data;
 	blk_t	new_blk;
-	static blk_t	last_blk = 0;
 	errcode_t	retval;
-	
+
 	if (*blocknr) {
-		last_blk = *blocknr;
+		es->goal = *blocknr;
 		return 0;
 	}
-	retval = ext2fs_new_block(fs, last_blk, 0, &new_blk);
+	retval = ext2fs_new_block(fs, es->goal, 0, &new_blk);
 	if (retval) {
 		es->err = retval;
 		return BLOCK_ABORT;
 	}
-	if (blockcnt > 0)
+	if (blockcnt >= 0)
 		es->num_blocks--;
 
 	es->newblocks++;
-	retval = io_channel_write_blk(fs->io, new_blk, 1, es->buf);
+	retval = 0;
+	if (blockcnt <= 0)
+		retval = io_channel_write_blk(fs->io, new_blk, 1, es->buf);
+	else {
+		if (es->zero_count) {
+			if ((es->blk_to_zero + es->zero_count == new_blk) &&
+			    (es->zero_count < 1024))
+				es->zero_count++;
+			else {
+				retval = ext2fs_zero_blocks(fs,
+							    es->blk_to_zero,
+							    es->zero_count,
+							    0, 0);
+				es->zero_count = 0;
+			}
+		}
+		if (es->zero_count == 0) {
+			es->blk_to_zero = new_blk;
+			es->zero_count = 1;
+		}
+	}
 
 	if (blockcnt == 0)
 		memset(es->buf, 0, fs->blocksize);
@@ -180,15 +260,14 @@ static int mkjournal_proc(ext2_filsys	fs,
 		es->err = retval;
 		return BLOCK_ABORT;
 	}
-	*blocknr = new_blk;
-	last_blk = new_blk;
+	*blocknr = es->goal = new_blk;
 	ext2fs_block_alloc_stats(fs, new_blk, +1);
 
 	if (es->num_blocks == 0)
 		return (BLOCK_CHANGED | BLOCK_ABORT);
 	else
 		return BLOCK_CHANGED;
-	
+
 }
 
 /*
@@ -198,13 +277,14 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
 				     blk_t size, int flags)
 {
 	char			*buf;
+	dgrp_t			group, start, end, i, log_flex;
 	errcode_t		retval;
 	struct ext2_inode	inode;
 	struct mkjournal_struct	es;
 
 	if ((retval = ext2fs_create_journal_superblock(fs, size, flags, &buf)))
 		return retval;
-	
+
 	if ((retval = ext2fs_read_bitmaps(fs)))
 		return retval;
 
@@ -218,6 +298,41 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
 	es.newblocks = 0;
 	es.buf = buf;
 	es.err = 0;
+	es.zero_count = 0;
+
+	if (fs->super->s_feature_incompat & EXT3_FEATURE_INCOMPAT_EXTENTS) {
+		inode.i_flags |= EXT4_EXTENTS_FL;
+		if ((retval = ext2fs_write_inode(fs, journal_ino, &inode)))
+			return retval;
+	}
+
+	/*
+	 * Set the initial goal block to be roughly at the middle of
+	 * the filesystem.  Pick a group that has the largest number
+	 * of free blocks.
+	 */
+	group = ext2fs_group_of_blk(fs, (fs->super->s_blocks_count -
+					 fs->super->s_first_data_block) / 2);
+	log_flex = 1 << fs->super->s_log_groups_per_flex;
+	if (fs->super->s_log_groups_per_flex && (group > log_flex)) {
+		group = group & ~(log_flex - 1);
+		while ((group < fs->group_desc_count) &&
+		       fs->group_desc[group].bg_free_blocks_count == 0)
+			group++;
+		if (group == fs->group_desc_count)
+			group = 0;
+		start = group;
+	} else
+		start = (group > 0) ? group-1 : group;
+	end = ((group+1) < fs->group_desc_count) ? group+1 : group;
+	group = start;
+	for (i=start+1; i <= end; i++)
+		if (fs->group_desc[i].bg_free_blocks_count >
+		    fs->group_desc[group].bg_free_blocks_count)
+			group = i;
+
+	es.goal = (fs->super->s_blocks_per_group * group) +
+		fs->super->s_first_data_block;
 
 	retval = ext2fs_block_iterate2(fs, journal_ino, BLOCK_FLAG_APPEND,
 				       0, mkjournal_proc, &es);
@@ -225,12 +340,18 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
 		retval = es.err;
 		goto errout;
 	}
+	if (es.zero_count) {
+		retval = ext2fs_zero_blocks(fs, es.blk_to_zero,
+					    es.zero_count, 0, 0);
+		if (retval)
+			goto errout;
+	}
 
 	if ((retval = ext2fs_read_inode(fs, journal_ino, &inode)))
 		goto errout;
 
  	inode.i_size += fs->blocksize * size;
-	inode.i_blocks += (fs->blocksize / 512) * es.newblocks;
+	ext2fs_iblk_add_blocks(fs, &inode, es.newblocks);
 	inode.i_mtime = inode.i_ctime = fs->now ? fs->now : time(0);
 	inode.i_links_count = 1;
 	inode.i_mode = LINUX_S_IFREG | 0600;
@@ -284,7 +405,7 @@ errcode_t ext2fs_add_journal_device(ext2_filsys fs, ext2_filsys journal_dev)
 	/* Make sure the device exists and is a block device */
 	if (stat(journal_dev->device_name, &st) < 0)
 		return errno;
-	
+
 	if (!S_ISBLK(st.st_mode))
 		return EXT2_ET_JOURNAL_NOT_BLOCK; /* Must be a block device */
 
@@ -319,7 +440,7 @@ errcode_t ext2fs_add_journal_device(ext2_filsys fs, ext2_filsys journal_dev)
 	/* Writeback the journal superblock */
 	if ((retval = io_channel_write_blk(journal_dev->io, start, -1024, buf)))
 		return retval;
-	
+
 	fs->super->s_journal_inum = 0;
 	fs->super->s_journal_dev = st.st_rdev;
 	memcpy(fs->super->s_journal_uuid, jsb->s_uuid,
@@ -351,7 +472,7 @@ errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t size, int flags)
 		strcat(jfile, "/.journal");
 
 		/*
-		 * If .../.journal already exists, make sure any 
+		 * If .../.journal already exists, make sure any
 		 * immutable or append-only flags are cleared.
 		 */
 #if defined(HAVE_CHFLAGS) && defined(UF_NODUMP)
@@ -373,7 +494,7 @@ errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t size, int flags)
 
 		if ((retval = write_journal_file(fs, jfile, size, flags)))
 			goto errout;
-		
+
 		/* Get inode number of the journal file */
 		if (fstat(fd, &st) < 0)
 			goto errout;
@@ -388,7 +509,7 @@ errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t size, int flags)
 #endif
 		if (retval)
 			goto errout;
-		
+
 		close(fd);
 		journal_ino = st.st_ino;
 	} else {
@@ -402,7 +523,7 @@ errcode_t ext2fs_add_journal_inode(ext2_filsys fs, blk_t size, int flags)
 						  size, flags)))
 			return retval;
 	}
-	
+
 	fs->super->s_journal_inum = journal_ino;
 	fs->super->s_journal_dev = 0;
 	memset(fs->super->s_journal_uuid, 0,
@@ -429,7 +550,7 @@ main(int argc, char **argv)
 		exit(1);
 	}
 	device_name = argv[1];
-	
+
 	retval = ext2fs_open (device_name, EXT2_FLAG_RW, 0, 0,
 			      unix_io_manager, &fs);
 	if (retval) {
@@ -449,6 +570,6 @@ main(int argc, char **argv)
 	}
 	ext2fs_close(fs);
 	exit(0);
-	
+
 }
 #endif

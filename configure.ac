@@ -23,33 +23,33 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_MAJOR
 AC_CHECK_HEADERS([	\
-	fcntl.h			\
-	malloc.h		\
-	mntent.h		\
+	fcntl.h		\
+	malloc.h	\
+	mntent.h	\
 	netinet/in.h	\
-	paths.h			\
-	stddef.h		\
-	stdlib.h		\
-	string.h		\
-	linux/fd.h		\
-	sys/file.h		\
-	sys/ioctl.h		\
-	sys/mount.h		\
-	sys/param.h		\
+	paths.h		\
+	stddef.h	\
+	stdlib.h	\
+	string.h	\
+	linux/fd.h	\
+	sys/file.h	\
+	sys/ioctl.h	\
+	sys/mount.h	\
+	sys/param.h	\
 	sys/statvfs.h	\
-	sys/time.h		\
-	sys/types.h		\
-	sys/stat.h		\
-	sys/mkdev.h		\
-	sys/ioctl.h		\
+	sys/time.h	\
+	sys/types.h	\
+	sys/stat.h	\
+	sys/mkdev.h	\
+	sys/ioctl.h	\
 	sys/resource.h	\
-	sys/mman.h		\
-	sys/prctl.h		\
+	sys/mman.h	\
+	sys/prctl.h	\
 	sys/disklabel.h \
-	sys/queue.h		\
-	errno.h			\
-	unistd.h		\
-	utime.h			\
+	sys/queue.h	\
+	errno.h		\
+	unistd.h	\
+	utime.h		\
 ])
 
 AC_CHECK_HEADERS(sys/disk.h sys/mount.h,,,

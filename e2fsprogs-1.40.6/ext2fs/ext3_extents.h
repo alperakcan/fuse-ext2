@@ -20,44 +20,6 @@
 #define _LINUX_EXT3_EXTENTS
 
 /*
- * with AGRESSIVE_TEST defined capacity of index/leaf blocks
- * become very little, so index split, in-depth growing and
- * other hard changes happens much more often
- * this is for debug purposes only
- */
-#define AGRESSIVE_TEST_
-
-/*
- * if CHECK_BINSEARCH defined, then results of binary search
- * will be checked by linear search
- */
-#define CHECK_BINSEARCH_
-
-/*
- * if EXT_DEBUG is defined you can use 'extdebug' mount option
- * to get lots of info what's going on
- */
-//#define EXT_DEBUG
-#ifdef EXT_DEBUG
-#define ext_debug(tree,fmt,a...) 			\
-do {							\
-	if (test_opt((tree)->inode->i_sb, EXTDEBUG))	\
-		printk(fmt, ##a);			\
-} while (0);
-#else
-#define ext_debug(tree,fmt,a...)
-#endif
-
-/*
- * if EXT_STATS is defined then stats numbers are collected
- * these number will be displayed at umount time
- */
-#define EXT_STATS_
-
-
-#define EXT3_ALLOC_NEEDED	3	/* block bitmap + group desc. + sb */
-
-/*
  * ext3_inode has i_block array (total 60 bytes)
  * first 4 bytes are used to store:
  *  - tree depth (0 mean there is no tree yet. all extents in the inode)
@@ -115,17 +77,24 @@ struct ext3_ext_path {
 };
 
 /*
- * structure for external API
+ * EXT_INIT_MAX_LEN is the maximum number of blocks we can have in an
+ * initialized extent. This is 2^15 and not (2^16 - 1), since we use the
+ * MSB of ee_len field in the extent datastructure to signify if this
+ * particular extent is an initialized extent or an uninitialized (i.e.
+ * preallocated).
+ * EXT_UNINIT_MAX_LEN is the maximum number of blocks we can have in an
+ * uninitialized extent.
+ * If ee_len is <= 0x8000, it is an initialized extent. Otherwise, it is an
+ * uninitialized one. In other words, if MSB of ee_len is set, it is an
+ * uninitialized extent with only one special scenario when ee_len = 0x8000.
+ * In this case we can not have an uninitialized extent of zero length and
+ * thus we make it as a special case of initialized extent with 0x8000 length.
+ * This way we get better extent-to-group alignment for initialized extents.
+ * Hence, the maximum number of blocks we can have in an *initialized*
+ * extent is 2^15 (32768) and in an *uninitialized* extent is 2^15-1 (32767).
  */
-
-#define EXT_CONTINUE	0
-#define EXT_BREAK	1
-#define EXT_REPEAT	2
-
-
-#define EXT_MAX_BLOCK	0xffffffff
-#define EXT_CACHE_MARK	0xffff
-
+#define EXT_INIT_MAX_LEN	(1UL << 15)
+#define EXT_UNINIT_MAX_LEN	(EXT_INIT_MAX_LEN - 1)
 
 #define EXT_FIRST_EXTENT(__hdr__) \
 	((struct ext3_extent *) (((char *) (__hdr__)) +		\
@@ -143,96 +112,6 @@ struct ext3_ext_path {
 	(EXT_FIRST_EXTENT((__hdr__)) + (__hdr__)->eh_max - 1)
 #define EXT_MAX_INDEX(__hdr__) \
 	(EXT_FIRST_INDEX((__hdr__)) + (__hdr__)->eh_max - 1)
-
-#define EXT_ROOT_HDR(tree) \
-	((struct ext3_extent_header *) (tree)->root)
-#define EXT_BLOCK_HDR(bh) \
-	((struct ext3_extent_header *) (bh)->b_data)
-#define EXT_DEPTH(_t_)	\
-	(((struct ext3_extent_header *)((_t_)->root))->eh_depth)
-#define EXT_GENERATION(_t_)	\
-	(((struct ext3_extent_header *)((_t_)->root))->eh_generation)
-
-
-#define EXT_ASSERT(__x__) if (!(__x__)) BUG();
-
-
-/*
- * this structure is used to gather extents from the tree via ioctl
- */
-struct ext3_extent_buf {
-	unsigned long start;
-	int buflen;
-	void *buffer;
-	void *cur;
-	int err;
-};
-
-/*
- * this structure is used to collect stats info about the tree
- */
-struct ext3_extent_tree_stats {
-	int depth;
-	int extents_num;
-	int leaf_num;
-};
-
-#ifdef __KERNEL__
-/*
- * ext3_extents_tree is used to pass initial information
- * to top-level extents API
- */
-struct ext3_extents_helpers;
-struct ext3_extents_tree {
-	struct inode *inode;	/* inode which tree belongs to */
-	void *root;		/* ptr to data top of tree resides at */
-	void *buffer;		/* will be passed as arg to ^^ routines	*/
-	int buffer_len;
-	void *private;
-	struct ext3_extent *cex;/* last found extent */
-	struct ext3_extents_helpers *ops;
-};
-
-struct ext3_extents_helpers {
-	int (*get_write_access)(handle_t *h, void *buffer);
-	int (*mark_buffer_dirty)(handle_t *h, void *buffer);
-	int (*mergable)(struct ext3_extent *ex1, struct ext3_extent *ex2);
-	int (*remove_extent_credits)(struct ext3_extents_tree *,
-					struct ext3_extent *, unsigned long,
-					unsigned long);
-	int (*remove_extent)(struct ext3_extents_tree *,
-				struct ext3_extent *, unsigned long,
-				unsigned long);
-	int (*new_block)(handle_t *, struct ext3_extents_tree *,
-				struct ext3_ext_path *, struct ext3_extent *,
-				int *);
-};
-
-/*
- * to be called by ext3_ext_walk_space()
- * negative retcode - error
- * positive retcode - signal for ext3_ext_walk_space(), see below
- * callback must return valid extent (passed or newly created)
- */
-typedef int (*ext_prepare_callback)(struct ext3_extents_tree *,
-					struct ext3_ext_path *,
-					struct ext3_extent *, int);
-void ext3_init_tree_desc(struct ext3_extents_tree *, struct inode *);
-extern int ext3_extent_tree_init(handle_t *, struct ext3_extents_tree *);
-extern int ext3_ext_calc_credits_for_insert(struct ext3_extents_tree *, struct ext3_ext_path *);
-extern int ext3_ext_insert_extent(handle_t *, struct ext3_extents_tree *, struct ext3_ext_path *, struct ext3_extent *);
-extern int ext3_ext_walk_space(struct ext3_extents_tree *, unsigned long, unsigned long, ext_prepare_callback);
-extern int ext3_ext_remove_space(struct ext3_extents_tree *, unsigned long, unsigned long);
-extern struct ext3_ext_path * ext3_ext_find_extent(struct ext3_extents_tree *, int, struct ext3_ext_path *);
-
-static inline void
-ext3_ext_invalidate_cache(struct ext3_extents_tree *tree)
-{
-	if (tree->cex)
-		tree->cex->ee_len = 0;
-}
-#endif /* __KERNEL__ */
-
 
 #endif /* _LINUX_EXT3_EXTENTS */
 

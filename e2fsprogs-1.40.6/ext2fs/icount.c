@@ -9,8 +9,6 @@
  * %End-Header%
  */
 
-#include <config.h>
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -45,7 +43,7 @@
 
 struct ext2_icount_el {
 	ext2_ino_t	ino;
-	__u16	count;
+	__u32		count;
 };
 
 struct ext2_icount {
@@ -61,6 +59,15 @@ struct ext2_icount {
 	char			*tdb_fn;
 	TDB_CONTEXT		*tdb;
 };
+
+/*
+ * We now use a 32-bit counter field because it doesn't cost us
+ * anything extra for the in-memory data structure, due to alignment
+ * padding.  But there's no point changing the interface if most of
+ * the time we only care if the number is bigger than 65,000 or not.
+ * So use the following translation function to return a 16-bit count.
+ */
+#define icount_16_xlate(x) (((x) > 65500) ? 65500 : (x))
 
 void ext2fs_free_icount(ext2_icount_t icount)
 {
@@ -400,7 +407,7 @@ static struct ext2_icount_el *get_icount_el(ext2_icount_t icount,
 }
 
 static errcode_t set_inode_count(ext2_icount_t icount, ext2_ino_t ino,
-				 __u16 count)
+				 __u32 count)
 {
 	struct ext2_icount_el 	*el;
 	TDB_DATA key, data;
@@ -409,7 +416,7 @@ static errcode_t set_inode_count(ext2_icount_t icount, ext2_ino_t ino,
 		key.dptr = (unsigned char *) &ino;
 		key.dsize = sizeof(ext2_ino_t);
 		data.dptr = (unsigned char *) &count;
-		data.dsize = sizeof(__u16);
+		data.dsize = sizeof(__u32);
 		if (count) {
 			if (tdb_store(icount->tdb, key, data, TDB_REPLACE))
 				return tdb_error(icount->tdb) +
@@ -431,7 +438,7 @@ static errcode_t set_inode_count(ext2_icount_t icount, ext2_ino_t ino,
 }
 
 static errcode_t get_inode_count(ext2_icount_t icount, ext2_ino_t ino,
-				 __u16 *count)
+				 __u32 *count)
 {
 	struct ext2_icount_el 	*el;
 	TDB_DATA key, data;
@@ -446,7 +453,7 @@ static errcode_t get_inode_count(ext2_icount_t icount, ext2_ino_t ino,
 			return tdb_error(icount->tdb) + EXT2_ET_TDB_SUCCESS;
 		}
 
-		*count = *((__u16 *) data.dptr);
+		*count = *((__u32 *) data.dptr);
 		free(data.dptr);
 		return 0;
 	}
@@ -485,6 +492,7 @@ errcode_t ext2fs_icount_validate(ext2_icount_t icount, FILE *out)
 
 errcode_t ext2fs_icount_fetch(ext2_icount_t icount, ext2_ino_t ino, __u16 *ret)
 {
+	__u32	val;
 	EXT2_CHECK_MAGIC(icount, EXT2_ET_MAGIC_ICOUNT);
 
 	if (!ino || (ino > icount->num_inodes))
@@ -499,14 +507,15 @@ errcode_t ext2fs_icount_fetch(ext2_icount_t icount, ext2_ino_t ino, __u16 *ret)
 		*ret = 0;
 		return 0;
 	}
-	get_inode_count(icount, ino, ret);
+	get_inode_count(icount, ino, &val);
+	*ret = icount_16_xlate(val);
 	return 0;
 }
 
 errcode_t ext2fs_icount_increment(ext2_icount_t icount, ext2_ino_t ino,
 				  __u16 *ret)
 {
-	__u16			curr_value;
+	__u32			curr_value;
 
 	EXT2_CHECK_MAGIC(icount, EXT2_ET_MAGIC_ICOUNT);
 
@@ -556,14 +565,14 @@ errcode_t ext2fs_icount_increment(ext2_icount_t icount, ext2_ino_t ino,
 	if (icount->multiple)
 		ext2fs_mark_inode_bitmap(icount->multiple, ino);
 	if (ret)
-		*ret = curr_value;
+		*ret = icount_16_xlate(curr_value);
 	return 0;
 }
 
 errcode_t ext2fs_icount_decrement(ext2_icount_t icount, ext2_ino_t ino,
 				  __u16 *ret)
 {
-	__u16			curr_value;
+	__u32			curr_value;
 
 	if (!ino || (ino > icount->num_inodes))
 		return EXT2_ET_INVALID_ARGUMENT;
@@ -599,7 +608,7 @@ errcode_t ext2fs_icount_decrement(ext2_icount_t icount, ext2_ino_t ino,
 		ext2fs_unmark_inode_bitmap(icount->multiple, ino);
 
 	if (ret)
-		*ret = curr_value;
+		*ret = icount_16_xlate(curr_value);
 	return 0;
 }
 

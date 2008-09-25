@@ -2,15 +2,13 @@
  * dblist_dir.c --- iterate by directory entry
  *
  * Copyright 1997 by Theodore Ts'o
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
  * %End-Header%
- * 
+ *
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_UNISTD_H
@@ -56,7 +54,7 @@ errcode_t ext2fs_dblist_dir_iterate(ext2_dblist dblist,
 	ctx.errcode = 0;
 
 	retval = ext2fs_dblist_iterate(dblist, db_dir_proc, &ctx);
-	
+
 	if (!block_buf)
 		ext2fs_free_mem(&ctx.buf);
 	if (retval)
@@ -73,7 +71,7 @@ static int db_dir_proc(ext2_filsys fs, struct ext2_db_entry *db_info,
 	ctx = (struct dir_context *) priv_data;
 	ctx->dir = db_info->ino;
 	ctx->errcode = 0;
-	
+
 	ret = ext2fs_process_dir_block(fs, &db_info->blk,
 				       db_info->blockcnt, 0, 0, priv_data);
 	if ((ret & BLOCK_ABORT) && !ctx->errcode)

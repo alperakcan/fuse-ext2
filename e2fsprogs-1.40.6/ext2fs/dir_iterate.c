@@ -1,6 +1,6 @@
 /*
  * dir_iterate.c --- ext2fs directory iteration operations
- * 
+ *
  * Copyright (C) 1993, 1994, 1994, 1995, 1996, 1997 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -8,8 +8,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -31,16 +29,20 @@
  * undeleted entry.  Returns 1 if the deleted entry looks valid, zero
  * if not valid.
  */
-static int ext2fs_validate_entry(char *buf, int offset, int final_offset)
+static int ext2fs_validate_entry(ext2_filsys fs, char *buf, int offset,
+				 int final_offset)
 {
 	struct ext2_dir_entry *dirent;
-	
+	int	rec_len;
+
 	while (offset < final_offset) {
 		dirent = (struct ext2_dir_entry *)(buf + offset);
-		offset += dirent->rec_len;
-		if ((dirent->rec_len < 8) ||
-		    ((dirent->rec_len % 4) != 0) ||
-		    (((dirent->name_len & 0xFF)+8) > dirent->rec_len))
+		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
+			dirent->rec_len : 65536;
+		offset += rec_len;
+		if ((rec_len < 8) ||
+		    ((rec_len % 4) != 0) ||
+		    (((dirent->name_len & 0xFF)+8) > rec_len))
 			return 0;
 	}
 	return (offset == final_offset);
@@ -61,13 +63,13 @@ errcode_t ext2fs_dir_iterate2(ext2_filsys fs,
 {
 	struct		dir_context	ctx;
 	errcode_t	retval;
-	
+
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
 
 	retval = ext2fs_check_directory(fs, dir);
 	if (retval)
 		return retval;
-	
+
 	ctx.dir = dir;
 	ctx.flags = flags;
 	if (block_buf)
@@ -80,7 +82,7 @@ errcode_t ext2fs_dir_iterate2(ext2_filsys fs,
 	ctx.func = func;
 	ctx.priv_data = priv_data;
 	ctx.errcode = 0;
-	retval = ext2fs_block_iterate2(fs, dir, 0, 0,
+	retval = ext2fs_block_iterate2(fs, dir, BLOCK_FLAG_READ_ONLY, 0,
 				       ext2fs_process_dir_block, &ctx);
 	if (!block_buf)
 		ext2fs_free_mem(&ctx.buf);
@@ -108,7 +110,7 @@ static int xlate_func(ext2_ino_t dir EXT2FS_ATTR((unused)),
 	return (*xl->func)(dirent, offset, blocksize, buf, xl->real_private);
 }
 
-extern errcode_t ext2fs_dir_iterate(ext2_filsys fs, 
+extern errcode_t ext2fs_dir_iterate(ext2_filsys fs,
 			      ext2_ino_t dir,
 			      int flags,
 			      char *block_buf,
@@ -120,7 +122,7 @@ extern errcode_t ext2fs_dir_iterate(ext2_filsys fs,
 			      void *priv_data)
 {
 	struct xlate xl;
-	
+
 	xl.real_private = priv_data;
 	xl.func = func;
 
@@ -146,24 +148,26 @@ int ext2fs_process_dir_block(ext2_filsys fs,
 	int		ret = 0;
 	int		changed = 0;
 	int		do_abort = 0;
-	int		entry, size;
+	int		rec_len, entry, size;
 	struct ext2_dir_entry *dirent;
 
 	if (blockcnt < 0)
 		return 0;
 
 	entry = blockcnt ? DIRENT_OTHER_FILE : DIRENT_DOT_FILE;
-	
+
 	ctx->errcode = ext2fs_read_dir_block(fs, *blocknr, ctx->buf);
 	if (ctx->errcode)
 		return BLOCK_ABORT;
 
 	while (offset < fs->blocksize) {
 		dirent = (struct ext2_dir_entry *) (ctx->buf + offset);
-		if (((offset + dirent->rec_len) > fs->blocksize) ||
-		    (dirent->rec_len < 8) ||
-		    ((dirent->rec_len % 4) != 0) ||
-		    (((dirent->name_len & 0xFF)+8) > dirent->rec_len)) {
+		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
+			dirent->rec_len : 65536;
+		if (((offset + rec_len) > fs->blocksize) ||
+		    (rec_len < 8) ||
+		    ((rec_len % 4) != 0) ||
+		    (((dirent->name_len & 0xFF)+8) > rec_len)) {
 			ctx->errcode = EXT2_ET_DIR_CORRUPTED;
 			return BLOCK_ABORT;
 		}
@@ -179,34 +183,37 @@ int ext2fs_process_dir_block(ext2_filsys fs,
 				  ctx->priv_data);
 		if (entry < DIRENT_OTHER_FILE)
 			entry++;
-			
-		if (ret & DIRENT_CHANGED)
+
+		if (ret & DIRENT_CHANGED) {
+			rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
+				dirent->rec_len : 65536;
 			changed++;
+		}
 		if (ret & DIRENT_ABORT) {
 			do_abort++;
 			break;
 		}
-next:		
+next:
  		if (next_real_entry == offset)
-			next_real_entry += dirent->rec_len;
- 
+			next_real_entry += rec_len;
+
  		if (ctx->flags & DIRENT_FLAG_INCLUDE_REMOVED) {
 			size = ((dirent->name_len & 0xFF) + 11) & ~3;
 
-			if (dirent->rec_len != size)  {
+			if (rec_len != size)  {
 				unsigned int final_offset;
 
-				final_offset = offset + dirent->rec_len;
+				final_offset = offset + rec_len;
 				offset += size;
 				while (offset < final_offset &&
-				       !ext2fs_validate_entry(ctx->buf,
+				       !ext2fs_validate_entry(fs, ctx->buf,
 							      offset,
 							      final_offset))
 					offset += 4;
 				continue;
 			}
 		}
-		offset += dirent->rec_len;
+		offset += rec_len;
 	}
 
 	if (changed) {
