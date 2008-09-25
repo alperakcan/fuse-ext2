@@ -1,6 +1,6 @@
 /*
  * io.h --- the I/O manager abstraction
- * 
+ *
  * Copyright (C) 1993, 1994, 1995, 1996 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -26,6 +26,7 @@ ext2_loff_t ext2fs_llseek (int, ext2_loff_t, int);
 
 typedef struct struct_io_manager *io_manager;
 typedef struct struct_io_channel *io_channel;
+typedef struct struct_io_stats *io_stats;
 
 #define CHANNEL_FLAGS_WRITETHROUGH	0x01
 
@@ -50,9 +51,16 @@ struct struct_io_channel {
 				       errcode_t error);
 	int		refcount;
 	int		flags;
-	int		reserved[14];
+	long		reserved[14];
 	void		*private_data;
 	void		*app_data;
+};
+
+struct struct_io_stats {
+	int			num_fields;
+	int			reserved;
+	unsigned long long	bytes_read;
+	unsigned long long	bytes_written;
 };
 
 struct struct_io_manager {
@@ -68,9 +76,14 @@ struct struct_io_manager {
 	errcode_t (*flush)(io_channel channel);
 	errcode_t (*write_byte)(io_channel channel, unsigned long offset,
 				int count, const void *data);
-	errcode_t (*set_option)(io_channel channel, const char *option, 
+	errcode_t (*set_option)(io_channel channel, const char *option,
 				const char *arg);
-	int		reserved[14];
+	errcode_t (*get_stats)(io_channel channel, io_stats *io_stats);
+	errcode_t (*read_blk64)(io_channel channel, unsigned long long block,
+					int count, void *data);
+	errcode_t (*write_blk64)(io_channel channel, unsigned long long block,
+					int count, const void *data);
+	long	reserved[16];
 };
 
 #define IO_FLAG_RW		0x0001
@@ -85,16 +98,27 @@ struct struct_io_manager {
 #define io_channel_write_blk(c,b,n,d)	((c)->manager->write_blk((c),b,n,d))
 #define io_channel_flush(c) 		((c)->manager->flush((c)))
 #define io_channel_bumpcount(c)		((c)->refcount++)
-	
+
 /* io_manager.c */
-extern errcode_t io_channel_set_options(io_channel channel, 
+extern errcode_t io_channel_set_options(io_channel channel,
 					const char *options);
-extern errcode_t io_channel_write_byte(io_channel channel, 
+extern errcode_t io_channel_write_byte(io_channel channel,
 				       unsigned long offset,
 				       int count, const void *data);
+extern errcode_t io_channel_read_blk64(io_channel channel,
+				       unsigned long long block,
+				       int count, void *data);
+extern errcode_t io_channel_write_blk64(io_channel channel,
+					unsigned long long block,
+					int count, const void *data);
 
 /* unix_io.c */
 extern io_manager unix_io_manager;
+
+/* undo_io.c */
+extern io_manager undo_io_manager;
+extern errcode_t set_undo_io_backing_manager(io_manager manager);
+extern errcode_t set_undo_io_backup_file(char *file_name);
 
 /* test_io.c */
 extern io_manager test_io_manager, test_io_backing_manager;
@@ -106,4 +130,4 @@ extern void (*test_io_cb_set_blksize)
 	(int blksize, errcode_t err);
 
 #endif /* _EXT2FS_EXT2_IO_H */
-	
+

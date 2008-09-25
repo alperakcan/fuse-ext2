@@ -139,3 +139,7 @@ typedef signed long long 	__s64;
 #undef __U64_TYPEDEF
 
 #endif /* _*_TYPES_H */
+
+/* These defines are needed for the public ext2fs.h header file */
+#define HAVE_SYS_TYPES_H 1
+#undef WORDS_BIGENDIAN

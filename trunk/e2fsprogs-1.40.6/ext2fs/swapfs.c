@@ -1,6 +1,6 @@
 /*
  * swapfs.c --- swap ext2 filesystem data structures
- * 
+ *
  * Copyright (C) 1995, 1996, 2002 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -8,8 +8,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_UNISTD_H
@@ -22,7 +20,7 @@
 #include "ext2fs.h"
 #include <ext2fs/ext2_ext_attr.h>
 
-#ifdef EXT2FS_ENABLE_SWAPFS
+#ifdef WORDS_BIGENDIAN
 void ext2fs_swap_super(struct ext2_super_block * sb)
 {
   	int i;
@@ -92,6 +90,29 @@ void ext2fs_swap_group_desc(struct ext2_group_desc *gdp)
 	gdp->bg_checksum = ext2fs_swab16(gdp->bg_checksum);
 }
 
+void ext2fs_swap_ext_attr_header(struct ext2_ext_attr_header *to_header,
+				 struct ext2_ext_attr_header *from_header)
+{
+	int n;
+
+	to_header->h_magic    = ext2fs_swab32(from_header->h_magic);
+	to_header->h_blocks   = ext2fs_swab32(from_header->h_blocks);
+	to_header->h_refcount = ext2fs_swab32(from_header->h_refcount);
+	to_header->h_hash     = ext2fs_swab32(from_header->h_hash);
+	for (n = 0; n < 4; n++)
+		to_header->h_reserved[n] =
+			ext2fs_swab32(from_header->h_reserved[n]);
+}
+
+void ext2fs_swap_ext_attr_entry(struct ext2_ext_attr_entry *to_entry,
+				struct ext2_ext_attr_entry *from_entry)
+{
+	to_entry->e_value_offs  = ext2fs_swab16(from_entry->e_value_offs);
+	to_entry->e_value_block = ext2fs_swab32(from_entry->e_value_block);
+	to_entry->e_value_size  = ext2fs_swab32(from_entry->e_value_size);
+	to_entry->e_hash	= ext2fs_swab32(from_entry->e_hash);
+}
+
 void ext2fs_swap_ext_attr(char *to, char *from, int bufsize, int has_header)
 {
 	struct ext2_ext_attr_header *from_header =
@@ -100,32 +121,22 @@ void ext2fs_swap_ext_attr(char *to, char *from, int bufsize, int has_header)
 		(struct ext2_ext_attr_header *)to;
 	struct ext2_ext_attr_entry *from_entry, *to_entry;
 	char *from_end = (char *)from_header + bufsize;
-	int n;
 
 	if (to_header != from_header)
 		memcpy(to_header, from_header, bufsize);
 
-	from_entry = (struct ext2_ext_attr_entry *)from_header;
-	to_entry   = (struct ext2_ext_attr_entry *)to_header;
-
 	if (has_header) {
-		to_header->h_magic    = ext2fs_swab32(from_header->h_magic);
-		to_header->h_blocks   = ext2fs_swab32(from_header->h_blocks);
-		to_header->h_refcount = ext2fs_swab32(from_header->h_refcount);
-		for (n=0; n<4; n++)
-			to_header->h_reserved[n] =
-				ext2fs_swab32(from_header->h_reserved[n]);
+		ext2fs_swap_ext_attr_header(to_header, from_header);
+
 		from_entry = (struct ext2_ext_attr_entry *)(from_header+1);
 		to_entry   = (struct ext2_ext_attr_entry *)(to_header+1);
+	} else {
+		from_entry = (struct ext2_ext_attr_entry *)from_header;
+		to_entry   = (struct ext2_ext_attr_entry *)to_header;
 	}
 
 	while ((char *)from_entry < from_end && *(__u32 *)from_entry) {
-		to_entry->e_value_offs  =	
-			ext2fs_swab16(from_entry->e_value_offs);
-		to_entry->e_value_block =	
-			ext2fs_swab32(from_entry->e_value_block);
-		to_entry->e_value_size  =	
-			ext2fs_swab32(from_entry->e_value_size);
+		ext2fs_swap_ext_attr_entry(to_entry, from_entry);
 		from_entry = EXT2_EXT_ATTR_NEXT(from_entry);
 		to_entry   = EXT2_EXT_ATTR_NEXT(to_entry);
 	}
@@ -135,7 +146,8 @@ void ext2fs_swap_inode_full(ext2_filsys fs, struct ext2_inode_large *t,
 			    struct ext2_inode_large *f, int hostorder,
 			    int bufsize)
 {
-	unsigned i, has_data_blocks = 0, extra_isize = 0;
+	unsigned i, has_data_blocks, extra_isize, attr_magic;
+	int has_extents = 0;
 	int islnk = 0;
 	__u32 *eaf, *eat;
 
@@ -154,15 +166,20 @@ void ext2fs_swap_inode_full(ext2_filsys fs, struct ext2_inode_large *t,
 	t->i_links_count = ext2fs_swab16(f->i_links_count);
 	t->i_file_acl = ext2fs_swab32(f->i_file_acl);
 	if (hostorder)
-		has_data_blocks = ext2fs_inode_data_blocks(fs, 
+		has_data_blocks = ext2fs_inode_data_blocks(fs,
 					   (struct ext2_inode *) f);
 	t->i_blocks = ext2fs_swab32(f->i_blocks);
 	if (!hostorder)
-		has_data_blocks = ext2fs_inode_data_blocks(fs, 
+		has_data_blocks = ext2fs_inode_data_blocks(fs,
 					   (struct ext2_inode *) t);
+	if (hostorder && (f->i_flags & EXT4_EXTENTS_FL))
+		has_extents = 1;
 	t->i_flags = ext2fs_swab32(f->i_flags);
+	if (!hostorder && (t->i_flags & EXT4_EXTENTS_FL))
+		has_extents = 1;
 	t->i_dir_acl = ext2fs_swab32(f->i_dir_acl);
-	if (!islnk || has_data_blocks ) {
+	/* extent data are swapped on access, not here */
+	if (!has_extents && (!islnk || has_data_blocks)) {
 		for (i = 0; i < EXT2_N_BLOCKS; i++)
 			t->i_block[i] = ext2fs_swab32(f->i_block[i]);
 	} else if (t != f) {
@@ -176,9 +193,10 @@ void ext2fs_swap_inode_full(ext2_filsys fs, struct ext2_inode_large *t,
 	case EXT2_OS_LINUX:
 		t->osd1.linux1.l_i_version =
 			ext2fs_swab32(f->osd1.linux1.l_i_version);
-		t->osd2.linux2.l_i_blocks_hi = 
+		t->osd2.linux2.l_i_blocks_hi =
 			ext2fs_swab16(f->osd2.linux2.l_i_blocks_hi);
-		t->osd2.linux2.i_pad1 = ext2fs_swab16(f->osd2.linux2.i_pad1);
+		t->osd2.linux2.l_i_file_acl_high =
+			ext2fs_swab16(f->osd2.linux2.l_i_file_acl_high);
 		t->osd2.linux2.l_i_uid_high =
 		  ext2fs_swab16 (f->osd2.linux2.l_i_uid_high);
 		t->osd2.linux2.l_i_gid_high =
@@ -200,16 +218,7 @@ void ext2fs_swap_inode_full(ext2_filsys fs, struct ext2_inode_large *t,
 		t->osd2.hurd2.h_i_author =
 		  ext2fs_swab32 (f->osd2.hurd2.h_i_author);
 		break;
-	case EXT2_OS_MASIX:
-		t->osd1.masix1.m_i_reserved1 =
-			ext2fs_swab32(f->osd1.masix1.m_i_reserved1);
-		t->osd2.masix2.m_i_frag = f->osd2.masix2.m_i_frag;
-		t->osd2.masix2.m_i_fsize = f->osd2.masix2.m_i_fsize;
-		t->osd2.masix2.m_pad1 = ext2fs_swab16(f->osd2.masix2.m_pad1);
-		t->osd2.masix2.m_i_reserved2[0] =
-			ext2fs_swab32(f->osd2.masix2.m_i_reserved2[0]);
-		t->osd2.masix2.m_i_reserved2[1] =
-			ext2fs_swab32(f->osd2.masix2.m_i_reserved2[1]);
+	default:
 		break;
 	}
 
@@ -234,7 +243,11 @@ void ext2fs_swap_inode_full(ext2_filsys fs, struct ext2_inode_large *t,
 	eaf = (__u32 *) (((char *) f) + sizeof(struct ext2_inode) +
 					extra_isize);
 
-	if (ext2fs_swab32(*eaf) != EXT2_EXT_ATTR_MAGIC)
+	attr_magic = *eaf;
+	if (!hostorder)
+		attr_magic = ext2fs_swab32(attr_magic);
+
+	if (attr_magic != EXT2_EXT_ATTR_MAGIC)
 		return; /* it seems no magic here */
 
 	eat = (__u32 *) (((char *) t) + sizeof(struct ext2_inode) +

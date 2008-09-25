@@ -45,6 +45,7 @@ struct journal_s
 	tid_t			j_transaction_sequence;
 	__u8			j_uuid[16];
 	struct jbd_revoke_table_s *j_revoke;
+	tid_t			j_failed_commit;
 };
 
 #define J_ASSERT(assert)						\

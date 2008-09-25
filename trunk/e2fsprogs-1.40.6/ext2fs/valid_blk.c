@@ -2,15 +2,13 @@
  * valid_blk.c --- does the inode have valid blocks?
  *
  * Copyright 1997 by Theodore Ts'o
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
  * %End-Header%
- * 
+ *
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_UNISTD_H
@@ -35,7 +33,7 @@ int ext2fs_inode_has_valid_blocks(struct ext2_inode *inode)
 	if (!LINUX_S_ISDIR(inode->i_mode) && !LINUX_S_ISREG(inode->i_mode) &&
 	    !LINUX_S_ISLNK(inode->i_mode))
 		return 0;
-	
+
 	/*
 	 * If the symbolic link is a "fast symlink", then the symlink
 	 * target is stored in the block entries.

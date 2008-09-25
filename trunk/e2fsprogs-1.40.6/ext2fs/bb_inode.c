@@ -1,19 +1,17 @@
 /*
  * bb_inode.c --- routines to update the bad block inode.
- * 
+ *
  * WARNING: This routine modifies a lot of state in the filesystem; if
  * this routine returns an error, the bad block inode may be in an
  * inconsistent state.
- * 
+ *
  * Copyright (C) 1994, 1995 Theodore Ts'o.
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -51,7 +49,7 @@ static int clear_bad_block_proc(ext2_filsys fs, blk_t *block_nr,
 				e2_blkcnt_t blockcnt,
 				blk_t ref_block, int ref_offset,
 				void *priv_data);
-	
+
 /*
  * Given a bad blocks bitmap, update the bad blocks inode to reflect
  * the map.
@@ -61,12 +59,12 @@ errcode_t ext2fs_update_bb_inode(ext2_filsys fs, ext2_badblocks_list bb_list)
 	errcode_t			retval;
 	struct set_badblock_record 	rec;
 	struct ext2_inode		inode;
-	
+
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
 
 	if (!fs->block_map)
 		return EXT2_ET_NO_BLOCK_BITMAP;
-	
+
 	rec.bad_block_count = 0;
 	rec.ind_blocks_size = rec.ind_blocks_ptr = 0;
 	rec.max_ind_blocks = 10;
@@ -80,9 +78,9 @@ errcode_t ext2fs_update_bb_inode(ext2_filsys fs, ext2_badblocks_list bb_list)
 		goto cleanup;
 	memset(rec.block_buf, 0, fs->blocksize);
 	rec.err = 0;
-	
+
 	/*
-	 * First clear the old bad blocks (while saving the indirect blocks) 
+	 * First clear the old bad blocks (while saving the indirect blocks)
 	 */
 	retval = ext2fs_block_iterate2(fs, EXT2_BAD_INO,
 				       BLOCK_FLAG_DEPTH_TRAVERSE, 0,
@@ -93,7 +91,7 @@ errcode_t ext2fs_update_bb_inode(ext2_filsys fs, ext2_badblocks_list bb_list)
 		retval = rec.err;
 		goto cleanup;
 	}
-	
+
 	/*
 	 * Now set the bad blocks!
 	 *
@@ -110,32 +108,32 @@ errcode_t ext2fs_update_bb_inode(ext2_filsys fs, ext2_badblocks_list bb_list)
 					       BLOCK_FLAG_APPEND, 0,
 					       set_bad_block_proc, &rec);
 		ext2fs_badblocks_list_iterate_end(rec.bb_iter);
-		if (retval) 
+		if (retval)
 			goto cleanup;
 		if (rec.err) {
 			retval = rec.err;
 			goto cleanup;
 		}
 	}
-	
+
 	/*
 	 * Update the bad block inode's mod time and block count
-	 * field.  
+	 * field.
 	 */
 	retval = ext2fs_read_inode(fs, EXT2_BAD_INO, &inode);
 	if (retval)
 		goto cleanup;
-	
+
 	inode.i_atime = inode.i_mtime = fs->now ? fs->now : time(0);
 	if (!inode.i_ctime)
 		inode.i_ctime = fs->now ? fs->now : time(0);
-	inode.i_blocks = rec.bad_block_count * (fs->blocksize / 512);
+	ext2fs_iblk_set(fs, &inode, rec.bad_block_count);
 	inode.i_size = rec.bad_block_count * fs->blocksize;
 
 	retval = ext2fs_write_inode(fs, EXT2_BAD_INO, &inode);
 	if (retval)
 		goto cleanup;
-	
+
 cleanup:
 	ext2fs_free_mem(&rec.ind_blocks);
 	ext2fs_free_mem(&rec.block_buf);
@@ -178,7 +176,7 @@ static int clear_bad_block_proc(ext2_filsys fs, blk_t *block_nr,
 		if (rec->ind_blocks_size >= rec->max_ind_blocks) {
 			old_size = rec->max_ind_blocks * sizeof(blk_t);
 			rec->max_ind_blocks += 10;
-			retval = ext2fs_resize_mem(old_size, 
+			retval = ext2fs_resize_mem(old_size,
 				   rec->max_ind_blocks * sizeof(blk_t),
 				   &rec->ind_blocks);
 			if (retval) {
@@ -194,12 +192,12 @@ static int clear_bad_block_proc(ext2_filsys fs, blk_t *block_nr,
 	 * Mark the block as unused, and update accounting information
 	 */
 	ext2fs_block_alloc_stats(fs, *block_nr, -1);
-	
+
 	*block_nr = 0;
 	return BLOCK_CHANGED;
 }
 
-	
+
 /*
  * Helper function for update_bb_inode()
  *
@@ -252,12 +250,12 @@ static int set_bad_block_proc(ext2_filsys fs, blk_t *block_nr,
 			return BLOCK_ABORT;
 		}
 	}
-	
+
 	/*
 	 * Update block counts
 	 */
 	ext2fs_block_alloc_stats(fs, blk, +1);
-	
+
 	*block_nr = blk;
 	return BLOCK_CHANGED;
 }

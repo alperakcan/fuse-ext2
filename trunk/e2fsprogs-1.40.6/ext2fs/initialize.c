@@ -1,16 +1,14 @@
 /*
  * initialize.c --- initialize a filesystem handle given superblock
  * 	parameters.  Used by mke2fs when initializing a filesystem.
- * 
+ *
  * Copyright (C) 1994, 1995, 1996 Theodore Ts'o.
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -46,13 +44,13 @@
 #endif /* defined(__FreeBSD__) && defined(EXT2_OS_FREEBSD) */
 #endif /* defined(__GNU__)     && defined(EXT2_OS_HURD) */
 #endif /* defined(__linux__)   && defined(EXT2_OS_LINUX) */
-	
+
 /*
  * Note we override the kernel include file's idea of what the default
  * check interval (never) should be.  It's a good idea to check at
  * least *occasionally*, specially since servers will never rarely get
  * to reboot, since Linux is so robust these days.  :-)
- * 
+ *
  * 180 days (six months) seems like a good value.
  */
 #ifdef EXT2_DFL_CHECKINTERVAL
@@ -69,7 +67,7 @@ static unsigned int calc_reserved_gdt_blocks(ext2_filsys fs)
 {
 	struct ext2_super_block *sb = fs->super;
 	unsigned long bpg = sb->s_blocks_per_group;
-	unsigned int gdpb = fs->blocksize / sizeof(struct ext2_group_desc);
+	unsigned int gdpb = EXT2_DESC_PER_BLOCK(sb);
 	unsigned long max_blocks = 0xffffffff;
 	unsigned long rsv_groups;
 	unsigned int rsv_gdb;
@@ -105,17 +103,18 @@ errcode_t ext2fs_initialize(const char *name, int flags,
 	dgrp_t		i;
 	blk_t		numblocks;
 	int		rsv_gdt;
+	int		csum_flag;
 	int		io_flags;
-	char		*buf;
+	char		*buf = 0;
 	char		c;
 
 	if (!param || !param->s_blocks_count)
 		return EXT2_ET_INVALID_ARGUMENT;
-	
+
 	retval = ext2fs_get_mem(sizeof(struct struct_ext2_filsys), &fs);
 	if (retval)
 		return retval;
-	
+
 	memset(fs, 0, sizeof(struct struct_ext2_filsys));
 	fs->magic = EXT2_ET_MAGIC_EXT2FS_FILSYS;
 	fs->flags = flags | EXT2_FLAG_RW;
@@ -158,6 +157,9 @@ errcode_t ext2fs_initialize(const char *name, int flags,
 	set_field(s_feature_incompat, 0);
 	set_field(s_feature_ro_compat, 0);
 	set_field(s_first_meta_bg, 0);
+	set_field(s_raid_stride, 0);		/* default stride size: 0 */
+	set_field(s_raid_stripe_width, 0);	/* default stripe width: 0 */
+	set_field(s_log_groups_per_flex, 0);
 	set_field(s_flags, 0);
 	if (super->s_feature_incompat & ~EXT2_LIB_FEATURE_INCOMPAT_SUPP) {
 		retval = EXT2_ET_UNSUPP_FEATURE;
@@ -172,6 +174,15 @@ errcode_t ext2fs_initialize(const char *name, int flags,
 	if (super->s_rev_level >= EXT2_DYNAMIC_REV) {
 		set_field(s_first_ino, EXT2_GOOD_OLD_FIRST_INO);
 		set_field(s_inode_size, EXT2_GOOD_OLD_INODE_SIZE);
+		if (super->s_inode_size >= sizeof(struct ext2_inode_large)) {
+			int extra_isize = sizeof(struct ext2_inode_large) -
+				EXT2_GOOD_OLD_INODE_SIZE;
+			set_field(s_min_extra_isize, extra_isize);
+			set_field(s_want_extra_isize, extra_isize);
+		}
+	} else {
+		super->s_first_ino = EXT2_GOOD_OLD_FIRST_INO;
+		super->s_inode_size = EXT2_GOOD_OLD_INODE_SIZE;
 	}
 
 	set_field(s_checkinterval, EXT2_DFL_CHECKINTERVAL);
@@ -188,7 +199,7 @@ errcode_t ext2fs_initialize(const char *name, int flags,
 	if (super->s_blocks_per_group > EXT2_MAX_BLOCKS_PER_GROUP(super))
 		super->s_blocks_per_group = EXT2_MAX_BLOCKS_PER_GROUP(super);
 	super->s_frags_per_group = super->s_blocks_per_group * frags_per_block;
-	
+
 	super->s_blocks_count = param->s_blocks_count;
 	super->s_r_blocks_count = param->s_r_blocks_count;
 	if (super->s_r_blocks_count >= param->s_blocks_count) {
@@ -227,7 +238,7 @@ retry:
 	 */
 	if (super->s_inodes_count < EXT2_FIRST_INODE(super)+1)
 		super->s_inodes_count = EXT2_FIRST_INODE(super)+1;
-	
+
 	/*
 	 * There should be at least as many inodes as the user
 	 * requested.  Figure out how many inodes per group that
@@ -243,8 +254,10 @@ retry:
 			super->s_frags_per_group = super->s_blocks_per_group *
 				frags_per_block;
 			goto retry;
-		} else
-			return EXT2_ET_TOO_MANY_INODES;
+		} else {
+			retval = EXT2_ET_TOO_MANY_INODES;
+			goto cleanup;
+		}
 	}
 
 	if (ipg > (unsigned) EXT2_MAX_INODES_PER_GROUP(super))
@@ -310,8 +323,10 @@ ipg_retry:
 			  fs->desc_blocks + super->s_reserved_gdt_blocks);
 
 	/* This can only happen if the user requested too many inodes */
-	if (overhead > super->s_blocks_per_group)
-		return EXT2_ET_TOO_MANY_INODES;
+	if (overhead > super->s_blocks_per_group) {
+		retval = EXT2_ET_TOO_MANY_INODES;
+		goto cleanup;
+	}
 
 	/*
 	 * See if the last group is big enough to support the
@@ -325,8 +340,10 @@ ipg_retry:
 		overhead += 1 + fs->desc_blocks + super->s_reserved_gdt_blocks;
 	rem = ((super->s_blocks_count - super->s_first_data_block) %
 	       super->s_blocks_per_group);
-	if ((fs->group_desc_count == 1) && rem && (rem < overhead))
-		return EXT2_ET_TOOSMALL;
+	if ((fs->group_desc_count == 1) && rem && (rem < overhead)) {
+		retval = EXT2_ET_TOOSMALL;
+		goto cleanup;
+	}
 	if (rem && (rem < overhead+50)) {
 		super->s_blocks_count -= rem;
 		goto retry;
@@ -341,13 +358,15 @@ ipg_retry:
 	retval = ext2fs_get_mem(strlen(fs->device_name) + 80, &buf);
 	if (retval)
 		goto cleanup;
-	
-	sprintf(buf, "block bitmap for %s", fs->device_name);
+
+	strcpy(buf, "block bitmap for ");
+	strcat(buf, fs->device_name);
 	retval = ext2fs_allocate_block_bitmap(fs, buf, &fs->block_map);
 	if (retval)
 		goto cleanup;
-	
-	sprintf(buf, "inode bitmap for %s", fs->device_name);
+
+	strcpy(buf, "inode bitmap for ");
+	strcat(buf, fs->device_name);
 	retval = ext2fs_allocate_inode_bitmap(fs, buf, &fs->inode_map);
 	if (retval)
 		goto cleanup;
@@ -367,18 +386,41 @@ ipg_retry:
 	 * Note that although the block bitmap, inode bitmap, and
 	 * inode table have not been allocated (and in fact won't be
 	 * by this routine), they are accounted for nevertheless.
+	 *
+	 * If FLEX_BG meta-data grouping is used, only account for the
+	 * superblock and group descriptors (the inode tables and
+	 * bitmaps will be accounted for when allocated).
 	 */
 	super->s_free_blocks_count = 0;
+	csum_flag = EXT2_HAS_RO_COMPAT_FEATURE(fs->super,
+					       EXT4_FEATURE_RO_COMPAT_GDT_CSUM);
 	for (i = 0; i < fs->group_desc_count; i++) {
+		/*
+		 * Don't set the BLOCK_UNINIT group for the last group
+		 * because the block bitmap needs to be padded.
+		 */
+		if (csum_flag) {
+			if (i != fs->group_desc_count - 1)
+				fs->group_desc[i].bg_flags |=
+					EXT2_BG_BLOCK_UNINIT;
+			fs->group_desc[i].bg_flags |= EXT2_BG_INODE_UNINIT;
+			numblocks = super->s_inodes_per_group;
+			if (i == 0)
+				numblocks -= super->s_first_ino;
+			fs->group_desc[i].bg_itable_unused = numblocks;
+		}
 		numblocks = ext2fs_reserve_super_and_bgd(fs, i, fs->block_map);
+		if (fs->super->s_log_groups_per_flex)
+			numblocks += 2 + fs->inode_blocks_per_group;
 
 		super->s_free_blocks_count += numblocks;
 		fs->group_desc[i].bg_free_blocks_count = numblocks;
 		fs->group_desc[i].bg_free_inodes_count =
 			fs->super->s_inodes_per_group;
 		fs->group_desc[i].bg_used_dirs_count = 0;
+		ext2fs_group_desc_csum_set(fs, i);
 	}
-	
+
 	c = (char) 255;
 	if (((int) c) == -1) {
 		super->s_flags |= EXT2_FLAGS_SIGNED_HASH;
@@ -389,12 +431,14 @@ ipg_retry:
 	ext2fs_mark_super_dirty(fs);
 	ext2fs_mark_bb_dirty(fs);
 	ext2fs_mark_ib_dirty(fs);
-	
+
 	io_channel_set_blksize(fs->io, fs->blocksize);
 
 	*ret_fs = fs;
 	return 0;
 cleanup:
+	if (buf)
+		free(buf);
 	ext2fs_free(fs);
 	return retval;
 }

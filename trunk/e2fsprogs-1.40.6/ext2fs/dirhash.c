@@ -2,7 +2,7 @@
  * dirhash.c -- Calculate the hash of a directory entry
  *
  * Copyright (c) 2001  Daniel Phillips
- * 
+ *
  * Copyright (c) 2002 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -10,8 +10,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -27,7 +25,7 @@
  * (see Applied Cryptography, 2nd edition, p448).
  *
  * Jeremy Fitzhardinge <jeremy@zip.com.au> 1998
- * 
+ *
  * This code is made available under the terms of the GPL
  */
 #define DELTA 0x9E3779B9
@@ -39,10 +37,10 @@ static void TEA_transform(__u32 buf[4], __u32 const in[])
 	__u32	a = in[0], b = in[1], c = in[2], d = in[3];
 	int	n = 16;
 
-	do {							
-		sum += DELTA;					
-		b0 += ((b1 << 4)+a) ^ (b1+sum) ^ ((b1 >> 5)+b);	
-		b1 += ((b0 << 4)+c) ^ (b0+sum) ^ ((b0 >> 5)+d);	
+	do {
+		sum += DELTA;
+		b0 += ((b1 << 4)+a) ^ (b1+sum) ^ ((b1 >> 5)+b);
+		b1 += ((b0 << 4)+c) ^ (b0+sum) ^ ((b0 >> 5)+d);
 	} while(--n);
 
 	buf[0] += b0;
@@ -132,7 +130,7 @@ static ext2_dirhash_t dx_hack_hash (const char *name, int len,
 		else
 			c = (int) *scp++;
 		hash = hash1 + (hash0 ^ (c * 7152373));
-		
+
 		if (hash & 0x80000000) hash -= 0x7fffffff;
 		hash1 = hash0;
 		hash0 = hash;
@@ -179,11 +177,11 @@ static void str2hashbuf(const char *msg, int len, __u32 *buf, int num,
  * Returns the hash of a filename.  If len is 0 and name is NULL, then
  * this function can be used to test whether or not a hash version is
  * supported.
- * 
+ *
  * The seed is an 4 longword (32 bits) "secret" which can be used to
  * uniquify a hash.  If the seed is all zero's, then some default seed
  * may be used.
- * 
+ *
  * A particular hash version specifies whether or not the seed is
  * represented, and whether or not the returned hash is 32 bits or 64
  * bits.  32 bit hashes will return 0 for the minor hash.
@@ -215,7 +213,7 @@ errcode_t ext2fs_dirhash(int version, const char *name, int len,
 		if (i < 4)
 			memcpy(buf, seed, sizeof(buf));
 	}
-		
+
 	switch (version) {
 	case EXT2_HASH_LEGACY_UNSIGNED:
 		unsigned_flag++;

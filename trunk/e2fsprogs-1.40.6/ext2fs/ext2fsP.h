@@ -1,6 +1,6 @@
 /*
  * ext2fsP.h --- private header file for ext2 library
- * 
+ *
  * Copyright (C) 1997 Theodore Ts'o.
  *
  * %Begin-Header%

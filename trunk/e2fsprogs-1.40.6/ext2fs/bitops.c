@@ -1,7 +1,7 @@
 /*
  * bitops.c --- Bitmap frobbing code.  See bitops.h for the inlined
  * 	routines.
- * 
+ *
  * Copyright (C) 1993, 1994, 1995, 1996 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -9,8 +9,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_SYS_TYPES_H
@@ -78,16 +76,3 @@ void ext2fs_warn_bitmap(errcode_t errcode, unsigned long arg,
 		com_err(0, errcode, "#%lu", arg);
 #endif
 }
-
-void ext2fs_warn_bitmap2(ext2fs_generic_bitmap bitmap,
-			    int code, unsigned long arg)
-{
-#ifndef OMIT_COM_ERR
-	if (bitmap->description)
-		com_err(0, bitmap->base_error_code+code,
-			"#%lu for %s", arg, bitmap->description);
-	else
-		com_err(0, bitmap->base_error_code + code, "#%lu", arg);
-#endif
-}
-

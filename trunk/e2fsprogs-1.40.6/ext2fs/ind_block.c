@@ -1,7 +1,7 @@
 /*
  * ind_block.c --- indirect block I/O routines
- * 
- * Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 
+ *
+ * Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
  * 	2001, 2002, 2003, 2004, 2005 by  Theodore Ts'o.
  *
  * %Begin-Header%
@@ -9,8 +9,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -24,9 +22,11 @@
 errcode_t ext2fs_read_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 {
 	errcode_t	retval;
+#ifdef WORDS_BIGENDIAN
 	blk_t		*block_nr;
 	int		i;
 	int		limit = fs->blocksize >> 2;
+#endif
 
 	if ((fs->flags & EXT2_FLAG_IMAGE_FILE) &&
 	    (fs->io != fs->image_io))
@@ -36,31 +36,29 @@ errcode_t ext2fs_read_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 		if (retval)
 			return retval;
 	}
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & (EXT2_FLAG_SWAP_BYTES | EXT2_FLAG_SWAP_BYTES_READ)) {
-		block_nr = (blk_t *) buf;
-		for (i = 0; i < limit; i++, block_nr++)
-			*block_nr = ext2fs_swab32(*block_nr);
-	}
+#ifdef WORDS_BIGENDIAN
+	block_nr = (blk_t *) buf;
+	for (i = 0; i < limit; i++, block_nr++)
+		*block_nr = ext2fs_swab32(*block_nr);
 #endif
 	return 0;
 }
 
 errcode_t ext2fs_write_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 {
+#ifdef WORDS_BIGENDIAN
 	blk_t		*block_nr;
 	int		i;
 	int		limit = fs->blocksize >> 2;
+#endif
 
 	if (fs->flags & EXT2_FLAG_IMAGE_FILE)
 		return 0;
 
-#ifdef EXT2FS_ENABLE_SWAPFS
-	if (fs->flags & (EXT2_FLAG_SWAP_BYTES | EXT2_FLAG_SWAP_BYTES_WRITE)) {
-		block_nr = (blk_t *) buf;
-		for (i = 0; i < limit; i++, block_nr++)
-			*block_nr = ext2fs_swab32(*block_nr);
-	}
+#ifdef WORDS_BIGENDIAN
+	block_nr = (blk_t *) buf;
+	for (i = 0; i < limit; i++, block_nr++)
+		*block_nr = ext2fs_swab32(*block_nr);
 #endif
 	return io_channel_write_blk(fs->io, blk, 1, buf);
 }

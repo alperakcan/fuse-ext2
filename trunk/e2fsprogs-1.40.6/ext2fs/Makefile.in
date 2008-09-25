@@ -58,19 +58,21 @@ am_libext2fs_a_OBJECTS = libext2fs_a-alloc.$(OBJEXT) \
 	libext2fs_a-bb_compat.$(OBJEXT) libext2fs_a-bb_inode.$(OBJEXT) \
 	libext2fs_a-bitmaps.$(OBJEXT) libext2fs_a-bitops.$(OBJEXT) \
 	libext2fs_a-block.$(OBJEXT) libext2fs_a-bmap.$(OBJEXT) \
+	libext2fs_a-crc16.$(OBJEXT) libext2fs_a-csum.$(OBJEXT) \
 	libext2fs_a-check_desc.$(OBJEXT) libext2fs_a-closefs.$(OBJEXT) \
-	libext2fs_a-cmp_bitmaps.$(OBJEXT) libext2fs_a-dblist.$(OBJEXT) \
-	libext2fs_a-dblist_dir.$(OBJEXT) \
+	libext2fs_a-dblist.$(OBJEXT) libext2fs_a-dblist_dir.$(OBJEXT) \
 	libext2fs_a-dir_iterate.$(OBJEXT) \
 	libext2fs_a-dirblock.$(OBJEXT) libext2fs_a-dirhash.$(OBJEXT) \
 	libext2fs_a-dupfs.$(OBJEXT) libext2fs_a-expanddir.$(OBJEXT) \
 	libext2fs_a-ext2_err.$(OBJEXT) libext2fs_a-ext_attr.$(OBJEXT) \
-	libext2fs_a-fileio.$(OBJEXT) libext2fs_a-finddev.$(OBJEXT) \
-	libext2fs_a-freefs.$(OBJEXT) libext2fs_a-gen_bitmap.$(OBJEXT) \
+	libext2fs_a-extent.$(OBJEXT) libext2fs_a-fileio.$(OBJEXT) \
+	libext2fs_a-finddev.$(OBJEXT) libext2fs_a-freefs.$(OBJEXT) \
+	libext2fs_a-gen_bitmap.$(OBJEXT) \
 	libext2fs_a-get_pathname.$(OBJEXT) \
 	libext2fs_a-getsectsize.$(OBJEXT) \
-	libext2fs_a-getsize.$(OBJEXT) libext2fs_a-icount.$(OBJEXT) \
-	libext2fs_a-imager.$(OBJEXT) libext2fs_a-ind_block.$(OBJEXT) \
+	libext2fs_a-getsize.$(OBJEXT) libext2fs_a-i_block.$(OBJEXT) \
+	libext2fs_a-icount.$(OBJEXT) libext2fs_a-imager.$(OBJEXT) \
+	libext2fs_a-ind_block.$(OBJEXT) \
 	libext2fs_a-initialize.$(OBJEXT) libext2fs_a-inline.$(OBJEXT) \
 	libext2fs_a-inode.$(OBJEXT) libext2fs_a-inode_io.$(OBJEXT) \
 	libext2fs_a-io_manager.$(OBJEXT) \
@@ -81,11 +83,11 @@ am_libext2fs_a_OBJECTS = libext2fs_a-alloc.$(OBJEXT) \
 	libext2fs_a-newdir.$(OBJEXT) libext2fs_a-openfs.$(OBJEXT) \
 	libext2fs_a-read_bb.$(OBJEXT) \
 	libext2fs_a-read_bb_file.$(OBJEXT) \
-	libext2fs_a-res_gdt.$(OBJEXT) libext2fs_a-rs_bitmap.$(OBJEXT) \
-	libext2fs_a-rw_bitmaps.$(OBJEXT) libext2fs_a-swapfs.$(OBJEXT) \
-	libext2fs_a-tdb.$(OBJEXT) libext2fs_a-test_io.$(OBJEXT) \
-	libext2fs_a-unix_io.$(OBJEXT) libext2fs_a-unlink.$(OBJEXT) \
-	libext2fs_a-valid_blk.$(OBJEXT) libext2fs_a-version.$(OBJEXT)
+	libext2fs_a-res_gdt.$(OBJEXT) libext2fs_a-rw_bitmaps.$(OBJEXT) \
+	libext2fs_a-swapfs.$(OBJEXT) libext2fs_a-tdb.$(OBJEXT) \
+	libext2fs_a-test_io.$(OBJEXT) libext2fs_a-unix_io.$(OBJEXT) \
+	libext2fs_a-unlink.$(OBJEXT) libext2fs_a-valid_blk.$(OBJEXT) \
+	libext2fs_a-version.$(OBJEXT)
 libext2fs_a_OBJECTS = $(am_libext2fs_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -219,65 +221,67 @@ noinst_LIBRARIES = \
 	libext2fs.a
 
 libext2fs_a_SOURCES = \
-	alloc.c				\
-	alloc_sb.c			\
+	alloc.c			\
+	alloc_sb.c		\
 	alloc_stats.c		\
 	alloc_tables.c		\
-	badblocks.c			\
-	bb_compat.c			\
-	bb_inode.c			\
-	bitmaps.c			\
-	bitops.c			\
-	block.c				\
-	bmap.c				\
+	badblocks.c		\
+	bb_compat.c		\
+	bb_inode.c		\
+	bitmaps.c		\
+	bitops.c		\
+	block.c			\
+	bmap.c			\
+	crc16.c			\
+	csum.c			\
 	check_desc.c		\
-	closefs.c			\
-	cmp_bitmaps.c		\
-	dblist.c			\
+	closefs.c		\
+	dblist.c		\
 	dblist_dir.c		\
 	dir_iterate.c		\
-	dirblock.c			\
-	dirhash.c			\
-	dupfs.c				\
-	expanddir.c			\
-	ext2_err.c			\
-	ext_attr.c			\
-	fileio.c			\
-	finddev.c			\
-	freefs.c			\
+	dirblock.c		\
+	dirhash.c		\
+	dupfs.c			\
+	expanddir.c		\
+	ext2_err.c		\
+	ext_attr.c		\
+	extent.c		\
+	fileio.c		\
+	finddev.c		\
+	freefs.c		\
 	gen_bitmap.c		\
 	get_pathname.c		\
 	getsectsize.c		\
-	getsize.c			\
-	icount.c			\
-	imager.c			\
-	ind_block.c			\
+	getsize.c		\
+	i_block.c		\
+	icount.c		\
+	imager.c		\
+	ind_block.c		\
 	initialize.c		\
-	inline.c			\
-	inode.c				\
-	inode_io.c			\
+	inline.c		\
+	inode.c			\
+	inode_io.c		\
 	io_manager.c		\
-	ismounted.c			\
-	link.c				\
-	llseek.c			\
-	lookup.c			\
-	mkdir.c				\
-	mkjournal.c			\
-	namei.c				\
-	native.c			\
-	newdir.c			\
-	openfs.c			\
-	read_bb.c			\
+	ismounted.c		\
+	link.c			\
+	llseek.c		\
+	lookup.c		\
+	mkdir.c			\
+	mkjournal.c		\
+	namei.c			\
+	native.c		\
+	newdir.c		\
+	openfs.c		\
+	read_bb.c		\
 	read_bb_file.c		\
-	res_gdt.c			\
-	rs_bitmap.c			\
+	res_gdt.c		\
 	rw_bitmaps.c		\
-	swapfs.c			\
-	tdb.c				\
-	test_io.c			\
-	unix_io.c			\
-	unlink.c			\
-	valid_blk.c			\
+	swapfs.c		\
+	tdb.c			\
+	test_io.c		\
+	unix_io.c		\
+	unlink.c		\
+	valid_blk.c		\
 	version.c
 
 libext2fs_a_CFLAGS = \
@@ -344,7 +348,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-bmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-check_desc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-closefs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-cmp_bitmaps.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-crc16.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-csum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-dblist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-dblist_dir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-dir_iterate.Po@am__quote@
@@ -354,6 +359,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-expanddir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-ext2_err.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-ext_attr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-extent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-fileio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-finddev.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-freefs.Po@am__quote@
@@ -361,6 +367,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-get_pathname.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-getsectsize.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-getsize.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-i_block.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-icount.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-imager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-ind_block.Po@am__quote@
@@ -382,7 +389,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-read_bb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-read_bb_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-res_gdt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-rs_bitmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-rw_bitmaps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-swapfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libext2fs_a-tdb.Po@am__quote@
@@ -567,6 +573,34 @@ libext2fs_a-bmap.obj: bmap.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-bmap.obj `if test -f 'bmap.c'; then $(CYGPATH_W) 'bmap.c'; else $(CYGPATH_W) '$(srcdir)/bmap.c'; fi`
 
+libext2fs_a-crc16.o: crc16.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-crc16.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-crc16.Tpo" -c -o libext2fs_a-crc16.o `test -f 'crc16.c' || echo '$(srcdir)/'`crc16.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-crc16.Tpo" "$(DEPDIR)/libext2fs_a-crc16.Po"; else rm -f "$(DEPDIR)/libext2fs_a-crc16.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='crc16.c' object='libext2fs_a-crc16.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-crc16.o `test -f 'crc16.c' || echo '$(srcdir)/'`crc16.c
+
+libext2fs_a-crc16.obj: crc16.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-crc16.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-crc16.Tpo" -c -o libext2fs_a-crc16.obj `if test -f 'crc16.c'; then $(CYGPATH_W) 'crc16.c'; else $(CYGPATH_W) '$(srcdir)/crc16.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-crc16.Tpo" "$(DEPDIR)/libext2fs_a-crc16.Po"; else rm -f "$(DEPDIR)/libext2fs_a-crc16.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='crc16.c' object='libext2fs_a-crc16.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-crc16.obj `if test -f 'crc16.c'; then $(CYGPATH_W) 'crc16.c'; else $(CYGPATH_W) '$(srcdir)/crc16.c'; fi`
+
+libext2fs_a-csum.o: csum.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-csum.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-csum.Tpo" -c -o libext2fs_a-csum.o `test -f 'csum.c' || echo '$(srcdir)/'`csum.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-csum.Tpo" "$(DEPDIR)/libext2fs_a-csum.Po"; else rm -f "$(DEPDIR)/libext2fs_a-csum.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='csum.c' object='libext2fs_a-csum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-csum.o `test -f 'csum.c' || echo '$(srcdir)/'`csum.c
+
+libext2fs_a-csum.obj: csum.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-csum.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-csum.Tpo" -c -o libext2fs_a-csum.obj `if test -f 'csum.c'; then $(CYGPATH_W) 'csum.c'; else $(CYGPATH_W) '$(srcdir)/csum.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-csum.Tpo" "$(DEPDIR)/libext2fs_a-csum.Po"; else rm -f "$(DEPDIR)/libext2fs_a-csum.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='csum.c' object='libext2fs_a-csum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-csum.obj `if test -f 'csum.c'; then $(CYGPATH_W) 'csum.c'; else $(CYGPATH_W) '$(srcdir)/csum.c'; fi`
+
 libext2fs_a-check_desc.o: check_desc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-check_desc.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-check_desc.Tpo" -c -o libext2fs_a-check_desc.o `test -f 'check_desc.c' || echo '$(srcdir)/'`check_desc.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-check_desc.Tpo" "$(DEPDIR)/libext2fs_a-check_desc.Po"; else rm -f "$(DEPDIR)/libext2fs_a-check_desc.Tpo"; exit 1; fi
@@ -594,20 +628,6 @@ libext2fs_a-closefs.obj: closefs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='closefs.c' object='libext2fs_a-closefs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-closefs.obj `if test -f 'closefs.c'; then $(CYGPATH_W) 'closefs.c'; else $(CYGPATH_W) '$(srcdir)/closefs.c'; fi`
-
-libext2fs_a-cmp_bitmaps.o: cmp_bitmaps.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-cmp_bitmaps.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo" -c -o libext2fs_a-cmp_bitmaps.o `test -f 'cmp_bitmaps.c' || echo '$(srcdir)/'`cmp_bitmaps.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo" "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Po"; else rm -f "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cmp_bitmaps.c' object='libext2fs_a-cmp_bitmaps.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-cmp_bitmaps.o `test -f 'cmp_bitmaps.c' || echo '$(srcdir)/'`cmp_bitmaps.c
-
-libext2fs_a-cmp_bitmaps.obj: cmp_bitmaps.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-cmp_bitmaps.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo" -c -o libext2fs_a-cmp_bitmaps.obj `if test -f 'cmp_bitmaps.c'; then $(CYGPATH_W) 'cmp_bitmaps.c'; else $(CYGPATH_W) '$(srcdir)/cmp_bitmaps.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo" "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Po"; else rm -f "$(DEPDIR)/libext2fs_a-cmp_bitmaps.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cmp_bitmaps.c' object='libext2fs_a-cmp_bitmaps.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-cmp_bitmaps.obj `if test -f 'cmp_bitmaps.c'; then $(CYGPATH_W) 'cmp_bitmaps.c'; else $(CYGPATH_W) '$(srcdir)/cmp_bitmaps.c'; fi`
 
 libext2fs_a-dblist.o: dblist.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-dblist.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-dblist.Tpo" -c -o libext2fs_a-dblist.o `test -f 'dblist.c' || echo '$(srcdir)/'`dblist.c; \
@@ -735,6 +755,20 @@ libext2fs_a-ext_attr.obj: ext_attr.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-ext_attr.obj `if test -f 'ext_attr.c'; then $(CYGPATH_W) 'ext_attr.c'; else $(CYGPATH_W) '$(srcdir)/ext_attr.c'; fi`
 
+libext2fs_a-extent.o: extent.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-extent.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-extent.Tpo" -c -o libext2fs_a-extent.o `test -f 'extent.c' || echo '$(srcdir)/'`extent.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-extent.Tpo" "$(DEPDIR)/libext2fs_a-extent.Po"; else rm -f "$(DEPDIR)/libext2fs_a-extent.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='extent.c' object='libext2fs_a-extent.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-extent.o `test -f 'extent.c' || echo '$(srcdir)/'`extent.c
+
+libext2fs_a-extent.obj: extent.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-extent.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-extent.Tpo" -c -o libext2fs_a-extent.obj `if test -f 'extent.c'; then $(CYGPATH_W) 'extent.c'; else $(CYGPATH_W) '$(srcdir)/extent.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-extent.Tpo" "$(DEPDIR)/libext2fs_a-extent.Po"; else rm -f "$(DEPDIR)/libext2fs_a-extent.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='extent.c' object='libext2fs_a-extent.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-extent.obj `if test -f 'extent.c'; then $(CYGPATH_W) 'extent.c'; else $(CYGPATH_W) '$(srcdir)/extent.c'; fi`
+
 libext2fs_a-fileio.o: fileio.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-fileio.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-fileio.Tpo" -c -o libext2fs_a-fileio.o `test -f 'fileio.c' || echo '$(srcdir)/'`fileio.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-fileio.Tpo" "$(DEPDIR)/libext2fs_a-fileio.Po"; else rm -f "$(DEPDIR)/libext2fs_a-fileio.Tpo"; exit 1; fi
@@ -832,6 +866,20 @@ libext2fs_a-getsize.obj: getsize.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getsize.c' object='libext2fs_a-getsize.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-getsize.obj `if test -f 'getsize.c'; then $(CYGPATH_W) 'getsize.c'; else $(CYGPATH_W) '$(srcdir)/getsize.c'; fi`
+
+libext2fs_a-i_block.o: i_block.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-i_block.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-i_block.Tpo" -c -o libext2fs_a-i_block.o `test -f 'i_block.c' || echo '$(srcdir)/'`i_block.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-i_block.Tpo" "$(DEPDIR)/libext2fs_a-i_block.Po"; else rm -f "$(DEPDIR)/libext2fs_a-i_block.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='i_block.c' object='libext2fs_a-i_block.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-i_block.o `test -f 'i_block.c' || echo '$(srcdir)/'`i_block.c
+
+libext2fs_a-i_block.obj: i_block.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-i_block.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-i_block.Tpo" -c -o libext2fs_a-i_block.obj `if test -f 'i_block.c'; then $(CYGPATH_W) 'i_block.c'; else $(CYGPATH_W) '$(srcdir)/i_block.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-i_block.Tpo" "$(DEPDIR)/libext2fs_a-i_block.Po"; else rm -f "$(DEPDIR)/libext2fs_a-i_block.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='i_block.c' object='libext2fs_a-i_block.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-i_block.obj `if test -f 'i_block.c'; then $(CYGPATH_W) 'i_block.c'; else $(CYGPATH_W) '$(srcdir)/i_block.c'; fi`
 
 libext2fs_a-icount.o: icount.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-icount.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-icount.Tpo" -c -o libext2fs_a-icount.o `test -f 'icount.c' || echo '$(srcdir)/'`icount.c; \
@@ -1126,20 +1174,6 @@ libext2fs_a-res_gdt.obj: res_gdt.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='res_gdt.c' object='libext2fs_a-res_gdt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-res_gdt.obj `if test -f 'res_gdt.c'; then $(CYGPATH_W) 'res_gdt.c'; else $(CYGPATH_W) '$(srcdir)/res_gdt.c'; fi`
-
-libext2fs_a-rs_bitmap.o: rs_bitmap.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-rs_bitmap.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo" -c -o libext2fs_a-rs_bitmap.o `test -f 'rs_bitmap.c' || echo '$(srcdir)/'`rs_bitmap.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo" "$(DEPDIR)/libext2fs_a-rs_bitmap.Po"; else rm -f "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rs_bitmap.c' object='libext2fs_a-rs_bitmap.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-rs_bitmap.o `test -f 'rs_bitmap.c' || echo '$(srcdir)/'`rs_bitmap.c
-
-libext2fs_a-rs_bitmap.obj: rs_bitmap.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-rs_bitmap.obj -MD -MP -MF "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo" -c -o libext2fs_a-rs_bitmap.obj `if test -f 'rs_bitmap.c'; then $(CYGPATH_W) 'rs_bitmap.c'; else $(CYGPATH_W) '$(srcdir)/rs_bitmap.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo" "$(DEPDIR)/libext2fs_a-rs_bitmap.Po"; else rm -f "$(DEPDIR)/libext2fs_a-rs_bitmap.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rs_bitmap.c' object='libext2fs_a-rs_bitmap.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -c -o libext2fs_a-rs_bitmap.obj `if test -f 'rs_bitmap.c'; then $(CYGPATH_W) 'rs_bitmap.c'; else $(CYGPATH_W) '$(srcdir)/rs_bitmap.c'; fi`
 
 libext2fs_a-rw_bitmaps.o: rw_bitmaps.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libext2fs_a_CFLAGS) $(CFLAGS) -MT libext2fs_a-rw_bitmaps.o -MD -MP -MF "$(DEPDIR)/libext2fs_a-rw_bitmaps.Tpo" -c -o libext2fs_a-rw_bitmaps.o `test -f 'rw_bitmaps.c' || echo '$(srcdir)/'`rw_bitmaps.c; \

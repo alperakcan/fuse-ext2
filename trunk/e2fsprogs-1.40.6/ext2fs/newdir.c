@@ -1,6 +1,6 @@
 /*
  * newdir.c --- create a new directory block
- * 
+ *
  * Copyright (C) 1994, 1995 Theodore Ts'o.
  *
  * %Begin-Header%
@@ -8,8 +8,6 @@
  * License.
  * %End-Header%
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -55,7 +53,7 @@ errcode_t ext2fs_new_dir_block(ext2_filsys fs, ext2_ino_t dir_ino,
 		dir->inode = dir_ino;
 		dir->name_len = 1 | filetype;
 		dir->name[0] = '.';
-		rec_len = dir->rec_len - EXT2_DIR_REC_LEN(1);
+		rec_len = fs->blocksize - EXT2_DIR_REC_LEN(1);
 		dir->rec_len = EXT2_DIR_REC_LEN(1);
 
 		/*
@@ -67,7 +65,7 @@ errcode_t ext2fs_new_dir_block(ext2_filsys fs, ext2_ino_t dir_ino,
 		dir->name_len = 2 | filetype;
 		dir->name[0] = '.';
 		dir->name[1] = '.';
-		
+
 	}
 	*block = buf;
 	return 0;

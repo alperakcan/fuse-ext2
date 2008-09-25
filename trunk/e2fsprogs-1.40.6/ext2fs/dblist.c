@@ -1,16 +1,14 @@
 /*
  * dblist.c -- directory block list functions
- * 
+ *
  * Copyright 1997 by Theodore Ts'o
- * 
+ *
  * %Begin-Header%
  * This file may be redistributed under the terms of the GNU Public
  * License.
  * %End-Header%
- * 
+ *
  */
-
-#include <config.h>
 
 #include <stdio.h>
 #if HAVE_UNISTD_H
@@ -35,7 +33,7 @@ errcode_t ext2fs_get_num_dirs(ext2_filsys fs, ext2_ino_t *ret_num_dirs)
 	ext2_ino_t	num_dirs, max_dirs;
 
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
-	
+
 	num_dirs = 0;
 	max_dirs = fs->super->s_inodes_per_group;
 	for (i = 0; i < fs->group_desc_count; i++) {
@@ -91,7 +89,7 @@ static errcode_t make_dblist(ext2_filsys fs, ext2_ino_t size, ext2_ino_t count,
 		&dblist->list);
 	if (retval)
 		goto cleanup;
-	
+
 	if (list)
 		memcpy(dblist->list, list, len);
 	else
@@ -161,12 +159,12 @@ errcode_t ext2fs_add_dir_block(ext2_dblist dblist, ext2_ino_t ino, blk_t blk,
 	struct ext2_db_entry 	*new_entry;
 	errcode_t		retval;
 	unsigned long		old_size;
-	
+
 	EXT2_CHECK_MAGIC(dblist, EXT2_ET_MAGIC_DBLIST);
 
 	if (dblist->count >= dblist->size) {
 		old_size = dblist->size * sizeof(struct ext2_db_entry);
-		dblist->size += 100;
+		dblist->size += dblist->size > 200 ? dblist->size / 2 : 100;
 		retval = ext2fs_resize_mem(old_size, (size_t) dblist->size *
 					   sizeof(struct ext2_db_entry),
 					   &dblist->list);
@@ -192,7 +190,7 @@ errcode_t ext2fs_set_dir_block(ext2_dblist dblist, ext2_ino_t ino, blk_t blk,
 			       int blockcnt)
 {
 	dgrp_t			i;
-	
+
 	EXT2_CHECK_MAGIC(dblist, EXT2_ET_MAGIC_DBLIST);
 
 	for (i=0; i < dblist->count; i++) {
@@ -228,7 +226,7 @@ errcode_t ext2fs_dblist_iterate(ext2_dblist dblist,
 {
 	ext2_ino_t	i;
 	int		ret;
-	
+
 	EXT2_CHECK_MAGIC(dblist, EXT2_ET_MAGIC_DBLIST);
 
 	if (!dblist->sorted)
@@ -250,7 +248,7 @@ static EXT2_QSORT_TYPE dir_block_cmp(const void *a, const void *b)
 
 	if (db_a->blk != db_b->blk)
 		return (int) (db_a->blk - db_b->blk);
-	
+
 	if (db_a->ino != db_b->ino)
 		return (int) (db_a->ino - db_b->ino);
 
@@ -260,4 +258,28 @@ static EXT2_QSORT_TYPE dir_block_cmp(const void *a, const void *b)
 int ext2fs_dblist_count(ext2_dblist dblist)
 {
 	return (int) dblist->count;
+}
+
+errcode_t ext2fs_dblist_get_last(ext2_dblist dblist,
+				 struct ext2_db_entry **entry)
+{
+	EXT2_CHECK_MAGIC(dblist, EXT2_ET_MAGIC_DBLIST);
+
+	if (dblist->count == 0)
+		return EXT2_ET_DBLIST_EMPTY;
+
+	if (entry)
+		*entry = dblist->list + ( (int) dblist->count-1);
+	return 0;
+}
+
+errcode_t ext2fs_dblist_drop_last(ext2_dblist dblist)
+{
+	EXT2_CHECK_MAGIC(dblist, EXT2_ET_MAGIC_DBLIST);
+
+	if (dblist->count == 0)
+		return EXT2_ET_DBLIST_EMPTY;
+
+	dblist->count--;
+	return 0;
 }
