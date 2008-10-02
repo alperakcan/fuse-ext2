@@ -179,6 +179,7 @@ AC_CONFIG_FILES([
 	e2fsprogs-1.41.1/et/Makefile
 	e2fsprogs-1.41.1/ext2fs/Makefile
 	fuse-ext2/Makefile
+	test/pjd-fstest-20080816/Makefile
 ])
 
 AC_OUTPUT

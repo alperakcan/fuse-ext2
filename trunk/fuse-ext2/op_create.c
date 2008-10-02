@@ -42,6 +42,7 @@ int do_modetoext2lag (mode_t mode)
 int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 {
 	int rt;
+	time_t tm;
 	errcode_t rc;
 
 	char *p_path;
@@ -77,6 +78,12 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 	r_path = t_path + 1;
 	debugf("parent: %s, child: %s", p_path, r_path);
 	
+	if (strlen(r_path) > 255) {
+		debugf("path exceeds 255 characters");
+		free(p_path);
+		return -ENAMETOOLONG;
+	}
+
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &inode); failed", p_path);
@@ -103,12 +110,10 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 		}
 	} while (rc == EXT2_ET_DIR_NO_SPACE);
 	if (rc) {
-		debugf("ext2fs_mkdir(priv.fs, %d, 0, %s); failed (%d)", ino, r_path, rc);
-		debugf("priv.fs: %p, priv.fs->inode_map: %p", priv.fs, priv.fs->inode_map);
+		debugf("ext2fs_link(priv.fs, %d, %s, %d, %d); failed", ino, r_path, n_ino, do_modetoext2lag(mode));
 		free(p_path);
 		return -EIO;
 	}
-	free(p_path);
 	
 	if (ext2fs_test_inode_bitmap(priv.fs->inode_map, n_ino)) {
 		debugf("inode already set");
@@ -116,8 +121,9 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 
 	ext2fs_inode_alloc_stats2(priv.fs, n_ino, +1, 0);
 	memset(&inode, 0, sizeof(inode));
+	tm = priv.fs->now ? priv.fs->now : time(NULL);
 	inode.i_mode = mode;
-	inode.i_atime = inode.i_ctime = inode.i_mtime = time(NULL);
+	inode.i_atime = inode.i_ctime = inode.i_mtime = tm;
 	inode.i_links_count = 1;
 	inode.i_size = 0;
 	ctx = fuse_get_context();
@@ -129,8 +135,26 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 	rc = ext2fs_write_new_inode(priv.fs, n_ino, &inode);
 	if (rc) {
 		debugf("ext2fs_write_new_inode(e2fs, n_ino, &inode);");
+		free(p_path);
 		return -EIO;
 	}
+	
+	/* update parent dir */
+	rt = do_readinode(p_path, &ino, &inode);
+	if (rt) {
+		debugf("do_readinode(%s, &ino, &inode); dailed", p_path);
+		free(p_path);
+		return -EIO;
+	}
+	inode.i_ctime = inode.i_mtime = tm;
+	rc = ext2fs_write_inode(priv.fs, ino, &inode);
+	if (rc) {
+		debugf("ext2fs_write_inode(priv.fs, ino, &inode); failed");
+		free(p_path);
+		return -EIO;
+	}
+	
+	free(p_path);
 	
 	if (op_open(path, fi)) {
 		debugf("op_open(path, fi); failed");

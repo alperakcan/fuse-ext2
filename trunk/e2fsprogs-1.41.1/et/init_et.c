@@ -16,6 +16,8 @@
  * express or implied warranty.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <errno.h>
 #ifdef HAVE_STDLIB_H
