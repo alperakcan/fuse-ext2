@@ -24098,7 +24098,7 @@ else
 fi
 
 
-ac_config_files="$ac_config_files fuse-ext2.pc Makefile e2fsprogs-1.41.1/Makefile e2fsprogs-1.41.1/et/Makefile e2fsprogs-1.41.1/ext2fs/Makefile fuse-ext2/Makefile"
+ac_config_files="$ac_config_files fuse-ext2.pc Makefile e2fsprogs-1.41.1/Makefile e2fsprogs-1.41.1/et/Makefile e2fsprogs-1.41.1/ext2fs/Makefile fuse-ext2/Makefile test/pjd-fstest-20080816/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -24706,6 +24706,7 @@ do
     "e2fsprogs-1.41.1/et/Makefile") CONFIG_FILES="$CONFIG_FILES e2fsprogs-1.41.1/et/Makefile" ;;
     "e2fsprogs-1.41.1/ext2fs/Makefile") CONFIG_FILES="$CONFIG_FILES e2fsprogs-1.41.1/ext2fs/Makefile" ;;
     "fuse-ext2/Makefile") CONFIG_FILES="$CONFIG_FILES fuse-ext2/Makefile" ;;
+    "test/pjd-fstest-20080816/Makefile") CONFIG_FILES="$CONFIG_FILES test/pjd-fstest-20080816/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

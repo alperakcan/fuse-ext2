@@ -28,7 +28,8 @@ fuse_ext2_SOURCES =	\
 	op_mkdir.c \
 	op_rmdir.c \
 	op_unlink.c \
-	op_utimens.c
+	op_utimens.c \
+	op_write.c
 
 fuse_ext2_CFLAGS =				\
 	-Wall					\
@@ -54,5 +55,5 @@ endif
 if LINUX
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount.fuse-ext2"
+	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
 endif

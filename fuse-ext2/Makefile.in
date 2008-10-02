@@ -67,7 +67,8 @@ am_fuse_ext2_OBJECTS = fuse_ext2-fuse-ext2.$(OBJEXT) \
 	fuse_ext2-op_chmod.$(OBJEXT) fuse_ext2-op_create.$(OBJEXT) \
 	fuse_ext2-op_flush.$(OBJEXT) fuse_ext2-op_fsync.$(OBJEXT) \
 	fuse_ext2-op_mkdir.$(OBJEXT) fuse_ext2-op_rmdir.$(OBJEXT) \
-	fuse_ext2-op_unlink.$(OBJEXT) fuse_ext2-op_utimens.$(OBJEXT)
+	fuse_ext2-op_unlink.$(OBJEXT) fuse_ext2-op_utimens.$(OBJEXT) \
+	fuse_ext2-op_write.$(OBJEXT)
 fuse_ext2_OBJECTS = $(am_fuse_ext2_OBJECTS)
 fuse_ext2_DEPENDENCIES = ../e2fsprogs-1.41.1/ext2fs/libext2fs.a \
 	../e2fsprogs-1.41.1/et/libcom_err.a
@@ -225,7 +226,8 @@ fuse_ext2_SOURCES = \
 	op_mkdir.c \
 	op_rmdir.c \
 	op_unlink.c \
-	op_utimens.c
+	op_utimens.c \
+	op_write.c
 
 fuse_ext2_CFLAGS = -Wall -DHAVE_CONFIG_H -D_FILE_OFFSET_BITS=64 \
 	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_1)
@@ -330,6 +332,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_statfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_unlink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_utimens.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_write.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -702,6 +705,20 @@ fuse_ext2-op_utimens.obj: op_utimens.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_utimens.obj `if test -f 'op_utimens.c'; then $(CYGPATH_W) 'op_utimens.c'; else $(CYGPATH_W) '$(srcdir)/op_utimens.c'; fi`
 
+fuse_ext2-op_write.o: op_write.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_write.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_write.Tpo" -c -o fuse_ext2-op_write.o `test -f 'op_write.c' || echo '$(srcdir)/'`op_write.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_write.Tpo" "$(DEPDIR)/fuse_ext2-op_write.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_write.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_write.c' object='fuse_ext2-op_write.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_write.o `test -f 'op_write.c' || echo '$(srcdir)/'`op_write.c
+
+fuse_ext2-op_write.obj: op_write.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_write.obj -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_write.Tpo" -c -o fuse_ext2-op_write.obj `if test -f 'op_write.c'; then $(CYGPATH_W) 'op_write.c'; else $(CYGPATH_W) '$(srcdir)/op_write.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_write.Tpo" "$(DEPDIR)/fuse_ext2-op_write.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_write.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_write.c' object='fuse_ext2-op_write.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_write.obj `if test -f 'op_write.c'; then $(CYGPATH_W) 'op_write.c'; else $(CYGPATH_W) '$(srcdir)/op_write.c'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -888,7 +905,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 @DARWIN_TRUE@	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount_ext2"
 @LINUX_TRUE@install-exec-local:
 @LINUX_TRUE@	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-@LINUX_TRUE@	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount.fuse-ext2"
+@LINUX_TRUE@	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -22,6 +22,7 @@
 int op_mkdir (const char *path, mode_t mode)
 {
 	int rt;
+	time_t tm;
 	errcode_t rc;
 
 	char *p_path;
@@ -34,7 +35,7 @@ int op_mkdir (const char *path, mode_t mode)
 	struct fuse_context *ctx;
 	
 	debugf("enter");
-	debugf("path = %s, mode: 0%o", path, mode);
+	debugf("path = %s, mode: 0%o, dir:0%o", path, mode, LINUX_S_IFDIR);
 
 	p_path = strdup(path);
 	if (p_path == NULL) {
@@ -48,7 +49,13 @@ int op_mkdir (const char *path, mode_t mode)
 	}
 	*t_path = '\0';
 	r_path = t_path + 1;
-	debugf("parent: %s, child: %s", p_path, r_path);
+	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
+	
+	if (strlen(r_path) > 255) {
+		debugf("path exceeds 255 characters");
+		free(p_path);
+		return -ENAMETOOLONG;
+	}
 	
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
@@ -75,23 +82,43 @@ int op_mkdir (const char *path, mode_t mode)
 		free(p_path);
 		return -EIO;
 	}
-	free(p_path);
 	
 	rt = do_readinode(path, &ino, &inode);
 	if (rt) {
-		debugf("de_readinode(%s, &ino, &inode); failed", path);
+		debugf("do_readinode(%s, &ino, &inode); failed", path);
 		return -EIO;
 	}
+	tm = priv.fs->now ? priv.fs->now : time(NULL);
+	inode.i_mode = LINUX_S_IFDIR | mode;
+	inode.i_ctime = inode.i_atime = inode.i_mtime = tm;
 	ctx = fuse_get_context();
 	if (ctx) {
 		inode.i_uid = ctx->uid;
 		inode.i_gid = ctx->gid;
-		rc = ext2fs_write_inode(priv.fs, ino, &inode);
-		if (rc) {
-			debugf("ext2fs_write_inode(priv.fs, ino, &inode); failed");
-			return -EIO;
-		}
 	}
+	rc = ext2fs_write_inode(priv.fs, ino, &inode);
+	if (rc) {
+		debugf("ext2fs_write_inode(priv.fs, ino, &inode); failed");
+		free(p_path);
+		return -EIO;
+	}
+	
+	/* update parent dir */
+	rt = do_readinode(p_path, &ino, &inode);
+	if (rt) {
+		debugf("do_readinode(%s, &ino, &inode); dailed", p_path);
+		free(p_path);
+		return -EIO;
+	}
+	inode.i_ctime = inode.i_mtime = tm;
+	rc = ext2fs_write_inode(priv.fs, ino, &inode);
+	if (rc) {
+		debugf("ext2fs_write_inode(priv.fs, ino, &inode); failed");
+		free(p_path);
+		return -EIO;
+	}
+	
+	free(p_path);
 
 	debugf("leave");
 	return 0;

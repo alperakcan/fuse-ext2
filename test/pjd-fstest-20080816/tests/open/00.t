@@ -37,6 +37,8 @@ expect 0 -U 0501 open ${n0} O_CREAT,O_WRONLY 0345
 expect regular,0244 lstat ${n0} type,mode
 expect 0 unlink ${n0}
 
+#17
+
 # POSIX: (If O_CREAT is specified and the file doesn't exist) [...] the user ID
 # of the file shall be set to the effective user ID of the process; the group ID
 # of the file shall be set to the group ID of the file's parent directory or to
@@ -52,6 +54,8 @@ expect 0 chmod . 0777
 expect 0 -u 65534 -g 65533 open ${n0} O_CREAT,O_WRONLY 0644
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
+
+#28
 
 # Update parent directory ctime/mtime if file didn't exist.
 expect 0 chown . 0 0

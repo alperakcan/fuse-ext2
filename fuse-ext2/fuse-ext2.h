@@ -144,4 +144,6 @@ int op_unlink (const char *path);
 
 int op_utimens (const char *path, const struct timespec tv[2]);
 
+int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi);
+
 #endif /* FUSEEXT2_H_ */

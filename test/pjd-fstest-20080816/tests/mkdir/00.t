@@ -34,6 +34,8 @@ expect 0 -U 0501 mkdir ${n0} 0345
 expect dir,0244 lstat ${n0} type,mode
 expect 0 rmdir ${n0}
 
+# 17
+
 # POSIX: The directory's user ID shall be set to the process' effective user ID.
 # The directory's group ID shall be set to the group ID of the parent directory
 # or to the effective group ID of the process.
@@ -48,6 +50,8 @@ expect 0 chmod . 0777
 expect 0 -u 65534 -g 65533 mkdir ${n0} 0755
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 rmdir ${n0}
+
+# 28
 
 # POSIX: Upon successful completion, mkdir() shall mark for update the st_atime,
 # st_ctime, and st_mtime fields of the directory. Also, the st_ctime and
