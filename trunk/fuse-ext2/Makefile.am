@@ -6,6 +6,7 @@ fuse_ext2_SOURCES =	\
 	fuse-ext2.h \
 	fuse-ext2.c \
 	do_probe.c \
+	do_check.c \
 	do_fillstatbuf.c \
 	do_readinode.c \
 	do_killfilebyinode.c \

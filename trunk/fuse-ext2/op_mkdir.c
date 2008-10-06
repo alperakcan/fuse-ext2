@@ -33,9 +33,15 @@ int op_mkdir (const char *path, mode_t mode)
 	struct ext2_inode inode;
 
 	struct fuse_context *ctx;
-	
+
 	debugf("enter");
 	debugf("path = %s, mode: 0%o, dir:0%o", path, mode, LINUX_S_IFDIR);
+
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
+		return rt;
+	}
 
 	p_path = strdup(path);
 	if (p_path == NULL) {
@@ -50,13 +56,7 @@ int op_mkdir (const char *path, mode_t mode)
 	*t_path = '\0';
 	r_path = t_path + 1;
 	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
-	
-	if (strlen(r_path) > 255) {
-		debugf("path exceeds 255 characters");
-		free(p_path);
-		return -ENAMETOOLONG;
-	}
-	
+
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &inode); failed", p_path);
@@ -82,7 +82,7 @@ int op_mkdir (const char *path, mode_t mode)
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	rt = do_readinode(path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &inode); failed", path);
@@ -102,7 +102,7 @@ int op_mkdir (const char *path, mode_t mode)
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	/* update parent dir */
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
@@ -117,7 +117,7 @@ int op_mkdir (const char *path, mode_t mode)
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	free(p_path);
 
 	debugf("leave");

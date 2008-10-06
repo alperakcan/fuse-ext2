@@ -58,6 +58,12 @@ int do_create (const char *path, mode_t mode)
 	debugf("enter");
 	debugf("path = %s, mode: 0%o", path, mode);
 
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
+		return rt;
+	}
+
 	p_path = strdup(path);
 	if (p_path == NULL) {
 		debugf("strdup(%s); failed", path);
@@ -72,12 +78,6 @@ int do_create (const char *path, mode_t mode)
 	*t_path = '\0';
 	r_path = t_path + 1;
 	debugf("parent: %s, child: %s", p_path, r_path);
-
-	if (strlen(r_path) > 255) {
-		debugf("path exceeds 255 characters");
-		free(p_path);
-		return -ENAMETOOLONG;
-	}
 
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {

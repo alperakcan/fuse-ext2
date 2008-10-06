@@ -19,27 +19,35 @@
 
 #include "fuse-ext2.h"
 
-int op_getattr (const char *path, struct stat *stbuf)
+int do_check (const char *path)
 {
-	int rt;
-	ext2_ino_t ino;
-	struct ext2_inode inode;
+	char *p_path;
+	char *r_path;
+	char *t_path;
 
 	debugf("enter");
 	debugf("path = %s", path);
 
-	rt = do_check(path);
-	if (rt != 0) {
-		debugf("do_check(%s); failed", path);
-		return rt;
+	p_path = strdup(path);
+	if (p_path == NULL) {
+		return -ENOMEM;
 	}
+	t_path = strrchr(p_path, '/');
+	if (t_path == NULL) {
+		debugf("this should not happen %s", p_path);
+		free(p_path);
+		return -ENOENT;
+	}
+	*t_path = '\0';
+	r_path = t_path + 1;
+	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
 
-	rt = do_readinode(path, &ino, &inode);
-	if (rt) {
-		debugf("do_readinode(%s, &ino, &inode); failed", path);
-		return rt;
+	if (strlen(r_path) > 255) {
+		debugf("path exceeds 255 characters");
+		free(p_path);
+		return -ENAMETOOLONG;
 	}
-	do_fillstatbuf(ino, &inode, stbuf);
+	free(p_path);
 
 	debugf("leave");
 	return 0;
