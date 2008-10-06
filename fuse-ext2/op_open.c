@@ -33,8 +33,8 @@ int op_open (const char *path, struct fuse_file_info *fi)
 		debugf("Error while trying to resolve %s", path);
 		return -ENOENT;
 	}
-	
-	rc = ext2fs_file_open(priv.fs, ino, 0, &efile);
+
+	rc = ext2fs_file_open(priv.fs, ino, EXT2_FILE_WRITE | EXT2_FILE_CREATE, &efile);
 	if (rc) {
 		return -EIO;
 	}
