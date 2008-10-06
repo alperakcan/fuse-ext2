@@ -32,7 +32,8 @@ fuse_ext2_SOURCES =	\
 	op_utimens.c \
 	op_write.c \
 	op_mknod.c \
-	op_symlink.c
+	op_symlink.c \
+	op_truncate.c
 
 fuse_ext2_CFLAGS =				\
 	-Wall					\

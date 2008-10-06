@@ -160,4 +160,6 @@ int op_mknod (const char *path, mode_t mode, dev_t dev);
 
 int op_symlink (const char *sourcename, const char *destname);
 
+int op_truncate(const char *path, off_t length);
+
 #endif /* FUSEEXT2_H_ */
