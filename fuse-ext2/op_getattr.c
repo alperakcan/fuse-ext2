@@ -25,8 +25,33 @@ int op_getattr (const char *path, struct stat *stbuf)
 	ext2_ino_t ino;
 	struct ext2_inode inode;
 
+	char *p_path;
+	char *r_path;
+	char *t_path;
+
 	debugf("enter");
 	debugf("path = %s", path);
+
+	p_path = strdup(path);
+	if (p_path == NULL) {
+		return -ENOMEM;
+	}
+	t_path = strrchr(p_path, '/');
+	if (t_path == NULL) {
+		debugf("this should not happen %s", p_path);
+		free(p_path);
+		return -ENOENT;
+	}
+	*t_path = '\0';
+	r_path = t_path + 1;
+	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
+
+	if (strlen(r_path) > 255) {
+		debugf("path exceeds 255 characters");
+		free(p_path);
+		return -ENAMETOOLONG;
+	}
+	free(p_path);
 
 	rt = do_readinode(path, &ino, &inode);
 	if (rt) {

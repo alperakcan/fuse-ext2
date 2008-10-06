@@ -112,6 +112,8 @@ int op_fgetattr (const char *path, struct stat *stbuf, struct fuse_file_info *fi
 
 int op_getattr (const char *path, struct stat *stbuf);
 
+ext2_file_t do_open (const char *path);
+
 int op_open (const char *path, struct fuse_file_info *fi);
 
 int op_read (const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi);
@@ -119,6 +121,8 @@ int op_read (const char *path, char *buf, size_t size, off_t offset, struct fuse
 int op_readdir (const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi);
 
 int op_readlink (const char *path, char *buf, size_t size);
+
+int do_release (ext2_file_t efile);
 
 int op_release (const char *path, struct fuse_file_info *fi);
 
@@ -146,8 +150,12 @@ int op_unlink (const char *path);
 
 int op_utimens (const char *path, const struct timespec tv[2]);
 
+size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset);
+
 int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi);
 
 int op_mknod (const char *path, mode_t mode, dev_t dev);
+
+int op_symlink (const char *sourcename, const char *destname);
 
 #endif /* FUSEEXT2_H_ */

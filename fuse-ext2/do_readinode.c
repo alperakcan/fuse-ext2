@@ -25,7 +25,7 @@ int do_readinode (const char *path, ext2_ino_t *ino, struct ext2_inode *inode)
 	rc = ext2fs_namei(priv.fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, ino);
 	if (rc) {
 		debugf("ext2fs_namei(priv.fs, EXT2_ROOT_INO, EXT2_ROOT_INO, %s, ino); failed", path);
-		return -ENOENT; 
+		return -ENOENT;
 	}
 	rc = ext2fs_read_inode(priv.fs, *ino, inode);
 	if (rc) {
