@@ -130,6 +130,8 @@ int op_chmod (const char *path, mode_t mode);
 
 int op_chown (const char *path, uid_t uid, gid_t gid);
 
+int do_create (const char *path, mode_t mode);
+
 int op_create (const char *path, mode_t mode, struct fuse_file_info *fi);
 
 int op_flush (const char *path, struct fuse_file_info *fi);
@@ -145,5 +147,7 @@ int op_unlink (const char *path);
 int op_utimens (const char *path, const struct timespec tv[2]);
 
 int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi);
+
+int op_mknod (const char *path, mode_t mode, dev_t dev);
 
 #endif /* FUSEEXT2_H_ */
