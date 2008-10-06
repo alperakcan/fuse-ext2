@@ -86,6 +86,8 @@ ctime2=`${fstest} stat ${n0} ctime`
 test_check $ctime1 -lt $ctime2
 expect 0 unlink ${n0}
 
+# 37
+
 if supported lchmod; then
 	expect 0 symlink ${n1} ${n0}
 	ctime1=`${fstest} lstat ${n0} ctime`

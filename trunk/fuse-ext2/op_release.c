@@ -19,14 +19,13 @@
 
 #include "fuse-ext2.h"
 
-int op_release (const char *path, struct fuse_file_info *fi)
+int do_release (ext2_file_t efile)
 {
 	errcode_t rc;
-	ext2_file_t efile = (void *)(unsigned long)fi->fh;
 
 	debugf("enter");
-	debugf("path = %s (%p)", path, efile);
-	
+	debugf("path = (%p)", efile);
+
 	if (efile == NULL) {
 		return -ENOENT;
 	}
@@ -35,7 +34,24 @@ int op_release (const char *path, struct fuse_file_info *fi)
 	if (rc) {
 		return -EIO;
 	}
-	
+
+	debugf("leave");
+	return 0;
+}
+
+int op_release (const char *path, struct fuse_file_info *fi)
+{
+	int rt;
+	ext2_file_t efile = (void *) (unsigned long) fi->fh;
+
+	debugf("enter");
+	debugf("path = %s (%p)", path, efile);
+	rt = do_release(efile);
+	if (rt != 0) {
+		debugf("do_release() failed");
+		return rt;
+	}
+
 	debugf("leave");
 	return 0;
 }

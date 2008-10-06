@@ -19,18 +19,16 @@
 
 #include "fuse-ext2.h"
 
-int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 {
 	int rt;
 	size_t wr;
 	const char *tmp;
 	ext2_off_t fsize;
 	unsigned int npos;
-	ext2_file_t efile = EXT2FS_FILE(fi->fh);
 
 	debugf("enter");
-	debugf("path = %s", path);
-	
+
 	fsize = ext2fs_file_get_size(efile);
 	if (offset + size > fsize) {
 		rt = ext2fs_file_set_size(efile, offset + size);
@@ -39,13 +37,13 @@ int op_write (const char *path, const char *buf, size_t size, off_t offset, stru
 			return rt;
 		}
 	}
-	
+
 	rt = ext2fs_file_lseek(efile, offset, SEEK_SET, &npos);
 	if (rt) {
 		debugf("ext2fs_file_lseek(efile, %d, SEEK_SET, &npos); failed", offset);
 		return rt;
 	}
-	
+
 	for (rt = 0, wr = 0, tmp = buf; size > 0 && rt == 0; size -= wr, tmp += wr) {
 		debugf("size: %u, written: %u", size, wr);
 		rt = ext2fs_file_write(efile, tmp, size, &wr);
@@ -54,7 +52,7 @@ int op_write (const char *path, const char *buf, size_t size, off_t offset, stru
 		debugf("ext2fs_file_write(edile, tmp, size, &wr); failed");
 		return rt;
 	}
-	
+
 	rt = ext2fs_file_flush(efile);
 	if (rt) {
 		debugf("ext2_file_flush(efile); failed");
@@ -63,4 +61,18 @@ int op_write (const char *path, const char *buf, size_t size, off_t offset, stru
 
 	debugf("leave");
 	return wr;
+}
+
+int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+{
+	size_t rt;
+	ext2_file_t efile = EXT2FS_FILE(fi->fh);
+
+	debugf("enter");
+	debugf("path = %s", path);
+
+	rt = do_write(efile, buf, size, offset);
+
+	debugf("leave");
+	return rt;
 }
