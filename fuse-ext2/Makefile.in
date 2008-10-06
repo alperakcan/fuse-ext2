@@ -68,7 +68,7 @@ am_fuse_ext2_OBJECTS = fuse_ext2-fuse-ext2.$(OBJEXT) \
 	fuse_ext2-op_flush.$(OBJEXT) fuse_ext2-op_fsync.$(OBJEXT) \
 	fuse_ext2-op_mkdir.$(OBJEXT) fuse_ext2-op_rmdir.$(OBJEXT) \
 	fuse_ext2-op_unlink.$(OBJEXT) fuse_ext2-op_utimens.$(OBJEXT) \
-	fuse_ext2-op_write.$(OBJEXT)
+	fuse_ext2-op_write.$(OBJEXT) fuse_ext2-op_mknod.$(OBJEXT)
 fuse_ext2_OBJECTS = $(am_fuse_ext2_OBJECTS)
 fuse_ext2_DEPENDENCIES = ../e2fsprogs-1.41.1/ext2fs/libext2fs.a \
 	../e2fsprogs-1.41.1/et/libcom_err.a
@@ -227,7 +227,8 @@ fuse_ext2_SOURCES = \
 	op_rmdir.c \
 	op_unlink.c \
 	op_utimens.c \
-	op_write.c
+	op_write.c \
+	op_mknod.c
 
 fuse_ext2_CFLAGS = -Wall -DHAVE_CONFIG_H -D_FILE_OFFSET_BITS=64 \
 	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_1)
@@ -323,6 +324,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_getattr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_mkdir.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_mknod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_open.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_read.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_readdir.Po@am__quote@
@@ -718,6 +720,20 @@ fuse_ext2-op_write.obj: op_write.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_write.c' object='fuse_ext2-op_write.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_write.obj `if test -f 'op_write.c'; then $(CYGPATH_W) 'op_write.c'; else $(CYGPATH_W) '$(srcdir)/op_write.c'; fi`
+
+fuse_ext2-op_mknod.o: op_mknod.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_mknod.o -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_mknod.Tpo" -c -o fuse_ext2-op_mknod.o `test -f 'op_mknod.c' || echo '$(srcdir)/'`op_mknod.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_mknod.Tpo" "$(DEPDIR)/fuse_ext2-op_mknod.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_mknod.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_mknod.c' object='fuse_ext2-op_mknod.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_mknod.o `test -f 'op_mknod.c' || echo '$(srcdir)/'`op_mknod.c
+
+fuse_ext2-op_mknod.obj: op_mknod.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -MT fuse_ext2-op_mknod.obj -MD -MP -MF "$(DEPDIR)/fuse_ext2-op_mknod.Tpo" -c -o fuse_ext2-op_mknod.obj `if test -f 'op_mknod.c'; then $(CYGPATH_W) 'op_mknod.c'; else $(CYGPATH_W) '$(srcdir)/op_mknod.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/fuse_ext2-op_mknod.Tpo" "$(DEPDIR)/fuse_ext2-op_mknod.Po"; else rm -f "$(DEPDIR)/fuse_ext2-op_mknod.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='op_mknod.c' object='fuse_ext2-op_mknod.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_CFLAGS) $(CFLAGS) -c -o fuse_ext2-op_mknod.obj `if test -f 'op_mknod.c'; then $(CYGPATH_W) 'op_mknod.c'; else $(CYGPATH_W) '$(srcdir)/op_mknod.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

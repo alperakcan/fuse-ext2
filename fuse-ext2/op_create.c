@@ -39,7 +39,7 @@ int do_modetoext2lag (mode_t mode)
 	return EXT2_FT_UNKNOWN;
 }
 
-int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
+int do_create (const char *path, mode_t mode)
 {
 	int rt;
 	time_t tm;
@@ -54,14 +54,9 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 	ext2_ino_t n_ino;
 
 	struct fuse_context *ctx;
-	
+
 	debugf("enter");
 	debugf("path = %s, mode: 0%o", path, mode);
-	
-	if (op_open(path, fi) == 0) {
-		debugf("leave");
-		return 0;
-	}
 
 	p_path = strdup(path);
 	if (p_path == NULL) {
@@ -77,7 +72,7 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 	*t_path = '\0';
 	r_path = t_path + 1;
 	debugf("parent: %s, child: %s", p_path, r_path);
-	
+
 	if (strlen(r_path) > 255) {
 		debugf("path exceeds 255 characters");
 		free(p_path);
@@ -90,7 +85,7 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 		free(p_path);
 		return rt;
 	}
-	
+
 	rc = ext2fs_new_inode(priv.fs, ino, mode, 0, &n_ino);
 	if (rc) {
 		debugf("ext2fs_new_inode(ep.fs, ino, mode, 0, &n_ino); failed");
@@ -114,7 +109,7 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	if (ext2fs_test_inode_bitmap(priv.fs->inode_map, n_ino)) {
 		debugf("inode already set");
 	}
@@ -131,14 +126,14 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 		inode.i_uid = ctx->uid;
 		inode.i_gid = ctx->gid;
 	}
-	
+
 	rc = ext2fs_write_new_inode(priv.fs, n_ino, &inode);
 	if (rc) {
 		debugf("ext2fs_write_new_inode(e2fs, n_ino, &inode);");
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	/* update parent dir */
 	rt = do_readinode(p_path, &ino, &inode);
 	if (rt) {
@@ -153,9 +148,30 @@ int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
 		free(p_path);
 		return -EIO;
 	}
-	
+
 	free(p_path);
-	
+
+	debugf("leave");
+	return 0;
+}
+
+int op_create (const char *path, mode_t mode, struct fuse_file_info *fi)
+{
+	int rt;
+
+	debugf("enter");
+	debugf("path = %s, mode: 0%o", path, mode);
+
+	if (op_open(path, fi) == 0) {
+		debugf("leave");
+		return 0;
+	}
+
+	rt = do_create(path, mode);
+	if (rt != 0) {
+		return rt;
+	}
+
 	if (op_open(path, fi)) {
 		debugf("op_open(path, fi); failed");
 		return -EIO;

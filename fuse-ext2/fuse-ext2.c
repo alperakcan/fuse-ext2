@@ -255,7 +255,7 @@ err_exit:
 static const struct fuse_operations ext2fs_ops = {
 	.getattr        = op_getattr,
 	.readlink       = op_readlink,
-	.mknod          = NULL,
+	.mknod          = op_mknod,
 	.mkdir          = op_mkdir,
 	.unlink         = op_unlink,
 	.rmdir          = op_rmdir,
