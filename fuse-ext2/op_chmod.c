@@ -28,33 +28,14 @@ int op_chmod (const char *path, mode_t mode)
 	ext2_ino_t ino;
 	struct ext2_inode inode;
 
-	char *p_path;
-	char *r_path;
-	char *t_path;
-
 	debugf("enter");
 	debugf("path = %s 0%o", path, mode);
 
-	p_path = strdup(path);
-	if (p_path == NULL) {
-		return -ENOMEM;
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
+		return rt;
 	}
-	t_path = strrchr(p_path, '/');
-	if (t_path == NULL) {
-		debugf("this should not happen %s", p_path);
-		free(p_path);
-		return -ENOENT;
-	}
-	*t_path = '\0';
-	r_path = t_path + 1;
-	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
-
-	if (strlen(r_path) > 255) {
-		debugf("path exceeds 255 characters");
-		free(p_path);
-		return -ENAMETOOLONG;
-	}
-	free(p_path);
 
 	rt = do_readinode(path, &ino, &inode);
 	if (rt) {

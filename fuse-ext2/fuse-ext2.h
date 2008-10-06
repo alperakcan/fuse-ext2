@@ -98,6 +98,8 @@ void op_destroy (void *userdata);
 
 int do_probe (void);
 
+int do_check (const char *path);
+
 void do_fillstatbuf (ext2_ino_t ino, struct ext2_inode *inode, struct stat *st);
 
 int do_readinode (const char *path, ext2_ino_t *ino, struct ext2_inode *inode);
