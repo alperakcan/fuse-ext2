@@ -34,7 +34,7 @@ int op_open (const char *path, struct fuse_file_info *fi)
 		return -ENOENT;
 	}
 
-	rc = ext2fs_file_open(priv.fs, ino, EXT2_FILE_WRITE | EXT2_FILE_CREATE, &efile);
+	rc = ext2fs_file_open(priv.fs, ino, EXT2_FILE_WRITE, &efile);
 	if (rc) {
 		return -EIO;
 	}
