@@ -100,51 +100,51 @@ static int parse_options (int argc, char *argv[])
 
 	while ((c = getopt_long(argc, argv, sopt, lopt, NULL)) != -1) {
 		switch (c) {
-		case 1:	/* A non-option argument */
-			if (!opts.device) {
-				opts.device = malloc(PATH_MAX + 1);
-				if (!opts.device)
-					return -1;
-
-				/* We don't want relative path in /etc/mtab. */
-				if (optarg[0] != '/') {
-					if (!realpath(optarg, opts.device)) {
-						debugf("Cannot mount %s", optarg);
-						free(opts.device);
-						opts.device = NULL;
+			case 1:	/* A non-option argument */
+				if (!opts.device) {
+					opts.device = malloc(PATH_MAX + 1);
+					if (!opts.device)
 						return -1;
-					}
-				} else
-					strcpy(opts.device, optarg);
-			} else if (!opts.mnt_point) {
-				opts.mnt_point = optarg;
-			} else {
-				debugf("You must specify exactly one device and exactly one mount point");
-				return -1;
-			}
-			break;
-		case 'o':
-			if (opts.options)
-				if (strappend(&opts.options, ","))
+	
+					/* We don't want relative path in /etc/mtab. */
+					if (optarg[0] != '/') {
+						if (!realpath(optarg, opts.device)) {
+							debugf("Cannot mount %s", optarg);
+							free(opts.device);
+							opts.device = NULL;
+							return -1;
+						}
+					} else
+						strcpy(opts.device, optarg);
+				} else if (!opts.mnt_point) {
+					opts.mnt_point = optarg;
+				} else {
+					debugf("You must specify exactly one device and exactly one mount point");
 					return -1;
-			if (strappend(&opts.options, optarg))
+				}
+				break;
+			case 'o':
+				if (opts.options)
+					if (strappend(&opts.options, ","))
+						return -1;
+				if (strappend(&opts.options, optarg))
+					return -1;
+				break;
+			case 'h':
+				usage();
+				exit(9);
+			case 'v':
+				/*
+				 * We must handle the 'verbose' option even if
+				 * we don't use it because mount(8) passes it.
+				 */
+				break;
+			default:
+				debugf("Unknown option '%s'", argv[optind - 1]);
 				return -1;
-			break;
-		case 'h':
-			usage();
-			exit(9);
-		case 'v':
-			/*
-			 * We must handle the 'verbose' option even if
-			 * we don't use it because mount(8) passes it.
-			 */
-			break;
-		default:
-			debugf("Unknown option '%s'", argv[optind - 1]);
-			return -1;
 		}
 	}
-
+	
 	if (!opts.device) {
 		debugf("No device is specified");
 		return -1;

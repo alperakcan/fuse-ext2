@@ -24,6 +24,7 @@ int do_probe (void)
 	errcode_t rc;
 
 	debugf("enter");
+
 	priv.name = opts.device;
 	rc = ext2fs_open(priv.name, EXT2_FLAG_RW, 0, 0, unix_io_manager, &priv.fs);
 	if (rc) {

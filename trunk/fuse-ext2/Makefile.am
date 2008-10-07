@@ -1,6 +1,28 @@
 
 bin_PROGRAMS =		\
-	fuse-ext2
+	fuse-ext2	\
+	fuse-ext2.probe
+
+fuse_ext2_probe_SOURCES =	\
+	fuse-ext2.h \
+	fuse-ext2.probe.c \
+	do_probe.c
+
+fuse_ext2_probe_CFLAGS =			\
+	-Wall					\
+	-DHAVE_CONFIG_H				\
+	-D_FILE_OFFSET_BITS=64			\
+	-I$(top_srcdir)/e2fsprogs-1.41.1
+
+if DARWIN
+fuse_ext2_probe_CFLAGS +=			\
+	-D__FreeBSD__=10
+endif
+
+fuse_ext2_probe_LDADD =				\
+	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
+	../e2fsprogs-1.41.1/et/libcom_err.a	\
+	-lfuse
 
 fuse_ext2_SOURCES =	\
 	fuse-ext2.h \
