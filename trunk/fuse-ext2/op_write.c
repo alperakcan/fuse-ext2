@@ -22,7 +22,7 @@
 size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 {
 	int rt;
-	size_t wr;
+	unsigned int wr;
 	const char *tmp;
 	ext2_off_t fsize;
 	unsigned int npos;
