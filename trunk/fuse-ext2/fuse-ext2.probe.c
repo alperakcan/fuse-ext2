@@ -111,6 +111,8 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 
+	opts.debug = 1;
+
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);
 		err = -3;
