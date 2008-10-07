@@ -46,7 +46,7 @@ ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/bin
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig
 ${INSTALL_C} -m 731 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2 ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2
-${LN_SF} /usr/local/bin/fuse-ext2 ${DISTRIBUTION_FOLDER}/usr/sbin/mount_ext2
+${INSTALL_C} -m 731 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.probe ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.probe
 ${INSTALL_C} -m 644 ${BUILD_FOLDER}/fuse-ext2.pc ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig/fuse-ext2.pc
 ${SED_E} "s/FUSEEXT2_VERSION_LITERAL/0/g" < ${MKPKG_FOLDER}/Info.plist.in > ${MKPKG_FOLDER}/Info.plist
 ${MV} ${MKPKG_FOLDER}/Info.plist ${TMP_FOLDER}/Info.plist
