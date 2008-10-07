@@ -77,6 +77,9 @@ AC_CHECK_DECL(lseek64,[AC_DEFINE(HAVE_LSEEK64_PROTOTYPE, 1, [Define to 1 if you 
 		 #define _LARGEFILE64_SOURCE
 		 #include <unistd.h>])
 
+dnl Check to see if ssize_t was decleared
+AC_CHECK_TYPE(ssize_t,[AC_DEFINE(HAVE_TYPE_SSIZE_T, 1, [Define to 1 if you have the `ssize_t' prototype.])],,
+		[#include <sys/types.h>])
 
 # Checks for library functions.
 AC_FUNC_VPRINTF

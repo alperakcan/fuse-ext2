@@ -217,6 +217,9 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to 1 if you have the `ssize_t' prototype. */
+#undef HAVE_TYPE_SSIZE_T
+
 /* Define to 1 if you have the `uname' function. */
 #undef HAVE_UNAME
 
