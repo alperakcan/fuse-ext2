@@ -62,7 +62,7 @@ static int parse_options (int argc, char *argv[])
 					opts.device = malloc(PATH_MAX + 1);
 					if (!opts.device)
 						return -1;
-	
+
 					/* We don't want relative path in /etc/mtab. */
 					if (optarg[0] != '/') {
 						if (!realpath(optarg, opts.device)) {
@@ -102,7 +102,6 @@ int main (int argc, char *argv[])
 {
 	int err = 0;
 	struct stat sbuf;
-	char *parsed_options = NULL;
 
 	memset(&opts, 0, sizeof(opts));
 	memset(&priv, 0, sizeof(priv));
