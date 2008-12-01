@@ -1,0 +1,3 @@
+#!/bin/sh
+
+"/System/Library/Filesystems/fuse-ext2.fs/fuse-ext2.util" "-m" "$@"

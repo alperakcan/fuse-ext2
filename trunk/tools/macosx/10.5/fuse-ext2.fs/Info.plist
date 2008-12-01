@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.fuse-ext2.filesystems.ntfs</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>fuse-ext2</string>
+	<key>CFBundlePackageType</key>
+	<string>fs  </string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.1</string>
+	<key>FSMediaTypes</key>
+	<dict>
+		<key>Whole</key>
+		<dict>
+			<key>FSMediaProperties</key>
+			<dict>
+				<key>Leaf</key>
+				<true/>
+				<key>Whole</key>
+				<true/>
+			</dict>
+			<key>FSProbeArguments</key>
+			<string>-p</string>
+			<key>FSProbeExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSProbeOrder</key>
+			<integer>3500</integer>
+		</dict>
+	</dict>
+	<key>FSPersonalities</key>
+	<dict>
+		<key>FUSE-EXT2</key>
+		<dict>
+			<key>FSFormatContentMask</key>
+			<string>EXT2 Filesystem</string>
+			<key>FSMountArguments</key>
+			<string>-m</string>
+			<key>FSMountExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSName</key>
+			<string>FUSE-EXT2</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
