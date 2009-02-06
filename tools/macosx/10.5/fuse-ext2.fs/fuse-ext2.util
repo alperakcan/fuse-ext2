@@ -262,7 +262,7 @@ ${MOUNT_OUTPUT}"
     else
     	LogDebug "[Mount] Output from mount operation: ${MOUNT_OUTPUT}"
 	LogDebug "[Mount] Executing \"${PFX}${FUSE_EXT2_DAEMON}\""
-	"${PFX}${FUSE_EXT2_DAEMON}" &
+	# "${PFX}${FUSE_EXT2_DAEMON}" &
     fi
     
     LogDebug "[Mount] Exiting function mount..."
