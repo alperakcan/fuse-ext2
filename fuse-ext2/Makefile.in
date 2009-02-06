@@ -951,7 +951,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@LINUX_FALSE@install-exec-local:
+@DARWIN_FALSE@@LINUX_FALSE@install-exec-local:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
@@ -1027,11 +1027,9 @@ uninstall-am: uninstall-binPROGRAMS
 	uninstall-am uninstall-binPROGRAMS
 
 
-#if DARWIN
-#install-exec-local:
-#	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-#	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/usr/sbin/mount_ext2"
-#endif
+@DARWIN_TRUE@install-exec-local:
+@DARWIN_TRUE@	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
+@DARWIN_TRUE@	$(LN_S) -f "/System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/sbin/mount_fuse-ext2"
 @LINUX_TRUE@install-exec-local:
 @LINUX_TRUE@	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
 @LINUX_TRUE@	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"

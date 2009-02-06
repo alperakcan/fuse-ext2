@@ -182,6 +182,9 @@ AC_CONFIG_FILES([
 	e2fsprogs-1.41.1/et/Makefile
 	e2fsprogs-1.41.1/ext2fs/Makefile
 	fuse-ext2/Makefile
+	tools/Makefile
+	tools/macosx/Makefile
+	tools/macosx/10.5/Makefile
 	test/pjd-fstest-20080816/Makefile
 ])
 
