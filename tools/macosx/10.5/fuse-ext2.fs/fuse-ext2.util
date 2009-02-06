@@ -13,7 +13,7 @@ FALLBACK_LOGFILE=/var/tmp/fuse-ext2_util.log
 # Log level: 0 = no log messages, except explicit invocation of Log ()
 #            1 = error messages are written to log,
 #            2 = error & debug messages are written to log
-LOG_LEVEL=1
+LOG_LEVEL=2
 
 # Bundle is at the same level as fuse-ext2.util these days. (1)
 # Change this variable when script is moved to a different hierarchical level.
@@ -38,7 +38,7 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
 FUSE_EXT2=/bin/fuse-ext2
 FUSE_WAIT=/bin/fuse_wait
-FUSE_EXT2_DAEMON=/bin/fuse-ext2_daemon
+FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 
 # Writes a line to the log file
 function Log () {
@@ -193,7 +193,7 @@ function Mount ()
     # Setting both defer_auth and defer_permissions. The option was renamed
     # starting with MacFUSE 1.0.0, and there seems to be no backward
     # compatibility on the options.
-    OPTIONS="auto_xattr,defer_auth,defer_permissions"
+    OPTIONS="auto_xattr,defer_permissions"
 	
     # The local option is only enabled on Leopard. It causes strange
     # behavior for Disk Utility in Tiger.

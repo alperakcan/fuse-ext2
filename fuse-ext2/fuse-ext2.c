@@ -96,6 +96,14 @@ static int parse_options (int argc, char *argv[])
 		{ NULL,		 0,			NULL,  0  }
 	};
 
+#if 0
+	printf("arguments;\n");
+	for (c = 0; c < argc; c++) {
+		printf("%d: %s\n", c, argv[c]);
+	}
+	printf("done\n");
+#endif
+
 	opterr = 0; /* We'll handle the errors, thank you. */
 
 	while ((c = getopt_long(argc, argv, sopt, lopt, NULL)) != -1) {
@@ -105,7 +113,7 @@ static int parse_options (int argc, char *argv[])
 					opts.device = malloc(PATH_MAX + 1);
 					if (!opts.device)
 						return -1;
-	
+
 					/* We don't want relative path in /etc/mtab. */
 					if (optarg[0] != '/') {
 						if (!realpath(optarg, opts.device)) {
@@ -144,7 +152,7 @@ static int parse_options (int argc, char *argv[])
 				return -1;
 		}
 	}
-	
+
 	if (!opts.device) {
 		debugf("No device is specified");
 		return -1;
