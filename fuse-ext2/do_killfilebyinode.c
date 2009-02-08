@@ -1,7 +1,7 @@
 
 #include "fuse-ext2.h"
 
-static int release_blocks_proc (ext2_filsys fs, blk_t *blocknr, int blockcnt EXT2FS_ATTR((unused)), void *private EXT2FS_ATTR((unused)))
+static int release_blocks_proc (ext2_filsys fs, blk_t *blocknr, int blockcnt, void *private)
 {
 	blk_t block;
 
