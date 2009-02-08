@@ -152,7 +152,8 @@ function Format ()
 {
     LogDebug "[Format] Entering function Format..."
     DEVICE=`GetDevice "$2"`
-    LogDebug "[Repair] Returning from function Format with FSUR_INVAL."
+    LogDebug "[Format] Returning from function Format with FSUR_INVAL."
+    return 0
     return ${FSUR_INVAL} # FSUR_INVAL, defined in loadable_fs.h
 }
 
@@ -184,6 +185,7 @@ function Repair () {
     LogDebug "[Repair] Entering function Repair..."
     DEVICE=`GetDevice "$2"`
     LogDebug "[Repair] Returning from function Repair with FSUR_INVAL."
+    return 0
     return ${FSUR_INVAL} # FSUR_INVAL, defined in loadable_fs.h
 }
 
