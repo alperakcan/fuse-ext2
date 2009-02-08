@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.fuse-ext2.filesystems.ext2</string>
+	<string>org.macfuse.filesystems.fuse-ext2</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -57,20 +57,20 @@
 	<dict>
 		<key>fuse-ext2</key>
 		<dict>
+			<key>FSFormatContentMask</key>
+			<string>Linux</string>
 			<key>FSName</key>
 			<string>fuse-ext2</string>
 			<key>FSSubType</key>
 			<integer>11</integer>
-			<key>FSFormatContentMask</key>
-			<string>Linux</string>
+			<key>FSFormatMinimumSize</key>
+			<integer>0</integer>
+			<key>FSFormatMaximumSize</key>
+			<integer>0</integer>
 			<key>FSFormatArguments</key>
 			<string>-f</string>
 			<key>FSFormatExecutable</key>
 			<string>../../fuse-ext2.util</string>
-			<key>FSFormatMaximumSize</key>
-			<integer>0</integer>
-			<key>FSFormatMinimumSize</key>
-			<integer>0</integer>
 			<key>FSMountArguments</key>
 			<string>-m</string>
 			<key>FSMountExecutable</key>
