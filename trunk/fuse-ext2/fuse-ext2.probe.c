@@ -46,10 +46,11 @@ static int parse_options (int argc, char *argv[])
 {
 	int c;
 
-	static const char *sopt = "-rw";
+	static const char *sopt = "-rwd";
 	static const struct option lopt[] = {
 		{ "readonly",	 no_argument,	NULL, 'r' },
 		{ "readwrite",	 no_argument,	NULL, 'w' },
+		{ "debug",       no_argument,   NULL, 'd' },
 		{ NULL,		 0,		NULL,  0  }
 	};
 
@@ -84,6 +85,9 @@ static int parse_options (int argc, char *argv[])
 			case 'w':
 				opts.readonly = 0;
 				break;
+			case 'd':
+				opts.debug = 1;
+				break;
 			default:
 				debugf("Unknown option '%s'", argv[optind - 1]);
 				return -1;
@@ -110,8 +114,6 @@ int main (int argc, char *argv[])
 		usage();
 		return -1;
 	}
-
-	opts.debug = 1;
 
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
@@ -20,13 +20,13 @@
 	<string>1.1</string>
 	<key>FSMediaTypes</key>
 	<dict>
-		<key>Whole</key>
+		<key>Linux</key>
 		<dict>
 			<key>FSMediaProperties</key>
 			<dict>
+				<key>Content Hint</key>
+				<string>Linux</string>
 				<key>Leaf</key>
-				<true/>
-				<key>Whole</key>
 				<true/>
 			</dict>
 			<key>FSProbeArguments</key>
@@ -34,21 +34,55 @@
 			<key>FSProbeExecutable</key>
 			<string>../../fuse-ext2.util</string>
 			<key>FSProbeOrder</key>
-			<integer>3500</integer>
+			<integer>50</integer>
+		</dict>
+		<key>DOS_FAT_32</key>
+		<dict>
+			<key>FSMediaProperties</key>
+			<dict>
+				<key>Content Hint</key>
+				<string>DOS_FAT_32</string>
+				<key>Leaf</key>
+				<true/>
+			</dict>
+			<key>FSProbeArguments</key>
+			<string>-p</string>
+			<key>FSProbeExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSProbeOrder</key>
+			<integer>50</integer>
 		</dict>
 	</dict>
 	<key>FSPersonalities</key>
 	<dict>
-		<key>FUSE-EXT2</key>
+		<key>fuse-ext2</key>
 		<dict>
+			<key>FSName</key>
+			<string>fuse-ext2</string>
+			<key>FSSubType</key>
+			<integer>11</integer>
 			<key>FSFormatContentMask</key>
-			<string>EXT2 Filesystem</string>
+			<string>Linux</string>
+			<key>FSFormatArguments</key>
+			<string>-f</string>
+			<key>FSFormatExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSFormatMaximumSize</key>
+			<integer>0</integer>
+			<key>FSFormatMinimumSize</key>
+			<integer>0</integer>
 			<key>FSMountArguments</key>
 			<string>-m</string>
 			<key>FSMountExecutable</key>
 			<string>../../fuse-ext2.util</string>
-			<key>FSName</key>
-			<string>FUSE-EXT2</string>
+			<key>FSRepairArguments</key>
+			<string>-y</string>
+			<key>FSRepairExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSVerificationArguments</key>
+			<string>-v</string>
+			<key>FSVerificationExecutable</key>
+			<string>../../fuse-ext2.util</string>
 		</dict>
 	</dict>
 </dict>
