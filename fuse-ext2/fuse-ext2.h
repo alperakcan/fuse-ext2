@@ -132,6 +132,8 @@ int op_statfs(const char *path, struct statvfs *buf);
 
 /* write support */
 
+int do_modetoext2lag (mode_t mode);
+
 int op_chmod (const char *path, mode_t mode);
 
 int op_chown (const char *path, uid_t uid, gid_t gid);
@@ -161,5 +163,7 @@ int op_mknod (const char *path, mode_t mode, dev_t dev);
 int op_symlink (const char *sourcename, const char *destname);
 
 int op_truncate(const char *path, off_t length);
+
+int op_link (const char *source, const char *dest);
 
 #endif /* FUSEEXT2_H_ */
