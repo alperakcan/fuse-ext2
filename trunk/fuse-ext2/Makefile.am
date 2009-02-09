@@ -14,11 +14,6 @@ fuse_ext2_probe_CFLAGS =			\
 	-D_FILE_OFFSET_BITS=64			\
 	-I$(top_srcdir)/e2fsprogs-1.41.1
 
-if DARWIN
-fuse_ext2_probe_CFLAGS +=			\
-	-D__FreeBSD__=10
-endif
-
 fuse_ext2_probe_LDADD =				\
 	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
 	../e2fsprogs-1.41.1/et/libcom_err.a	\
@@ -64,6 +59,22 @@ fuse_ext2_CFLAGS =				\
 	-I$(top_srcdir)/e2fsprogs-1.41.1
 
 if DARWIN
+bin_PROGRAMS += \
+	fuse-ext2.wait
+
+fuse_ext2_wait_SOURCES = \
+	fuse-ext2.wait.c
+
+fuse_ext2_wait_CFLAGS = \
+	-Wall \
+	-D__FreeBSD__=10
+
+fuse_ext2_wait_LDFLAGS = \
+	-framework CoreFoundation
+
+fuse_ext2_probe_CFLAGS +=			\
+	-D__FreeBSD__=10
+
 fuse_ext2_CFLAGS +=				\
 	-D__FreeBSD__=10
 endif
