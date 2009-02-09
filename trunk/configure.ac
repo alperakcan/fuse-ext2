@@ -1,5 +1,5 @@
 
-AC_INIT([fuse-ext2], [0.0.1], [fuse_ext2@alperakcan.org])
+AC_INIT([fuse-ext2], [0.0.2], [alper.akcan@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADER([config.h])
@@ -15,7 +15,7 @@ AC_PATH_PROG(CHMOD, chmod, :)
 case $target_os in
      *linux*)	arch=linux;;
      *darwin*)	arch=darwin;;
-     *)			arch=unknown;;
+     *)		arch=unknown;;
 esac
 
 # Checks for header files.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Alper Akcan
+ * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ static const char *usage_msg =
 "\n"
 "%s %s %d - Probe EXT2FS volume mountability\n"
 "\n"
-"Copyright (C) 2008 Alper Akcan\n"
+"Copyright (C) 2008-2009 Alper Akcan <alper.akcan@gmail.com>\n"
 "\n"
 "Usage:    %s <--readonly|--readwrite> <device|image_file>\n"
 "\n"
