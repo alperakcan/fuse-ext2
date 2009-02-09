@@ -50,7 +50,8 @@ fuse_ext2_SOURCES =	\
 	op_write.c \
 	op_mknod.c \
 	op_symlink.c \
-	op_truncate.c
+	op_truncate.c \
+	op_link.c
 
 fuse_ext2_CFLAGS =				\
 	-Wall					\
