@@ -32,7 +32,7 @@ int op_unlink (const char *path)
 	struct ext2_inode p_inode;
 	ext2_ino_t r_ino;
 	struct ext2_inode r_inode;
-	
+
 	debugf("enter");
 	debugf("path = %s", path);
 
@@ -49,7 +49,7 @@ int op_unlink (const char *path)
 	*t_path = '\0';
 	r_path = t_path + 1;
 	debugf("parent: %s, child: %s", p_path, r_path);
-	
+
 	rt = do_readinode(p_path, &p_ino, &p_inode);
 	if (rt) {
 		debugf("do_readinode(%s, &p_ino, &p_inode); failed", p_path);
@@ -61,7 +61,7 @@ int op_unlink (const char *path)
 		debugf("do_readinode(%s, &r_ino, &r_inode); failed", path);
 		free(p_path);
 		return rt;
-		
+
 	}
 	if(LINUX_S_ISDIR(r_inode.i_mode)) {
 		debugf("%s is a directory", path);
@@ -81,13 +81,21 @@ int op_unlink (const char *path)
 	}
 
 	if (r_inode.i_links_count < 1) {
+		p_inode.i_ctime = p_inode.i_mtime = priv.fs->now ? priv.fs->now : time(NULL);
 		rt = do_killfilebyinode(r_ino, &r_inode);
 		if (rt) {
 			debugf("do_killfilebyinode(r_ino, &r_inode); failed");
 			free(p_path);
 			return rt;
 		}
+		rc = ext2fs_write_inode(priv.fs, p_ino, &p_inode);
+		if (rc) {
+			debugf("ext2fs_write_inode(priv.fs, p_ino, &p_inode); failed");
+			free(p_path);
+			return -EIO;
+		}
 	} else {
+		r_inode.i_ctime = priv.fs->now ? priv.fs->now : time(NULL);
 		rc = ext2fs_write_inode(priv.fs, r_ino, &r_inode);
 		if (rc) {
 			debugf("ext2fs_write_inode(priv.fs, r_ino, &r_inode); failed");
@@ -95,7 +103,7 @@ int op_unlink (const char *path)
 			return -EIO;
 		}
 	}
-	
+
 	free(p_path);
 	debugf("leave");
 	return 0;
