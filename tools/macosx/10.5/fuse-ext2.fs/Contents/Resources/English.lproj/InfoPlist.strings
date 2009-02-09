@@ -6,10 +6,10 @@
 	<string>fuse-ext2</string>
 	<key>FSPersonalities</key>
 	<dict>
-		<key>FUSE-EXT2</key>
+		<key>fuse-ext2</key>
 		<dict>
 			<key>FSName</key>
-			<string>EXT2 Filesystem (FUSE-EXT2)</string>
+			<string>fuse-ext2</string>
 		</dict>
 	</dict>
 </dict>
