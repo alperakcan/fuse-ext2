@@ -30,7 +30,7 @@ void * op_init (struct fuse_conn_info *conn)
 		debugf("Error while trying to open %s", priv.name);
 		exit(1);
 	}
-#if 0
+#if 1
 	rc = ext2fs_read_bitmaps(priv.fs);
 	if (rc) {
 		debugf("Error while reading bitmaps");
