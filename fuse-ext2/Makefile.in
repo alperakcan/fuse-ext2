@@ -33,11 +33,15 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = fuse-ext2$(EXEEXT) fuse-ext2.probe$(EXEEXT)
+bin_PROGRAMS = fuse-ext2$(EXEEXT) fuse-ext2.probe$(EXEEXT) \
+	$(am__EXEEXT_1)
 @DARWIN_TRUE@am__append_1 = \
-@DARWIN_TRUE@	-D__FreeBSD__=10
+@DARWIN_TRUE@	fuse-ext2.wait
 
 @DARWIN_TRUE@am__append_2 = \
+@DARWIN_TRUE@	-D__FreeBSD__=10
+
+@DARWIN_TRUE@am__append_3 = \
 @DARWIN_TRUE@	-D__FreeBSD__=10
 
 subdir = fuse-ext2
@@ -49,6 +53,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
+@DARWIN_TRUE@am__EXEEXT_1 = fuse-ext2.wait$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
@@ -84,6 +89,14 @@ fuse_ext2_probe_DEPENDENCIES = ../e2fsprogs-1.41.1/ext2fs/libext2fs.a \
 fuse_ext2_probe_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(fuse_ext2_probe_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__fuse_ext2_wait_SOURCES_DIST = fuse-ext2.wait.c
+@DARWIN_TRUE@am_fuse_ext2_wait_OBJECTS =  \
+@DARWIN_TRUE@	fuse_ext2_wait-fuse-ext2.wait.$(OBJEXT)
+fuse_ext2_wait_OBJECTS = $(am_fuse_ext2_wait_OBJECTS)
+fuse_ext2_wait_LDADD = $(LDADD)
+fuse_ext2_wait_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(fuse_ext2_wait_CFLAGS) \
+	$(CFLAGS) $(fuse_ext2_wait_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -96,8 +109,10 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(fuse_ext2_SOURCES) $(fuse_ext2_probe_SOURCES)
-DIST_SOURCES = $(fuse_ext2_SOURCES) $(fuse_ext2_probe_SOURCES)
+SOURCES = $(fuse_ext2_SOURCES) $(fuse_ext2_probe_SOURCES) \
+	$(fuse_ext2_wait_SOURCES)
+DIST_SOURCES = $(fuse_ext2_SOURCES) $(fuse_ext2_probe_SOURCES) \
+	$(am__fuse_ext2_wait_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -218,7 +233,7 @@ fuse_ext2_probe_SOURCES = \
 	do_probe.c
 
 fuse_ext2_probe_CFLAGS = -Wall -DHAVE_CONFIG_H -D_FILE_OFFSET_BITS=64 \
-	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_1)
+	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_2)
 fuse_ext2_probe_LDADD = \
 	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
 	../e2fsprogs-1.41.1/et/libcom_err.a	\
@@ -258,7 +273,17 @@ fuse_ext2_SOURCES = \
 	op_truncate.c
 
 fuse_ext2_CFLAGS = -Wall -DHAVE_CONFIG_H -D_FILE_OFFSET_BITS=64 \
-	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_2)
+	-I$(top_srcdir)/e2fsprogs-1.41.1 $(am__append_3)
+@DARWIN_TRUE@fuse_ext2_wait_SOURCES = \
+@DARWIN_TRUE@	fuse-ext2.wait.c
+
+@DARWIN_TRUE@fuse_ext2_wait_CFLAGS = \
+@DARWIN_TRUE@	-Wall \
+@DARWIN_TRUE@	-D__FreeBSD__=10
+
+@DARWIN_TRUE@fuse_ext2_wait_LDFLAGS = \
+@DARWIN_TRUE@	-framework CoreFoundation
+
 fuse_ext2_LDADD = \
 	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
 	../e2fsprogs-1.41.1/et/libcom_err.a	\
@@ -331,6 +356,9 @@ fuse-ext2$(EXEEXT): $(fuse_ext2_OBJECTS) $(fuse_ext2_DEPENDENCIES)
 fuse-ext2.probe$(EXEEXT): $(fuse_ext2_probe_OBJECTS) $(fuse_ext2_probe_DEPENDENCIES) 
 	@rm -f fuse-ext2.probe$(EXEEXT)
 	$(fuse_ext2_probe_LINK) $(fuse_ext2_probe_OBJECTS) $(fuse_ext2_probe_LDADD) $(LIBS)
+fuse-ext2.wait$(EXEEXT): $(fuse_ext2_wait_OBJECTS) $(fuse_ext2_wait_DEPENDENCIES) 
+	@rm -f fuse-ext2.wait$(EXEEXT)
+	$(fuse_ext2_wait_LINK) $(fuse_ext2_wait_OBJECTS) $(fuse_ext2_wait_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -370,6 +398,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2-op_write.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2_probe-do_probe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2_probe-fuse-ext2.probe.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -839,6 +868,20 @@ fuse_ext2_probe-do_probe.obj: do_probe.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='do_probe.c' object='fuse_ext2_probe-do_probe.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_probe_CFLAGS) $(CFLAGS) -c -o fuse_ext2_probe-do_probe.obj `if test -f 'do_probe.c'; then $(CYGPATH_W) 'do_probe.c'; else $(CYGPATH_W) '$(srcdir)/do_probe.c'; fi`
+
+fuse_ext2_wait-fuse-ext2.wait.o: fuse-ext2.wait.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_wait_CFLAGS) $(CFLAGS) -MT fuse_ext2_wait-fuse-ext2.wait.o -MD -MP -MF $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Tpo -c -o fuse_ext2_wait-fuse-ext2.wait.o `test -f 'fuse-ext2.wait.c' || echo '$(srcdir)/'`fuse-ext2.wait.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Tpo $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fuse-ext2.wait.c' object='fuse_ext2_wait-fuse-ext2.wait.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_wait_CFLAGS) $(CFLAGS) -c -o fuse_ext2_wait-fuse-ext2.wait.o `test -f 'fuse-ext2.wait.c' || echo '$(srcdir)/'`fuse-ext2.wait.c
+
+fuse_ext2_wait-fuse-ext2.wait.obj: fuse-ext2.wait.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_wait_CFLAGS) $(CFLAGS) -MT fuse_ext2_wait-fuse-ext2.wait.obj -MD -MP -MF $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Tpo -c -o fuse_ext2_wait-fuse-ext2.wait.obj `if test -f 'fuse-ext2.wait.c'; then $(CYGPATH_W) 'fuse-ext2.wait.c'; else $(CYGPATH_W) '$(srcdir)/fuse-ext2.wait.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Tpo $(DEPDIR)/fuse_ext2_wait-fuse-ext2.wait.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fuse-ext2.wait.c' object='fuse_ext2_wait-fuse-ext2.wait.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fuse_ext2_wait_CFLAGS) $(CFLAGS) -c -o fuse_ext2_wait-fuse-ext2.wait.obj `if test -f 'fuse-ext2.wait.c'; then $(CYGPATH_W) 'fuse-ext2.wait.c'; else $(CYGPATH_W) '$(srcdir)/fuse-ext2.wait.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
