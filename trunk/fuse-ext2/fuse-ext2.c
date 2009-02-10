@@ -338,6 +338,7 @@ int main (int argc, char *argv[])
 	}
 
 	if (fuse_opt_add_arg(&fargs, PACKAGE) == -1 ||
+	    fuse_opt_add_arg(&fargs, "-s") == -1 ||
 	    fuse_opt_add_arg(&fargs, "-o") == -1 ||
 	    fuse_opt_add_arg(&fargs, parsed_options) == -1 ||
 	    fuse_opt_add_arg(&fargs, opts.mnt_point) == -1) {
