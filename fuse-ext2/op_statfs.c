@@ -22,7 +22,7 @@
 static int test_root (int a, int b)
 {
 	int num = b;
-	
+
 	while (a < num) {
 		num *= b;
 	}
@@ -66,7 +66,7 @@ int op_statfs(const char *path, struct statvfs *buf)
 	unsigned long s_inodes_per_block = 0;
 
 	debugf("enter");
-	
+
 	memset(buf, 0, sizeof(struct statvfs));
 
 	if (priv.fs->super->s_default_mount_opts & EXT2_MOUNT_MINIX_DF) {
