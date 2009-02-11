@@ -1,3 +1,8 @@
+#
+# This script is heavly based on ntfs-3g mac osx package,
+# thanks to Erik Larsson, and Paul Marks for their efforts.
+#
+
 #!/bin/sh
 
 SUDO="sudo"
