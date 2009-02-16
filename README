@@ -44,4 +44,25 @@ Build
 	Generating package:
 	$ make package
 
+Usage
+-----
+
+Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
+
+Options:  ro, force, allow_others\
+          Please see details in the manual.
+
+Example:  fuse-ext2 /dev/sda1 /mnt/sda1 -o force
+
+Bugs
+----
+
+there are no known bugs for read-only mode, read only mode should be ok for every one.
+
+altough, write support is available (and it is pretty stable) please do not mount your
+filesystems with write support unless you do not have anything to loose.
+
+Contact
+-------
+
 Alper Akcan <alper.akcan@gmail.com>
