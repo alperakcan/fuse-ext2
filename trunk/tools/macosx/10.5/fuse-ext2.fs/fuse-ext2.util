@@ -251,10 +251,10 @@ function Mount ()
     LogDebug "[Mount] Got raw device \"${RAWDEVICE}\""
     
     LogDebug "[Mount] Invoking:"
-    LogDebug "[Mount]   \"${PFX}${FUSE_WAIT}\" \"${MOUNTPOINT}\" \"20\" \"${PFX}${FUSE_EXT2}\" \"${DEVICE}\" \"${MOUNTPOINT}\" \"-o${OPTIONS}\""
+    LogDebug "[Mount]   \"${PFX}${FUSE_WAIT}\" \"${MOUNTPOINT}\" \"5\" \"${PFX}${FUSE_EXT2}\" \"${DEVICE}\" \"${MOUNTPOINT}\" \"-o${OPTIONS}\""
     
     # Go ahead and attempt the mount
-    MOUNT_OUTPUT=`"${PFX}${FUSE_WAIT}" "${MOUNTPOINT}" "20" "${PFX}${FUSE_EXT2}" "${DEVICE}" "${MOUNTPOINT}" "-o${OPTIONS}" 2>&1`
+    MOUNT_OUTPUT=`"${PFX}${FUSE_WAIT}" "${MOUNTPOINT}" "5" "${PFX}${FUSE_EXT2}" "${DEVICE}" "${MOUNTPOINT}" "-o${OPTIONS}" 2>&1`
     MOUNT_RES=$?
     LogDebug "[Mount] ${PFX}${FUSE_WAIT} returned with retval: ${MOUNT_RES}"
     
