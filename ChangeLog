@@ -1,4 +1,8 @@
 
+Sat 04 Apr 2009 02:28:34 AM EET
+	- disable multithread
+	- reduce wait time to 5 seconds
+
 Mon 09 Feb 2009 04:42:51 PM EET
 	- mac osx file system bundle support
 	- automount support
