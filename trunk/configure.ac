@@ -180,6 +180,7 @@ AC_CONFIG_FILES([
 	Makefile
 	e2fsprogs-1.41.1/Makefile
 	e2fsprogs-1.41.1/et/Makefile
+	e2fsprogs-1.41.1/misc/Makefile
 	e2fsprogs-1.41.1/ext2fs/Makefile
 	fuse-ext2/Makefile
 	tools/Makefile

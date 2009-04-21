@@ -1,4 +1,7 @@
 
+Tue 21 Apr 2009 02:32:57 PM EEST
+	- merge in Dave Vasilevsky's labels patch
+
 Sat 04 Apr 2009 02:28:34 AM EET
 	- disable multithread
 	- reduce wait time to 5 seconds
