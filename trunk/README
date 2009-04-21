@@ -62,6 +62,15 @@ there are no known bugs for read-only mode, read only mode should be ok for ever
 altough, write support is available (and it is pretty stable) please do not mount your
 filesystems with write support unless you do not have anything to loose.
 
+Labels
+------
+
+please do not use comma ',' in partition labels.
+
+wrong: e2label /dev/disk0s3 "linux,ext3"
+
+correct: e2label /dev/disk0s3 "linux-ext3"
+
 Contact
 -------
 
