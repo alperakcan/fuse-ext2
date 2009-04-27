@@ -25,7 +25,7 @@
 	<key>NSMainNibFile</key>
 	<string>fuse_ext2Pref</string>
 	<key>NSPrefPaneIconFile</key>
-	<string>fuse_ext2Pref.tiff</string>
+	<string>penguin.png</string>
 	<key>NSPrefPaneIconLabel</key>
 	<string>fuse-ext2</string>
 	<key>NSPrincipalClass</key>
