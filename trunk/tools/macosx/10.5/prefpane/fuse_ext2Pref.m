@@ -8,9 +8,10 @@
 
 #import "fuse_ext2Pref.h"
 
+static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
 static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
 static NSString *kinstalledString = @"Installed Version:";
-static NSString *kupdateString = @"No Updates Available At This Time";
+static NSString *kupdateString = @"No Updates Available At This Time.";
 
 @interface fuse_ext2Pref (PrivateMethods)
 
@@ -39,7 +40,7 @@ static NSString *kupdateString = @"No Updates Available At This Time";
 	
 	versionString = nil;
 	
-	fuse_ext2Path = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
+	fuse_ext2Path = kinstalledPath;
 	fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
 	if (fuse_ext2Plist == nil) {
 		fuse_ext2Path = [@"/System" stringByAppendingPathComponent:fuse_ext2Path];
@@ -51,6 +52,7 @@ static NSString *kupdateString = @"No Updates Available At This Time";
 			versionString = [[NSString alloc] initWithString:bundleVersion];
 		}
 	}
+	
 	return versionString;
 }
 
