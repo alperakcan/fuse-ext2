@@ -275,7 +275,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {186, 445}}</string>
+							<string>{{0, 0}, {186, 563}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -287,14 +287,14 @@
 					<key>GeometryConfiguration</key>
 					<dict>
 						<key>Frame</key>
-						<string>{{0, 0}, {203, 463}}</string>
+						<string>{{0, 0}, {203, 581}}</string>
 						<key>GroupTreeTableConfiguration</key>
 						<array>
 							<string>MainColumn</string>
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>264 174 788 504 0 0 1280 778 </string>
+						<string>233 90 888 622 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -310,7 +310,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>fuse_ext2Pref.h</string>
+								<string>Info.plist</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -318,17 +318,17 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>fuse_ext2Pref.h</string>
+										<string>Info.plist</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>551ADFDB0FA6452C00AA0ADB</string>
+										<string>55DE31EF0FA658C800F94D27</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
-											<string>551ADFC00FA6423E00AA0ADB</string>
-											<string>551ADFC10FA6423E00AA0ADB</string>
-											<string>551ADFC20FA6423E00AA0ADB</string>
+											<string>55FD657B0FA649E30009BA4B</string>
+											<string>55DE31D50FA657BF00F94D27</string>
+											<string>55DE31DE0FA6585900F94D27</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -347,14 +347,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {580, 285}}</string>
+								<string>{{0, 0}, {680, 403}}</string>
 								<key>RubberWindowFrame</key>
-								<string>264 174 788 504 0 0 1280 778 </string>
+								<string>233 90 888 622 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>285pt</string>
+							<string>403pt</string>
 						</dict>
 						<dict>
 							<key>BecomeActive</key>
@@ -369,9 +369,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 290}, {580, 173}}</string>
+								<string>{{0, 408}, {680, 173}}</string>
 								<key>RubberWindowFrame</key>
-								<string>264 174 788 504 0 0 1280 778 </string>
+								<string>233 90 888 622 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -380,7 +380,7 @@
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>580pt</string>
+					<string>680pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -395,9 +395,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>551ADFC80FA6423E00AA0ADB</string>
+				<string>55DE31E90FA6586A00F94D27</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>551ADFC90FA6423E00AA0ADB</string>
+				<string>55DE31EA0FA6586A00F94D27</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -535,7 +535,7 @@
 		<string>/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/10.5/prefpane/fuse-ext2.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>264 174 788 504 0 0 1280 778 </string>
+	<string>233 90 888 622 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -612,7 +612,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>551ADFCA0FA6423E00AA0ADB</string>
-				<string>551ADFCB0FA6423E00AA0ADB</string>
+				<string>55DE31F00FA658C800F94D27</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
