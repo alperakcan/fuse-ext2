@@ -3,6 +3,9 @@
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeBuildConfigurationName = Debug;
 		activeTarget = 8D202CE80486D31800D8A456 /* fuse-ext2 */;
+		addToTargets = (
+			8D202CE80486D31800D8A456 /* fuse-ext2 */,
+		);
 		codeSenseManager = 551ADF920FA6403300AA0ADB /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -27,8 +30,20 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 262553669;
-			PBXWorkspaceStateSaveDate = 262553669;
+			PBXPerProjectTemplateStateSaveDate = 262553871;
+			PBXWorkspaceStateSaveDate = 262553871;
+		};
+		perUserProjectItems = {
+			551ADFBF0FA6423E00AA0ADB /* PBXBookmark */ = 551ADFBF0FA6423E00AA0ADB /* PBXBookmark */;
+			551ADFC00FA6423E00AA0ADB /* PlistBookmark */ = 551ADFC00FA6423E00AA0ADB /* PlistBookmark */;
+			551ADFC10FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC10FA6423E00AA0ADB /* PBXTextBookmark */;
+			551ADFC20FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC20FA6423E00AA0ADB /* PBXTextBookmark */;
+			551ADFC30FA6423E00AA0ADB /* PBXBookmark */ = 551ADFC30FA6423E00AA0ADB /* PBXBookmark */;
+			551ADFC40FA6423E00AA0ADB /* PlistBookmark */ = 551ADFC40FA6423E00AA0ADB /* PlistBookmark */;
+			551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */;
+			551ADFC60FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC60FA6423E00AA0ADB /* PBXTextBookmark */;
+			551ADFC70FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC70FA6423E00AA0ADB /* PBXTextBookmark */;
+			551ADFDB0FA6452C00AA0ADB /* PBXTextBookmark */ = 551ADFDB0FA6452C00AA0ADB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 551ADF910FA6403300AA0ADB /* Source Control */;
 		userBuildSettings = {
@@ -45,7 +60,113 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	551ADFBF0FA6423E00AA0ADB /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 551ADFB20FA6412600AA0ADB /* penguin.png */;
+	};
+	551ADFC00FA6423E00AA0ADB /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D202CF70486D31800D8A456 /* Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			NSPrefPaneIconFile,
+		);
+		name = "/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/10.5/prefpane/Info.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	551ADFC10FA6423E00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */;
+		name = "fuse_ext2Pref.m: 19";
+		rLen = 0;
+		rLoc = 549;
+		rType = 0;
+		vrLen = 254;
+		vrLoc = 495;
+	};
+	551ADFC20FA6423E00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */;
+		name = "fuse_ext2Pref.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 275;
+		vrLoc = 0;
+	};
+	551ADFC30FA6423E00AA0ADB /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 551ADFB20FA6412600AA0ADB /* penguin.png */;
+	};
+	551ADFC40FA6423E00AA0ADB /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D202CF70486D31800D8A456 /* Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			NSPrefPaneIconFile,
+		);
+		name = "/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/10.5/prefpane/Info.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */;
+		name = "fuse_ext2Pref.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 275;
+		vrLoc = 0;
+	};
+	551ADFC60FA6423E00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */;
+		name = "fuse_ext2Pref.m: 19";
+		rLen = 0;
+		rLoc = 549;
+		rType = 0;
+		vrLen = 254;
+		vrLoc = 495;
+	};
+	551ADFC70FA6423E00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */;
+		name = "fuse_ext2Pref.h: 26";
+		rLen = 0;
+		rLoc = 550;
+		rType = 0;
+		vrLen = 531;
+		vrLoc = 248;
+	};
+	551ADFDB0FA6452C00AA0ADB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */;
+		name = "fuse_ext2Pref.h: 26";
+		rLen = 0;
+		rLoc = 550;
+		rType = 0;
+		vrLen = 531;
+		vrLoc = 248;
+	};
 	8D202CE80486D31800D8A456 /* fuse-ext2 */ = {
 		activeExec = 0;
+	};
+	F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {519, 462}}";
+			sepNavSelRange = "{550, 0}";
+			sepNavVisRange = "{248, 531}";
+		};
+	};
+	F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {900, 854}}";
+			sepNavSelRange = "{549, 0}";
+			sepNavVisRange = "{495, 254}";
+		};
 	};
 }

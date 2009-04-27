@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		551ADFB30FA6412600AA0ADB /* penguin.png in Resources */ = {isa = PBXBuildFile; fileRef = 551ADFB20FA6412600AA0ADB /* penguin.png */; };
 		8D202CEA0486D31800D8A456 /* fuse-ext2_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* fuse-ext2_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* fuse_ext2Pref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
-		8D202CEE0486D31800D8A456 /* fuse_ext2Pref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* fuse_ext2Pref.tiff */; };
 		8D202CEF0486D31800D8A456 /* fuse_ext2Pref.xib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* fuse_ext2Pref.xib */; };
 		8D202CF10486D31800D8A456 /* fuse_ext2Pref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
@@ -23,12 +23,12 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* fuse-ext2_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "fuse-ext2_Prefix.pch"; sourceTree = "<group>"; };
+		551ADFB20FA6412600AA0ADB /* penguin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penguin.png; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* fuse-ext2.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "fuse-ext2.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
-		F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fuse_ext2Pref.h; sourceTree = "<group>"; };
-		F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fuse_ext2Pref.m; sourceTree = "<group>"; };
-		F506C040013D9D8001CA16C8 /* fuse_ext2Pref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fuse_ext2Pref.tiff; sourceTree = "<group>"; };
+		F506C03C013D9D7901CA16C8 /* fuse_ext2Pref.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.h; path = fuse_ext2Pref.h; sourceTree = "<group>"; tabWidth = 8; };
+		F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.objc; path = fuse_ext2Pref.m; sourceTree = "<group>"; tabWidth = 8; };
 		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/fuse_ext2Pref.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,9 +69,9 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				551ADFB20FA6412600AA0ADB /* penguin.png */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
-				F506C040013D9D8001CA16C8 /* fuse_ext2Pref.tiff */,
 				F506C042013D9D8C01CA16C8 /* fuse_ext2Pref.xib */,
 			);
 			name = Resources;
@@ -178,8 +178,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				8D202CEE0486D31800D8A456 /* fuse_ext2Pref.tiff in Resources */,
 				8D202CEF0486D31800D8A456 /* fuse_ext2Pref.xib in Resources */,
+				551ADFB30FA6412600AA0ADB /* penguin.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
