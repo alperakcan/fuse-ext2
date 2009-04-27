@@ -66,18 +66,23 @@
 									<string>NeXT TIFF v4.0 pasteboard type</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{20, 113}, {48, 48}}</string>
+							<string key="NSFrame">{{20, 97}, {64, 64}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="549440327">
-								<int key="NSCellFlags">130560</int>
+								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">33554432</int>
 								<object class="NSCustomResource" key="NSContents">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">penguin</string>
 								</object>
+								<object class="NSFont" key="NSSupport" id="76967042">
+									<string key="NSName">LucidaGrande</string>
+									<double key="NSSize">1.300000e+01</double>
+									<int key="NSfFlags">1044</int>
+								</object>
 								<int key="NSAlign">0</int>
-								<int key="NSScale">0</int>
+								<int key="NSScale">2</int>
 								<int key="NSStyle">0</int>
 								<bool key="NSAnimates">NO</bool>
 							</object>
@@ -86,12 +91,12 @@
 						<object class="NSTextField" id="173541211">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{94, 113}, {557, 48}}</string>
+							<string key="NSFrame">{{94, 97}, {557, 64}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="693301014">
 								<int key="NSCellFlags">67239424</int>
-								<int key="NSCellFlags2">272629760</int>
+								<int key="NSCellFlags2">205520896</int>
 								<string key="NSContents">Multiline Label</string>
 								<object class="NSFont" key="NSSupport">
 									<string key="NSName">LucidaGrande</string>
@@ -99,6 +104,7 @@
 									<int key="NSfFlags">16</int>
 								</object>
 								<reference key="NSControlView" ref="173541211"/>
+								<bool key="NSDrawsBackground">YES</bool>
 								<object class="NSColor" key="NSBackgroundColor" id="422258750">
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
@@ -122,18 +128,14 @@
 						<object class="NSBox" id="1060266143">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">12</int>
-							<string key="NSFrame">{{20, 90}, {628, 5}}</string>
+							<string key="NSFrame">{{20, 86}, {628, 5}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Box</string>
-								<object class="NSFont" key="NSSupport" id="76967042">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">1.300000e+01</double>
-									<int key="NSfFlags">1044</int>
-								</object>
+								<reference key="NSSupport" ref="76967042"/>
 								<object class="NSColor" key="NSBackgroundColor">
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
@@ -350,14 +352,14 @@
 						<reference key="object" ref="1037298196"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="290916454"/>
 							<reference ref="173541211"/>
-							<reference ref="1060266143"/>
 							<reference ref="934737218"/>
 							<reference ref="99950424"/>
 							<reference ref="1036738595"/>
 							<reference ref="733484387"/>
 							<reference ref="173827884"/>
+							<reference ref="1060266143"/>
+							<reference ref="290916454"/>
 						</object>
 						<reference key="parent" ref="660800786"/>
 					</object>
