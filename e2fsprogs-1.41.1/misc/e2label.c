@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <ctype.h>
 #include <termios.h>
@@ -25,9 +26,6 @@ extern int optind;
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
 #endif
 #ifdef HAVE_ERRNO_H
 #include <errno.h>

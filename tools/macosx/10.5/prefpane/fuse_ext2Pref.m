@@ -27,22 +27,46 @@ static NSString *kupdateString = @"No Updates Available At This Time";
 
 - (IBAction) removeButtonClicked: (id) sender
 {
+	NSLog(@"remove button clicked\n");
 }
 
 - (NSString *) installedVersion
 {
+	NSString *fuse_ext2Path;
 	NSString *versionString;
-	versionString = [[NSString alloc] initWithFormat:@"%@ %@", kinstalledString, @"0.0.3"];
+	NSString *bundleVersion;
+	NSDictionary *fuse_ext2Plist;
+	
+	versionString = nil;
+	
+	fuse_ext2Path = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
+	fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
+	if (fuse_ext2Plist == nil) {
+		fuse_ext2Path = [@"/System" stringByAppendingPathComponent:fuse_ext2Path];
+		fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
+	}
+	if (fuse_ext2Plist != nil) {
+		bundleVersion = [fuse_ext2Plist objectForKey:@"CFBundleVersion"];
+		if (bundleVersion != nil) {
+			versionString = [[NSString alloc] initWithString:bundleVersion];
+		}
+	}
 	return versionString;
 }
 
 - (void) updateGUI
 {
 	NSString *version;
+	NSString *versionString;
+	
 	version = [self installedVersion];
+	versionString = [[NSString alloc] initWithFormat:@"%@ %@", kinstalledString, (version == nil) ? @"unknown" : version];
+	
 	[aboutLabel setStringValue:kaboutLabelString];
-	[installedLabel setStringValue:version];
+	[installedLabel setStringValue: versionString];
 	[updateLabel setStringValue:kupdateString];
+
+	[versionString release];
 	[version release];
 }
 
