@@ -1,4 +1,9 @@
 
+Tue 19 May 2009 07:34:23 PM EEST
+	- version 0.0.4
+	- get etx2 label in probe stage
+	- make labeling work for universal build, also
+
 Tue 21 Apr 2009 02:32:57 PM EEST
 	- merge in Dave Vasilevsky's labels patch
 
