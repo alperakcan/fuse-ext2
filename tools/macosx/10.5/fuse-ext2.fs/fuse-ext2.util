@@ -43,7 +43,6 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
 FUSE_EXT2=/bin/fuse-ext2
 FUSE_WAIT=/bin/fuse-ext2.wait
-FUSE_E2LABEL=/bin/e2label
 FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 
 # Writes a line to the log file
@@ -250,14 +249,6 @@ function Mount ()
     LogDebug "[Mount] Got plain device \"${DEVICE}\""
     RAWDEVICE=`GetRawDevice "${DEVICE_ARG}"`
     LogDebug "[Mount] Got raw device \"${RAWDEVICE}\""
-    
-    LogDebug "[Mount] Executing \"${PFX}${FUSE_E2LABEL}\" \"${DEVICE}\" 2>/dev/null"
-    LABEL=`"${PFX}${FUSE_E2LABEL}" "${DEVICE}" 2>/dev/null`
-    LogDebug "[Mount]   Return value: $?"
-    LogDebug "[Mount]   Output (LABEL): \"$LABEL\""
-    if ( [[ ! -z "${LABEL}" ]]); then
-        OPTIONS="${OPTIONS},volname=${LABEL}"
-    fi
     
     LogDebug "[Mount] Invoking:"
     LogDebug "[Mount]   \"${PFX}${FUSE_WAIT}\" \"${MOUNTPOINT}\" \"5\" \"${PFX}${FUSE_EXT2}\" \"${DEVICE}\" \"${MOUNTPOINT}\" \"-o${OPTIONS}\""
