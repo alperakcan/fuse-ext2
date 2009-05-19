@@ -19,6 +19,8 @@
 
 #include "fuse-ext2.h"
 
+#define VOLNAME_SIZE_MAX 16
+
 int do_probe (void)
 {
 	errcode_t rc;
@@ -38,10 +40,10 @@ int do_probe (void)
 		return -2;
 	}
 	if (priv.fs->super != NULL) {
-		opts.volname = (char *) malloc(sizeof(char) * 16);
+		opts.volname = (char *) malloc(sizeof(char) * (VOLNAME_SIZE_MAX + 1));
 		if (opts.volname != NULL) {
-			strncpy(opts.volname, priv.fs->super->s_volume_name, 16);
-			opts.volname[16] = '\0';
+			strncpy(opts.volname, priv.fs->super->s_volume_name, VOLNAME_SIZE_MAX);
+			opts.volname[VOLNAME_SIZE_MAX] = '\0';
 		}
 	}
 	ext2fs_close(priv.fs);
