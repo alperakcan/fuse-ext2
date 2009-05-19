@@ -55,6 +55,7 @@ struct options_s {
 	char *mnt_point;
 	char *options;
 	char *device;
+	char *volname;
 };
 
 struct private_s {
@@ -97,6 +98,8 @@ void op_destroy (void *userdata);
 /* helper functions */
 
 int do_probe (void);
+
+int do_label (void);
 
 int do_check (const char *path);
 

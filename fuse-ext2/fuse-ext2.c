@@ -244,11 +244,15 @@ static char * parse_mount_options (const char *orig_opts)
 	strcat(ret, ",fstypename=");
 	strcat(ret, "ext2");
 	strcat(ret, ",volname=");
-	s = strrchr(opts.device, '/');
-	if (s != NULL) {
-		strcat(ret, s + 1);
+	if (opts.volname == NULL) {
+		s = strrchr(opts.device, '/');
+		if (s != NULL) {
+			strcat(ret, s + 1);
+		} else {
+			strcat(ret, opts.device);
+		}
 	} else {
-		strcat(ret, opts.device);
+		strcat(ret, opts.volname);
 	}
 #endif
 exit:
@@ -314,28 +318,29 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 
-	parsed_options = parse_mount_options(opts.options ? opts.options : "");
-	if (!parsed_options) {
-		err = -2;
-		goto err_out;
-	}
-
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);
 		err = -3;
 		goto err_out;
 	}
 
-	debugf("opts.device: %s", opts.device);
-	debugf("opts.mnt_point: %s", opts.mnt_point);
-	debugf("opts.options: %s", opts.options);
-	debugf("parsed_options: %s", parsed_options);
-
 	if (do_probe() != 0) {
 		debugf("Probe failed");
 		err = -4;
 		goto err_out;
 	}
+
+	parsed_options = parse_mount_options(opts.options ? opts.options : "");
+	if (!parsed_options) {
+		err = -2;
+		goto err_out;
+	}
+
+	debugf("opts.device: %s", opts.device);
+	debugf("opts.mnt_point: %s", opts.mnt_point);
+	debugf("opts.volname: %s", (opts.volname != NULL) ? opts.volname : "");
+	debugf("opts.options: %s", opts.options);
+	debugf("parsed_options: %s", parsed_options);
 
 	if (fuse_opt_add_arg(&fargs, PACKAGE) == -1 ||
 	    fuse_opt_add_arg(&fargs, "-s") == -1 ||
@@ -361,5 +366,6 @@ err_out:
 	free(parsed_options);
 	free(opts.options);
 	free(opts.device);
+	free(opts.volname);
 	return err;
 }
