@@ -1,5 +1,5 @@
 
-AC_INIT([fuse-ext2], [0.0.3], [alper.akcan@gmail.com])
+AC_INIT([fuse-ext2], [0.0.4], [alper.akcan@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADER([config.h])

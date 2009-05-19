@@ -37,6 +37,13 @@ int do_probe (void)
 		ext2fs_close(priv.fs);
 		return -2;
 	}
+	if (priv.fs->super != NULL) {
+		opts.volname = (char *) malloc(sizeof(char) * 16);
+		if (opts.volname != NULL) {
+			strncpy(opts.volname, priv.fs->super->s_volume_name, 16);
+			opts.volname[16] = '\0';
+		}
+	}
 	ext2fs_close(priv.fs);
 
 	debugf("leave");
