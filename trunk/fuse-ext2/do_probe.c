@@ -42,6 +42,7 @@ int do_probe (void)
 	if (priv.fs->super != NULL) {
 		opts.volname = (char *) malloc(sizeof(char) * (VOLNAME_SIZE_MAX + 1));
 		if (opts.volname != NULL) {
+			memset(opts.volname, 0, sizeof(char) * (VOLNAME_SIZE_MAX + 1));
 			strncpy(opts.volname, priv.fs->super->s_volume_name, VOLNAME_SIZE_MAX);
 			opts.volname[VOLNAME_SIZE_MAX] = '\0';
 		}

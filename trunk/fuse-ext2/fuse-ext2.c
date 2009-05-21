@@ -244,7 +244,7 @@ static char * parse_mount_options (const char *orig_opts)
 	strcat(ret, ",fstypename=");
 	strcat(ret, "ext2");
 	strcat(ret, ",volname=");
-	if (opts.volname == NULL) {
+	if (opts.volname == NULL || opts.volname[0] == '\0') {
 		s = strrchr(opts.device, '/');
 		if (s != NULL) {
 			strcat(ret, s + 1);
