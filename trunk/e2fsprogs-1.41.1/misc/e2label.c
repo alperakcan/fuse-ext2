@@ -105,7 +105,7 @@ static void change_label (char *dev, char *label)
 	}
 }
 
-int main (int argc, char ** argv)
+int main (int argc, char *argv[])
 {
 	if (argc == 2)
 	     print_label(argv[1]);
