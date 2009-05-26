@@ -37,10 +37,20 @@ Build
 
 	Universal build:
 	$ ./autogen.sh
-	$ CFLAGS="-arch i386 -arch ppc" ../configure --disable-dependency-tracking
+	$ CFLAGS="-arch i386 -arch ppc" ./configure --disable-dependency-tracking
 	$ make
 	$ sudo make install
-
+	
+	Tiger (Universal) build:
+	$ export MACOSX_DEPLOYMENT_TARGET="10.4"
+	$ export OSX_SDK="/Developer/SDKs/MacOSX10.4u.sdk"
+	$ export OSX_CFLAGS="-isysroot $OSX_SDK -arch ppc -arch i386"
+	$ export OSX_LDFLAGS="-Wl,-syslibroot,$OSX_SDK -arch ppc -arch i386"
+	$ ./autogen.sh
+	$ CFLAGS="$OSX_CFLAGS" CXXFLAGS="$OSX_CFLAGS" LDFLAGS="$OSX_LDFLAGS" ./configure --disable-dependency-tracking
+	$ make
+	$ sudo make install
+	
 	Generating package:
 	$ make package
 
