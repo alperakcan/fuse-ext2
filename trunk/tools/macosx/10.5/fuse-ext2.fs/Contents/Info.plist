@@ -36,12 +36,28 @@
 			<key>FSProbeOrder</key>
 			<integer>50</integer>
 		</dict>
-		<key>GPT_Basic_Data</key>
+		<key>EBD0A0A2-B9E5-4433-87C0-68B6B72699C7</key>
 		<dict>
 			<key>FSMediaProperties</key>
 			<dict>
 				<key>Content Hint</key>
 				<string>EBD0A0A2-B9E5-4433-87C0-68B6B72699C7</string>
+				<key>Leaf</key>
+				<true/>
+			</dict>
+			<key>FSProbeArguments</key>
+			<string>-p</string>
+			<key>FSProbeExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSProbeOrder</key>
+			<integer>3500</integer>
+		</dict>
+		<key>Apple_UNIX_SVR2</key>
+		<dict>
+			<key>FSMediaProperties</key>
+			<dict>
+				<key>Content Hint</key>
+				<string>Apple_UNIX_SVR2</string>
 				<key>Leaf</key>
 				<true/>
 			</dict>

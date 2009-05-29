@@ -27,7 +27,7 @@ then
   exit 114
 fi
 
-if [ \( $MAJOR -lt 10 \) -o \( $MINOR -lt 5 \) ]
+if [ \( $MAJOR -lt 10 \) -o \( $MINOR -lt 4 \) ]
 then
   # Requires Mac OS X 10.5 or greater.
   exit 115
