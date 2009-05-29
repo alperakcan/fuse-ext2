@@ -91,9 +91,8 @@ fuse_ext2_LDADD =				\
 
 if DARWIN
 install-exec-local:
-	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-	$(MKDIR_P) "$(DESTDIR)/sbin"
-	$(LN_S) -f "$(DESTDIR)/System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/sbin/mount_fuse-ext2"
+	$(INSTALL) -d "$(DESTDIR)/sbin"
+	$(LN_S) -f "../System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/sbin/mount_fuse-ext2"
 endif
 if LINUX
 install-exec-local:

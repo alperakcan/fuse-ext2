@@ -91,6 +91,7 @@ sudo cp -pRX "${MKPKG_FOLDER}/Install_resources/.VolumeIcon.icns" "$VOLUME_PATH"
 sudo /Developer/Tools/SetFile -a C "$VOLUME_PATH"
 
 # Copy over the license file.
+sudo cp "${MKPKG_FOLDER}/Install_resources/README.rtf" "$VOLUME_PATH"/README.rtf
 sudo cp "${MKPKG_FOLDER}/Install_resources/License.rtf" "$VOLUME_PATH"/License.rtf
 
 # Detach the volume.
