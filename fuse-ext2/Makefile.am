@@ -12,12 +12,12 @@ fuse_ext2_probe_CFLAGS =			\
 	-Wall					\
 	-DHAVE_CONFIG_H				\
 	-D_FILE_OFFSET_BITS=64			\
-	-I$(top_srcdir)/e2fsprogs-1.41.1 \
+	-I$(top_srcdir)/e2fsprogs-1.41.5 \
 	-I/usr/local/include
 
 fuse_ext2_probe_LDADD =				\
-	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.41.1/et/libcom_err.a	\
+	../e2fsprogs-1.41.5/ext2fs/libext2fs.a	\
+	../e2fsprogs-1.41.5/et/libcom_err.a	\
 	-L/usr/local/lib \
 	-lfuse
 
@@ -59,7 +59,7 @@ fuse_ext2_CFLAGS =				\
 	-Wall					\
 	-DHAVE_CONFIG_H				\
 	-D_FILE_OFFSET_BITS=64			\
-	-I$(top_srcdir)/e2fsprogs-1.41.1 \
+	-I$(top_srcdir)/e2fsprogs-1.41.5 \
 	-I/usr/local/include
 
 if DARWIN
@@ -84,8 +84,8 @@ fuse_ext2_CFLAGS +=				\
 endif
 
 fuse_ext2_LDADD =				\
-	../e2fsprogs-1.41.1/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.41.1/et/libcom_err.a	\
+	../e2fsprogs-1.41.5/ext2fs/libext2fs.a	\
+	../e2fsprogs-1.41.5/et/libcom_err.a	\
 	-L/usr/local/lib \
 	-lfuse
 

@@ -178,10 +178,10 @@ AM_CONDITIONAL(DARWIN, test "$arch" = darwin)
 AC_CONFIG_FILES([
 	fuse-ext2.pc
 	Makefile
-	e2fsprogs-1.41.1/Makefile
-	e2fsprogs-1.41.1/et/Makefile
-	e2fsprogs-1.41.1/misc/Makefile
-	e2fsprogs-1.41.1/ext2fs/Makefile
+	e2fsprogs-1.41.5/Makefile
+	e2fsprogs-1.41.5/et/Makefile
+	e2fsprogs-1.41.5/misc/Makefile
+	e2fsprogs-1.41.5/ext2fs/Makefile
 	fuse-ext2/Makefile
 	tools/Makefile
 	tools/macosx/Makefile
