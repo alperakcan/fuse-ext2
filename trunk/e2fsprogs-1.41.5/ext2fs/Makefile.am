@@ -67,5 +67,5 @@ libext2fs_a_SOURCES =		\
 	version.c
 
 libext2fs_a_CFLAGS =				\
-	-I$(top_srcdir)/e2fsprogs-1.41.1	\
-	-I$(top_srcdir)/e2fsprogs-1.41.1/et
+	-I$(top_srcdir)/e2fsprogs-1.41.5	\
+	-I$(top_srcdir)/e2fsprogs-1.41.5/et
