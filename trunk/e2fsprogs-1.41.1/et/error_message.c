@@ -28,9 +28,13 @@
 #if (!defined(HAVE_PRCTL) && defined(linux))
 #include <sys/syscall.h>
 #endif
+#ifdef HAVE_SEMAPHORE_H
+#include <semaphore.h>
+#endif
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <fcntl.h>
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -49,6 +53,49 @@ THREAD_LOCAL char buffer[25];
 struct et_list * _et_list = (struct et_list *) NULL;
 struct et_list * _et_dynamic_list = (struct et_list *) NULL;
 
+#ifdef __GNUC__
+#define COMERR_ATTR(x) __attribute__(x)
+#else
+#define COMERR_ATTR(x)
+#endif
+
+#ifdef HAVE_SEM_INIT
+static sem_t _et_lock;
+static int _et_lock_initialized;
+
+static void COMERR_ATTR((constructor)) setup_et_lock(void)
+{
+	sem_init(&_et_lock, 0, 1);
+	_et_lock_initialized = 1;
+}
+
+static void COMERR_ATTR((destructor)) fini_et_lock(void)
+{
+	sem_destroy(&_et_lock);
+	_et_lock_initialized = 0;
+}
+#endif
+
+
+int et_list_lock(void)
+{
+#ifdef HAVE_SEM_INIT
+	if (!_et_lock_initialized)
+		setup_et_lock();
+	return sem_wait(&_et_lock);
+#else
+	return 0;
+#endif
+}
+
+int et_list_unlock(void)
+{
+#ifdef HAVE_SEM_INIT
+	if (_et_lock_initialized)
+		return sem_post(&_et_lock);
+#endif
+	return 0;
+}
 
 const char * error_message (errcode_t code)
 {
@@ -74,22 +121,32 @@ const char * error_message (errcode_t code)
 	    goto oops;
 #endif
     }
+    et_list_lock();
     for (et = _et_list; et; et = et->next) {
 	if ((et->table->base & 0xffffffL) == (table_num & 0xffffffL)) {
 	    /* This is the right table */
-	    if (et->table->n_msgs <= offset)
-		goto oops;
-	    return(et->table->msgs[offset]);
+	    if (et->table->n_msgs <= offset) {
+		break;
+	    } else {
+		const char *msg = et->table->msgs[offset];
+		et_list_unlock();
+		return msg;
+	    }
 	}
     }
     for (et = _et_dynamic_list; et; et = et->next) {
 	if ((et->table->base & 0xffffffL) == (table_num & 0xffffffL)) {
 	    /* This is the right table */
-	    if (et->table->n_msgs <= offset)
-		goto oops;
-	    return(et->table->msgs[offset]);
+	    if (et->table->n_msgs <= offset) {
+		break;
+	    } else {
+		const char *msg = et->table->msgs[offset];
+		et_list_unlock();
+		return msg;
+	    }
 	}
     }
+    et_list_unlock();
 oops:
     strcpy (buffer, "Unknown code ");
     if (table_num) {
@@ -145,25 +202,38 @@ static FILE *debug_f = 0;
 
 static void init_debug(void)
 {
-	char *dstr;
-	char *fn;
+	char	*dstr, *fn, *tmp;
+	int	fd, flags;
 
 	if (debug_mask & DEBUG_INIT)
 		return;
 
 	dstr = getenv("COMERR_DEBUG");
-	if (dstr)
-		debug_mask = strtoul(dstr, 0, 0);
+	if (dstr) {
+		debug_mask = strtoul(dstr, &tmp, 0);
+		if (*tmp || errno)
+			debug_mask = 0;
+	}
+
+	debug_mask |= DEBUG_INIT;
+	if (debug_mask == DEBUG_INIT)
+		return;
 
 	fn = safe_getenv("COMERR_DEBUG_FILE");
 	if (fn)
 		debug_f = fopen(fn, "a");
 	if (!debug_f)
 		debug_f = fopen("/dev/tty", "a");
-	if (!debug_f)
-		debug_mask = 0;
+	if (debug_f) {
+		fd = fileno(debug_f);
+		if (fd >= 0) {
+			flags = fcntl(fd, F_GETFD);
+			if (flags >= 0)
+				fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
+		}
+	} else
+		debug_mask = DEBUG_INIT;
 
-	debug_mask |= DEBUG_INIT;
 }
 
 /*
@@ -176,6 +246,11 @@ errcode_t add_error_table(const struct error_table * et)
 	if (!(el = (struct et_list *) malloc(sizeof(struct et_list))))
 		return ENOMEM;
 
+	if (et_list_lock() != 0) {
+		free(el);
+		return errno;
+	}
+
 	el->table = et;
 	el->next = _et_dynamic_list;
 	_et_dynamic_list = el;
@@ -186,6 +261,7 @@ errcode_t add_error_table(const struct error_table * et)
 			error_table_name(et->base),
 			(const void *) et);
 
+	et_list_unlock();
 	return 0;
 }
 
@@ -194,9 +270,13 @@ errcode_t add_error_table(const struct error_table * et)
  */
 errcode_t remove_error_table(const struct error_table * et)
 {
-	struct et_list *el = _et_dynamic_list;
+	struct et_list *el;
 	struct et_list *el2 = 0;
 
+	if (et_list_lock() != 0)
+		return ENOENT;
+
+	el = _et_dynamic_list;
 	init_debug();
 	while (el) {
 		if (el->table->base == et->base) {
@@ -210,6 +290,7 @@ errcode_t remove_error_table(const struct error_table * et)
 					"remove_error_table: %s (0x%p)\n",
 					error_table_name(et->base),
 					(const void *) et);
+			et_list_unlock();
 			return 0;
 		}
 		el2 = el;
@@ -219,6 +300,7 @@ errcode_t remove_error_table(const struct error_table * et)
 		fprintf(debug_f, "remove_error_table FAILED: %s (0x%p)\n",
 			error_table_name(et->base),
 			(const void *) et);
+	et_list_unlock();
 	return ENOENT;
 }
 

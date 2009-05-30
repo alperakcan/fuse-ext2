@@ -55,6 +55,10 @@ extern void initialize_error_table_r(struct et_list **list,
 				     long base);
 extern void free_error_table(struct et_list *et);
 
+/* Provided for compatibility with other com_err libraries */
+extern int et_list_lock(void);
+extern int et_list_unlock(void);
+
 #define __COM_ERR_H
 #define __COM_ERR_H__
 #endif /* !defined(__COM_ERR_H) && !defined(__COM_ERR_H__)*/

@@ -170,7 +170,6 @@ _INLINE_ void ext2fs_fast_clear_bit(unsigned int nr, void * addr)
 
 #define _EXT2_HAVE_ASM_BITOPS_
 #define _EXT2_HAVE_ASM_SWAB_
-#define _EXT2_HAVE_ASM_FINDBIT_
 
 /*
  * These are done by inline assembly for speed reasons.....
@@ -220,60 +219,6 @@ _INLINE_ int ext2fs_test_bit(unsigned int nr, const void * addr)
 	return oldbit;
 }
 
-#if 0
-_INLINE_ int ext2fs_find_first_bit_set(void * addr, unsigned size)
-{
-	int d0, d1, d2;
-	int res;
-
-	if (!size)
-		return 0;
-	/* This looks at memory. Mark it volatile to tell gcc not to move it around */
-	__asm__ __volatile__(
-		"cld\n\t"
-		"xorl %%eax,%%eax\n\t"
-		"xorl %%edx,%%edx\n\t"
-		"repe; scasl\n\t"
-		"je 1f\n\t"
-		"movl -4(%%edi),%%eax\n\t"
-		"subl $4,%%edi\n\t"
-		"bsfl %%eax,%%edx\n"
-		"1:\tsubl %%esi,%%edi\n\t"
-		"shll $3,%%edi\n\t"
-		"addl %%edi,%%edx"
-		:"=d" (res), "=&c" (d0), "=&D" (d1), "=&a" (d2)
-		:"1" ((size + 31) >> 5), "2" (addr), "S" (addr));
-	return res;
-}
-
-_INLINE_ int ext2fs_find_next_bit_set (void * addr, int size, int offset)
-{
-	unsigned long * p = ((unsigned long *) addr) + (offset >> 5);
-	int set = 0, bit = offset & 31, res;
-
-	if (bit) {
-		/*
-		 * Look for zero in first byte
-		 */
-		__asm__("bsfl %1,%0\n\t"
-			"jne 1f\n\t"
-			"movl $32, %0\n"
-			"1:"
-			: "=r" (set)
-			: "r" (*p >> bit));
-		if (set < (32 - bit))
-			return set + offset;
-		set = 32 - bit;
-		p++;
-	}
-	/*
-	 * No bit found yet, search remaining full bytes for a bit
-	 */
-	res = ext2fs_find_first_bit_set(p, size - 32 * (p - (unsigned long *) addr));
-	return (offset + set + res);
-}
-#endif
-
 _INLINE_ __u32 ext2fs_swab32(__u32 val)
 {
 #ifdef EXT2FS_REQUIRE_486
@@ -294,12 +239,6 @@ _INLINE_ __u16 ext2fs_swab16(__u16 val)
 		: "=q" (val) \
 		:  "0" (val)); \
 		return val;
-}
-
-_INLINE_ __u64 ext2fs_swab64(__u64 val)
-{
-	return (ext2fs_swab32(val >> 32) |
-		(((__u64)ext2fs_swab32(val & 0xFFFFFFFFUL)) << 32));
 }
 
 #undef EXT2FS_ADDR
@@ -359,53 +298,11 @@ _INLINE_ __u32 ext2fs_swab32(__u32 val)
 
 #endif /* !_EXT2_HAVE_ASM_SWAB */
 
-#if !defined(_EXT2_HAVE_ASM_FINDBIT_)
-#include <strings.h>
-_INLINE_ int ext2fs_find_first_bit_set(void * addr, unsigned size)
+_INLINE_ __u64 ext2fs_swab64(__u64 val)
 {
-	char	*cp = (char *) addr;
-	int 	res = 0, d0;
-
-	if (!size)
-		return 0;
-
-	while ((size > res) && (*cp == 0)) {
-		cp++;
-		res += 8;
-	}
-	d0 = ffs(*cp);
-	if (d0 == 0)
-		return size;
-
-	return res + d0 - 1;
+	return (ext2fs_swab32(val >> 32) |
+		(((__u64)ext2fs_swab32(val & 0xFFFFFFFFUL)) << 32));
 }
-
-_INLINE_ int ext2fs_find_next_bit_set (void * addr, int size, int offset)
-{
-	unsigned char * p;
-	int set = 0, bit = offset & 7, res = 0, d0;
-
-	res = offset >> 3;
-	p = ((unsigned char *) addr) + res;
-
-	if (bit) {
-		set = ffs(*p & ~((1 << bit) - 1));
-		if (set)
-			return (offset & ~7) + set - 1;
-		p++;
-		res += 8;
-	}
-	while ((size > res) && (*p == 0)) {
-		p++;
-		res += 8;
-	}
-	d0 = ffs(*p);
-	if (d0 == 0)
-		return size;
-
-	return (res + d0 - 1);
-}
-#endif
 
 _INLINE_ int ext2fs_mark_block_bitmap(ext2fs_block_bitmap bitmap,
 				       blk_t block)

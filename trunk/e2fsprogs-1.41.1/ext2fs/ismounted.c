@@ -67,6 +67,8 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
 		}
 	}
 	while ((mnt = getmntent (f)) != NULL) {
+		if (mnt->mnt_fsname[0] != '/')
+			continue;
 		if (strcmp(file, mnt->mnt_fsname) == 0)
 			break;
 		if (stat(mnt->mnt_fsname, &st_buf) == 0) {

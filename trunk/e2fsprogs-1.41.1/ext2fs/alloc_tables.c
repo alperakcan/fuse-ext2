@@ -119,7 +119,7 @@ errcode_t ext2fs_allocate_group_table(ext2_filsys fs, dgrp_t group,
 		start_blk = group_blk;
 
 	if (flexbg_size) {
-		int prev_block = 0;
+		blk_t prev_block = 0;
 		if (group && fs->group_desc[group-1].bg_block_bitmap)
 			prev_block = fs->group_desc[group-1].bg_block_bitmap;
 		start_blk = flexbg_offset(fs, group, prev_block, bmap,
@@ -147,7 +147,7 @@ errcode_t ext2fs_allocate_group_table(ext2_filsys fs, dgrp_t group,
 	}
 
 	if (flexbg_size) {
-		int prev_block = 0;
+		blk_t prev_block = 0;
 		if (group && fs->group_desc[group-1].bg_inode_bitmap)
 			prev_block = fs->group_desc[group-1].bg_inode_bitmap;
 		start_blk = flexbg_offset(fs, group, prev_block, bmap,
