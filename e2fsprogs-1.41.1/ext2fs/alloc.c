@@ -29,10 +29,10 @@
 /*
  * Check for uninit block bitmaps and deal with them appropriately
  */
-static check_block_uninit(ext2_filsys fs, ext2fs_block_bitmap map,
+static void check_block_uninit(ext2_filsys fs, ext2fs_block_bitmap map,
 			  dgrp_t group)
 {
-	int		i;
+	blk_t		i;
 	blk_t		blk, super_blk, old_desc_blk, new_desc_blk;
 	int		old_desc_blocks;
 
@@ -75,11 +75,10 @@ static check_block_uninit(ext2_filsys fs, ext2fs_block_bitmap map,
 /*
  * Check for uninit inode bitmaps and deal with them appropriately
  */
-static check_inode_uninit(ext2_filsys fs, ext2fs_inode_bitmap map,
+static void check_inode_uninit(ext2_filsys fs, ext2fs_inode_bitmap map,
 			  dgrp_t group)
 {
-	int		i;
-	ext2_ino_t	ino;
+	ext2_ino_t	i, ino;
 
 	if (!(EXT2_HAS_RO_COMPAT_FEATURE(fs->super,
 					 EXT4_FEATURE_RO_COMPAT_GDT_CSUM)) ||
@@ -121,6 +120,8 @@ errcode_t ext2fs_new_inode(ext2_filsys fs, ext2_ino_t dir,
 	start_inode = (dir_group * EXT2_INODES_PER_GROUP(fs->super)) + 1;
 	if (start_inode < EXT2_FIRST_INODE(fs->super))
 		start_inode = EXT2_FIRST_INODE(fs->super);
+	if (start_inode > fs->super->s_inodes_count)
+		return EXT2_ET_INODE_ALLOC_FAIL;
 	i = start_inode;
 
 	do {

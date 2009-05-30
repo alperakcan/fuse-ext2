@@ -70,6 +70,7 @@ void ext2fs_swap_super(struct ext2_super_block * sb)
 	sb->s_min_extra_isize = ext2fs_swab16(sb->s_min_extra_isize);
 	sb->s_want_extra_isize = ext2fs_swab16(sb->s_want_extra_isize);
 	sb->s_flags = ext2fs_swab32(sb->s_flags);
+	sb->s_kbytes_written = ext2fs_swab64(sb->s_kbytes_written);
 	for (i=0; i < 4; i++)
 		sb->s_hash_seed[i] = ext2fs_swab32(sb->s_hash_seed[i]);
 	for (i=0; i < 17; i++)

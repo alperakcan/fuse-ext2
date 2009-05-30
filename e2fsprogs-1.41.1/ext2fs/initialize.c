@@ -437,8 +437,7 @@ ipg_retry:
 	*ret_fs = fs;
 	return 0;
 cleanup:
-	if (buf)
-		free(buf);
+	free(buf);
 	ext2fs_free(fs);
 	return retval;
 }

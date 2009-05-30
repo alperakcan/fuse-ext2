@@ -370,16 +370,29 @@ errout:
 errcode_t ext2fs_close(ext2_filsys fs)
 {
 	errcode_t	retval;
+	int		meta_blks;
+	io_stats stats = 0;
 
 	EXT2_CHECK_MAGIC(fs, EXT2_ET_MAGIC_EXT2FS_FILSYS);
 
-	if (fs->flags & EXT2_FLAG_DIRTY) {
-		retval = ext2fs_flush(fs);
+	if (fs->write_bitmaps) {
+		retval = fs->write_bitmaps(fs);
 		if (retval)
 			return retval;
 	}
-	if (fs->write_bitmaps) {
-		retval = fs->write_bitmaps(fs);
+	if (fs->super->s_kbytes_written &&
+	    fs->io->manager->get_stats)
+		fs->io->manager->get_stats(fs->io, &stats);
+	if (stats && stats->bytes_written && (fs->flags & EXT2_FLAG_RW)) {
+		fs->super->s_kbytes_written += stats->bytes_written >> 10;
+		meta_blks = fs->desc_blocks + 1;
+		if (!(fs->flags & EXT2_FLAG_SUPER_ONLY))
+			fs->super->s_kbytes_written += meta_blks /
+				(fs->blocksize / 1024);
+		ext2fs_mark_super_dirty(fs);
+	}
+	if (fs->flags & EXT2_FLAG_DIRTY) {
+		retval = ext2fs_flush(fs);
 		if (retval)
 			return retval;
 	}

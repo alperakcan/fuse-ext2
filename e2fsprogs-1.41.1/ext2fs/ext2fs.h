@@ -928,6 +928,8 @@ extern errcode_t ext2fs_set_generic_bitmap_range(ext2fs_generic_bitmap bmap,
 /* getsize.c */
 extern errcode_t ext2fs_get_device_size(const char *file, int blocksize,
 					blk_t *retblocks);
+extern errcode_t ext2fs_get_device_size2(const char *file, int blocksize,
+					blk64_t *retblocks);
 
 /* getsectsize.c */
 errcode_t ext2fs_get_device_sectsize(const char *file, int *sectsize);

@@ -37,7 +37,9 @@ int setflags (int fd, unsigned long flags);
 int setversion (int fd, unsigned long version);
 
 const char *e2p_feature2string(int compat, unsigned int mask);
+const char *e2p_jrnl_feature2string(int compat, unsigned int mask);
 int e2p_string2feature(char *string, int *compat, unsigned int *mask);
+int e2p_jrnl_string2feature(char *string, int *compat_type, unsigned int *mask);
 int e2p_edit_feature(const char *str, __u32 *compat_array, __u32 *ok_array);
 int e2p_edit_feature2(const char *str, __u32 *compat_array, __u32 *ok_array,
 		      __u32 *clear_ok_array, int *type_err,

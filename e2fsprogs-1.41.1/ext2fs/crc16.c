@@ -5,6 +5,11 @@
  * Version 2. See the file COPYING for more details.
  */
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <ext2fs/ext2_types.h>
+
 #include "crc16.h"
 
 /** CRC table for the CRC-16. The poly is 0x8005 (x16 + x15 + x2 + 1) */

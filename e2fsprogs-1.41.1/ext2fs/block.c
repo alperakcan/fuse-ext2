@@ -364,6 +364,7 @@ errcode_t ext2fs_block_iterate2(ext2_filsys fs,
 		e2_blkcnt_t		blockcnt = 0;
 		blk_t			blk, new_blk;
 		int			op = EXT2_EXTENT_ROOT;
+		int			uninit;
 		unsigned int		j;
 
 		ctx.errcode = ext2fs_extent_open(fs, ino, &handle);
@@ -419,6 +420,9 @@ errcode_t ext2fs_block_iterate2(ext2_filsys fs,
 				}
 				continue;
 			}
+			uninit = 0;
+			if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
+				uninit = EXT2_EXTENT_SET_BMAP_UNINIT;
 			for (blockcnt = extent.e_lblk, j = 0;
 			     j < extent.e_len;
 			     blk++, blockcnt++, j++) {
@@ -432,9 +436,10 @@ errcode_t ext2fs_block_iterate2(ext2_filsys fs,
 					ctx.errcode =
 						ext2fs_extent_set_bmap(handle,
 						       (blk64_t) blockcnt,
-						       (blk64_t) new_blk, 0);
+						       (blk64_t) new_blk,
+						       uninit);
 					if (ctx.errcode)
-						break;
+						goto extent_errout;
 				}
 				if (ret & BLOCK_ABORT)
 					break;

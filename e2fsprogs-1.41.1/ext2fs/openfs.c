@@ -84,7 +84,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 {
 	ext2_filsys	fs;
 	errcode_t	retval;
-	unsigned long	i;
+	unsigned long	i, first_meta_bg;
 	__u32		features;
 	int		groups_per_block, blocks_per_group, io_flags;
 	blk_t		group_block, blk;
@@ -243,7 +243,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 		goto cleanup;
 	}
 	fs->fragsize = EXT2_FRAG_SIZE(fs->super);
-	fs->inode_blocks_per_group = ((fs->super->s_inodes_per_group *
+	fs->inode_blocks_per_group = ((EXT2_INODES_PER_GROUP(fs->super) *
 				       EXT2_INODE_SIZE(fs->super) +
 				       EXT2_BLOCK_SIZE(fs->super) - 1) /
 				      EXT2_BLOCK_SIZE(fs->super));
@@ -269,19 +269,31 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 		return 0;
 	}
 
+	if (EXT2_INODES_PER_GROUP(fs->super) == 0) {
+		retval = EXT2_ET_CORRUPT_SUPERBLOCK;
+		goto cleanup;
+	}
+
 	/*
 	 * Read group descriptors
 	 */
 	blocks_per_group = EXT2_BLOCKS_PER_GROUP(fs->super);
 	if (blocks_per_group == 0 ||
 	    blocks_per_group > EXT2_MAX_BLOCKS_PER_GROUP(fs->super) ||
-	    fs->inode_blocks_per_group > EXT2_MAX_INODES_PER_GROUP(fs->super)) {
+	    fs->inode_blocks_per_group > EXT2_MAX_INODES_PER_GROUP(fs->super) ||
+           EXT2_DESC_PER_BLOCK(fs->super) == 0 ||
+           fs->super->s_first_data_block >= fs->super->s_blocks_count) {
 		retval = EXT2_ET_CORRUPT_SUPERBLOCK;
 		goto cleanup;
 	}
 	fs->group_desc_count = ext2fs_div_ceil(fs->super->s_blocks_count -
 					       fs->super->s_first_data_block,
 					       blocks_per_group);
+       if (fs->group_desc_count * EXT2_INODES_PER_GROUP(fs->super) !=
+           fs->super->s_inodes_count) {
+               retval = EXT2_ET_CORRUPT_SUPERBLOCK;
+		goto cleanup;
+       }
 	fs->desc_blocks = ext2fs_div_ceil(fs->group_desc_count,
 					  EXT2_DESC_PER_BLOCK(fs->super));
 	retval = ext2fs_get_array(fs->desc_blocks, fs->blocksize,
@@ -292,7 +304,23 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 		group_block = fs->super->s_first_data_block;
 	dest = (char *) fs->group_desc;
 	groups_per_block = EXT2_DESC_PER_BLOCK(fs->super);
-	for (i=0 ; i < fs->desc_blocks; i++) {
+	if (fs->super->s_feature_incompat & EXT2_FEATURE_INCOMPAT_META_BG)
+		first_meta_bg = fs->super->s_first_meta_bg;
+	else
+		first_meta_bg = fs->desc_blocks;
+	if (first_meta_bg) {
+		retval = io_channel_read_blk(fs->io, group_block+1,
+					     first_meta_bg, dest);
+		if (retval)
+			goto cleanup;
+#ifdef WORDS_BIGENDIAN
+		gdp = (struct ext2_group_desc *) dest;
+		for (j=0; j < groups_per_block*first_meta_bg; j++)
+			ext2fs_swap_group_desc(gdp++);
+#endif
+		dest += fs->blocksize*first_meta_bg;
+	}
+	for (i=first_meta_bg ; i < fs->desc_blocks; i++) {
 		blk = ext2fs_descriptor_block_loc(fs, group_block, i);
 		retval = io_channel_read_blk(fs->io, blk, 1, dest);
 		if (retval)
