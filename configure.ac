@@ -50,6 +50,7 @@ AC_CHECK_HEADERS([	\
 	errno.h		\
 	unistd.h	\
 	utime.h		\
+	getopt.h    \
 ])
 
 AC_CHECK_HEADERS(sys/disk.h sys/mount.h,,,
