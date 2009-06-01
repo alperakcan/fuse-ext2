@@ -30,12 +30,12 @@ int do_probe (void)
 	priv.name = opts.device;
 	rc = ext2fs_open(priv.name, EXT2_FLAG_RW, 0, 0, unix_io_manager, &priv.fs);
 	if (rc) {
-		debugf("Error while trying to open %s", priv.name);
+		debugf("Error while trying to open %s (rc=%d)", priv.name, rc);
 		return -1;
 	}
 	rc = ext2fs_read_bitmaps(priv.fs);
 	if (rc) {
-		debugf("Error while reading bitmaps");
+		debugf("Error while reading bitmaps (rc=%d)", rc);
 		ext2fs_close(priv.fs);
 		return -2;
 	}
