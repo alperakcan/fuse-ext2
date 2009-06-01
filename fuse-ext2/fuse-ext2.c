@@ -41,7 +41,7 @@ static const char *usage_msg =
 "Options:  ro, force, allow_others\n"
 "          Please see details in the manual.\n"
 "\n"
-"Example:  fuse-ext2 /dev/sda1 /mnt/sda1 -o force\n"
+"Example:  fuse-ext2 /dev/sda1 /mnt/sda1\n"
 "\n"
 "%s\n"
 "\n";
