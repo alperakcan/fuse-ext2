@@ -42,6 +42,7 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 # Set paths to bundled executables here (omit /usr/local):
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
 FUSE_EXT2=/bin/fuse-ext2
+FUSE_MKE2FS=/bin/mke2fs
 FUSE_WAIT=/bin/fuse-ext2.wait
 FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 
@@ -156,10 +157,12 @@ function GetBundle ()
 function Format ()
 {
     LogDebug "[Format] Entering function Format..."
-    DEVICE=`GetDevice "$2"`
-    LogDebug "[Format] Returning from function Format with FSUR_INVAL."
+    DEVICE=`GetDevice "$3"`
+    LogDebug "[Format] calling '$PFX$FUSE_MKE2FS' -L '$2' '$DEVICE'"
+    $PFX$FUSE_MKE2FS -L "$2" $DEVICE
+    MKE2FS_RES=$?
+    LogDebug "[Format] mke2fs returned '$MKE2FS_RES'"
     return 0
-    return ${FSUR_INVAL} # FSUR_INVAL, defined in loadable_fs.h
 }
 
 # Quick verify a drive. This is to ensure that the file system being mounted
