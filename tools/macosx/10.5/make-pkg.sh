@@ -55,7 +55,8 @@ ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Resources
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Resources/English.lproj
-${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.1/misc/e2label ${DISTRIBUTION_FOLDER}/usr/local/bin/e2label
+${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.5/misc/e2label ${DISTRIBUTION_FOLDER}/usr/local/bin/e2label
+${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.5/misc/mke2fs ${DISTRIBUTION_FOLDER}/usr/local/bin/mke2fs
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2 ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.wait ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.wait
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.probe ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.probe
