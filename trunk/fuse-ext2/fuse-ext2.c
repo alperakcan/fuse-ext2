@@ -146,6 +146,7 @@ static int parse_options (int argc, char *argv[])
 				 * We must handle the 'verbose' option even if
 				 * we don't use it because mount(8) passes it.
 				 */
+				opts.debug = 1;
 				break;
 			default:
 				debugf("Unknown option '%s'", argv[optind - 1]);
@@ -318,6 +319,12 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 
+	parsed_options = parse_mount_options(opts.options ? opts.options : "");
+	if (!parsed_options) {
+		err = -2;
+		goto err_out;
+	}
+
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);
 		err = -3;
@@ -327,12 +334,6 @@ int main (int argc, char *argv[])
 	if (do_probe() != 0) {
 		debugf("Probe failed");
 		err = -4;
-		goto err_out;
-	}
-
-	parsed_options = parse_mount_options(opts.options ? opts.options : "");
-	if (!parsed_options) {
-		err = -2;
 		goto err_out;
 	}
 
