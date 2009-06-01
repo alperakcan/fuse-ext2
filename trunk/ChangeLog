@@ -1,4 +1,9 @@
 
+Tue 2 Jun 2009 00:39:06 AM EEST
+	- upgrade to e2fsprogs 1.41.5
+	- added mke2fs for disk format
+	- added format support to diskutil
+
 Wed 27 May 2009 03:11:38 AM EEST
 	- 10.4 tiger build instructions added to README
 	- added /usr/local/[lib,include] to fuse-ext2
