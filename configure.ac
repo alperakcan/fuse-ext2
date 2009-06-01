@@ -104,6 +104,7 @@ AC_CHECK_FUNCS([	\
 	memset			\
 	munmap			\
 	select			\
+	strcasecmp      \
 	strchr			\
 	strdup			\
 	strerror		\
@@ -179,7 +180,9 @@ AC_CONFIG_FILES([
 	fuse-ext2.pc
 	Makefile
 	e2fsprogs-1.41.5/Makefile
+	e2fsprogs-1.41.5/blkid/Makefile
 	e2fsprogs-1.41.5/et/Makefile
+	e2fsprogs-1.41.5/e2p/Makefile
 	e2fsprogs-1.41.5/misc/Makefile
 	e2fsprogs-1.41.5/ext2fs/Makefile
 	fuse-ext2/Makefile
