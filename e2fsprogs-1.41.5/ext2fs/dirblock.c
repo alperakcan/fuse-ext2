@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -36,13 +38,13 @@ errcode_t ext2fs_read_dir_block2(ext2_filsys fs, blk_t block,
 	end = (char *) buf + fs->blocksize;
 	while (p < end-8) {
 		dirent = (struct ext2_dir_entry *) p;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		dirent->inode = ext2fs_swab32(dirent->inode);
 		dirent->rec_len = ext2fs_swab16(dirent->rec_len);
 		dirent->name_len = ext2fs_swab16(dirent->name_len);
 #endif
 		name_len = dirent->name_len;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		if (flags & EXT2_DIRBLOCK_V2_STRUCT)
 			dirent->name_len = ext2fs_swab16(dirent->name_len);
 #endif
@@ -68,7 +70,7 @@ errcode_t ext2fs_read_dir_block(ext2_filsys fs, blk_t block,
 errcode_t ext2fs_write_dir_block2(ext2_filsys fs, blk_t block,
 				  void *inbuf, int flags EXT2FS_ATTR((unused)))
 {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	errcode_t	retval;
 	char		*p, *end;
 	char		*buf = 0;

@@ -16,7 +16,7 @@
 
 int ext2fs_native_flag(void)
 {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	return EXT2_FLAG_SWAP_BYTES;
 #else
 	return 0;

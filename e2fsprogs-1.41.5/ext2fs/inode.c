@@ -478,7 +478,7 @@ errcode_t ext2fs_get_next_inode_full(ext2_inode_scan scan, ext2_ino_t *ino,
 		scan->ptr += scan->inode_size - extra_bytes;
 		scan->bytes_left -= scan->inode_size - extra_bytes;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		memset(inode, 0, bufsize);
 		ext2fs_swap_inode_full(scan->fs,
 			       (struct ext2_inode_large *) inode,
@@ -491,7 +491,7 @@ errcode_t ext2fs_get_next_inode_full(ext2_inode_scan scan, ext2_ino_t *ino,
 			retval = EXT2_ET_BAD_BLOCK_IN_INODE_TABLE;
 		scan->scan_flags &= ~EXT2_SF_BAD_EXTRA_BYTES;
 	} else {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		memset(inode, 0, bufsize);
 		ext2fs_swap_inode_full(scan->fs,
 				(struct ext2_inode_large *) inode,
@@ -606,7 +606,7 @@ errcode_t ext2fs_read_inode_full(ext2_filsys fs, ext2_ino_t ino,
 		block_nr++;
 	}
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	ext2fs_swap_inode_full(fs, (struct ext2_inode_large *) inode,
 			       (struct ext2_inode_large *) inode,
 			       0, bufsize);
@@ -678,7 +678,7 @@ errcode_t ext2fs_write_inode_full(ext2_filsys fs, ext2_ino_t ino,
 		w_inode = &temp_inode;
 	memset(w_inode, 0, length);
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	ext2fs_swap_inode_full(fs, w_inode,
 			       (struct ext2_inode_large *) inode,
 			       1, bufsize);

@@ -23,7 +23,7 @@ extern __u16 ext2fs_swab16(__u16 val);
 extern __u32 ext2fs_swab32(__u32 val);
 extern __u64 ext2fs_swab64(__u64 val);
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 #define ext2fs_cpu_to_le64(x) ext2fs_swab64((x))
 #define ext2fs_le64_to_cpu(x) ext2fs_swab64((x))
 #define ext2fs_cpu_to_le32(x) ext2fs_swab32((x))

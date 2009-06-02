@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <string.h>
 #if HAVE_UNISTD_H
@@ -24,7 +26,6 @@
 #endif
 
 #include "ext2_fs.h"
-
 
 #include "ext2fs.h"
 #include "e2image.h"
@@ -89,7 +90,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 	int		groups_per_block, blocks_per_group, io_flags;
 	blk_t		group_block, blk;
 	char		*dest, *cp;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	struct ext2_group_desc *gdp;
 	int		j;
 #endif
@@ -180,7 +181,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 	if (fs->orig_super)
 		memcpy(fs->orig_super, fs->super, SUPERBLOCK_SIZE);
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	fs->flags |= EXT2_FLAG_SWAP_BYTES;
 	ext2fs_swap_super(fs->super);
 #else
@@ -313,7 +314,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 					     first_meta_bg, dest);
 		if (retval)
 			goto cleanup;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		gdp = (struct ext2_group_desc *) dest;
 		for (j=0; j < groups_per_block*first_meta_bg; j++)
 			ext2fs_swap_group_desc(gdp++);
@@ -325,7 +326,7 @@ errcode_t ext2fs_open2(const char *name, const char *io_options,
 		retval = io_channel_read_blk(fs->io, blk, 1, dest);
 		if (retval)
 			goto cleanup;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		gdp = (struct ext2_group_desc *) dest;
 		for (j=0; j < groups_per_block; j++)
 			ext2fs_swap_group_desc(gdp++);

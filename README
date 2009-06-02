@@ -59,10 +59,10 @@ Usage
 
 Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
 
-Options:  ro, force, allow_others\
+Options:  ro, force, allow_others
           Please see details in the manual.
 
-Example:  fuse-ext2 /dev/sda1 /mnt/sda1 -o force
+Example:  fuse-ext2 /dev/sda1 /mnt/sda1
 
 Bugs
 ----

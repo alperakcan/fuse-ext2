@@ -10,6 +10,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <string.h>
 #if HAVE_UNISTD_H
@@ -22,7 +24,7 @@
 errcode_t ext2fs_read_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 {
 	errcode_t	retval;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	blk_t		*block_nr;
 	int		i;
 	int		limit = fs->blocksize >> 2;
@@ -36,7 +38,7 @@ errcode_t ext2fs_read_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 		if (retval)
 			return retval;
 	}
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	block_nr = (blk_t *) buf;
 	for (i = 0; i < limit; i++, block_nr++)
 		*block_nr = ext2fs_swab32(*block_nr);
@@ -46,7 +48,7 @@ errcode_t ext2fs_read_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 
 errcode_t ext2fs_write_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	blk_t		*block_nr;
 	int		i;
 	int		limit = fs->blocksize >> 2;
@@ -55,7 +57,7 @@ errcode_t ext2fs_write_ind_block(ext2_filsys fs, blk_t blk, void *buf)
 	if (fs->flags & EXT2_FLAG_IMAGE_FILE)
 		return 0;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	block_nr = (blk_t *) buf;
 	for (i = 0; i < limit; i++, block_nr++)
 		*block_nr = ext2fs_swab32(*block_nr);

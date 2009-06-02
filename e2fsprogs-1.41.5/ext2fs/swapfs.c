@@ -9,6 +9,7 @@
  * %End-Header%
  */
 
+#include <config.h>
 #include <stdio.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -20,7 +21,7 @@
 #include "ext2fs.h"
 #include <ext2fs/ext2_ext_attr.h>
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 void ext2fs_swap_super(struct ext2_super_block * sb)
 {
   	int i;

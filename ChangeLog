@@ -1,4 +1,7 @@
 
+Tue 2 Jun 2009 05:04:49 PM EEST
+	- big/little endian support for universal build
+
 Tue 2 Jun 2009 00:39:06 AM EEST
 	- upgrade to e2fsprogs 1.41.5
 	- added mke2fs for disk format

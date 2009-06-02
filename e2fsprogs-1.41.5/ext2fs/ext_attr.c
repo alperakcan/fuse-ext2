@@ -11,6 +11,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -67,7 +69,7 @@ errcode_t ext2fs_read_ext_attr(ext2_filsys fs, blk_t block, void *buf)
  	retval = io_channel_read_blk(fs->io, block, 1, buf);
 	if (retval)
 		return retval;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	ext2fs_swap_ext_attr(buf, buf, fs->blocksize, 1);
 #endif
 	return 0;
@@ -79,7 +81,7 @@ errcode_t ext2fs_write_ext_attr(ext2_filsys fs, blk_t block, void *inbuf)
 	char		*write_buf;
 	char		*buf = NULL;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	retval = ext2fs_get_mem(fs->blocksize, &buf);
 	if (retval)
 		return retval;
