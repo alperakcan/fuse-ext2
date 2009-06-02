@@ -7,6 +7,5 @@ mkdir build
 cd build
 CFLAGS="$OSX_CFLAGS" CXXFLAGS="$OSX_CFLAGS" LDFLAGS="$OSX_LDFLAGS" ../configure --disable-dependency-tracking
 make -s
-make install DESTDIR=`pwd`/fuse-ext2-0.0.5.3
 make package
 
