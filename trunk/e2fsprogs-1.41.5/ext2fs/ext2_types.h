@@ -1,6 +1,6 @@
-/* 
+/*
  * If linux/types.h is already been included, assume it has defined
- * everything we need.  (cross fingers)  Other header files may have 
+ * everything we need.  (cross fingers)  Other header files may have
  * also defined the types that we need.
  */
 #if (!defined(_LINUX_TYPES_H) && !defined(_BLKID_TYPES_H) && \

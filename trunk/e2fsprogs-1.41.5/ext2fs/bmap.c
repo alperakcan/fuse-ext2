@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <string.h>
 #if HAVE_UNISTD_H
@@ -52,7 +54,7 @@ static _BMAP_INLINE_ errcode_t block_ind_bmap(ext2_filsys fs, int flags,
 
 	if (flags & BMAP_SET) {
 		b = *ret_blk;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		b = ext2fs_swab32(b);
 #endif
 		((blk_t *) block_buf)[nr] = b;
@@ -61,7 +63,7 @@ static _BMAP_INLINE_ errcode_t block_ind_bmap(ext2_filsys fs, int flags,
 
 	b = ((blk_t *) block_buf)[nr];
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	b = ext2fs_swab32(b);
 #endif
 
@@ -72,7 +74,7 @@ static _BMAP_INLINE_ errcode_t block_ind_bmap(ext2_filsys fs, int flags,
 		if (retval)
 			return retval;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		((blk_t *) block_buf)[nr] = ext2fs_swab32(b);
 #else
 		((blk_t *) block_buf)[nr] = b;
@@ -214,7 +216,7 @@ errcode_t ext2fs_bmap2(ext2_filsys fs, ext2_ino_t ino, struct ext2_inode *inode,
 	if (block < EXT2_NDIR_BLOCKS) {
 		if (bmap_flags & BMAP_SET) {
 			b = *phys_blk;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 			b = ext2fs_swab32(b);
 #endif
 			inode_bmap(inode, block) = b;

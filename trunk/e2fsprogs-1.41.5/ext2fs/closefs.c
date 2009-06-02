@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -203,7 +205,7 @@ static errcode_t write_backup_super(ext2_filsys fs, dgrp_t group,
 
 	if (sgrp > ((1 << 16) - 1))
 		sgrp = (1 << 16) - 1;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	super_shadow->s_block_group_nr = ext2fs_swab16(sgrp);
 #else
 	fs->super->s_block_group_nr = sgrp;
@@ -222,7 +224,7 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 	__u32		feature_incompat;
 	struct ext2_super_block *super_shadow = 0;
 	struct ext2_group_desc *group_shadow = 0;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	struct ext2_group_desc *s, *t;
 	dgrp_t		j;
 #endif
@@ -236,7 +238,7 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 
 	fs->super->s_wtime = fs->now ? fs->now : time(NULL);
 	fs->super->s_block_group_nr = 0;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	retval = EXT2_ET_NO_MEMORY;
 	retval = ext2fs_get_mem(SUPERBLOCK_SIZE, &super_shadow);
 	if (retval)
@@ -266,7 +268,7 @@ errcode_t ext2fs_flush(ext2_filsys fs)
 	 */
 	fs->super->s_state &= ~EXT2_VALID_FS;
 	fs->super->s_feature_incompat &= ~EXT3_FEATURE_INCOMPAT_RECOVER;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	*super_shadow = *fs->super;
 	ext2fs_swap_super(super_shadow);
 #endif
@@ -343,7 +345,7 @@ write_primary_superblock_only:
 	fs->super->s_block_group_nr = 0;
 	fs->super->s_state = fs_state;
 	fs->super->s_feature_incompat = feature_incompat;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	*super_shadow = *fs->super;
 	ext2fs_swap_super(super_shadow);
 #endif
@@ -358,7 +360,7 @@ write_primary_superblock_only:
 	retval = io_channel_flush(fs->io);
 errout:
 	fs->super->s_state = fs_state;
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	if (super_shadow)
 		ext2fs_free_mem(&super_shadow);
 	if (group_shadow)

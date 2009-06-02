@@ -1783,7 +1783,7 @@ static int should_do_undo(const char *name)
 		goto err_out;
 	}
 
-#if defined(WORDS_BIGENDIAN)
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	s_magic = ext2fs_swab16(super.s_magic);
 #else
 	s_magic = super.s_magic;

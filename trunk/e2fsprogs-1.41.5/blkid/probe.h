@@ -794,7 +794,7 @@ _INLINE_ __u64 blkid_swab64(__u64 val)
 
 
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 #define blkid_le16(x) blkid_swab16(x)
 #define blkid_le32(x) blkid_swab32(x)
 #define blkid_le64(x) blkid_swab64(x)

@@ -9,6 +9,8 @@
  * %End-Header%
  */
 
+#include <config.h>
+
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -38,7 +40,7 @@ STATIC __u16 ext2fs_group_desc_csum(ext2_filsys fs, dgrp_t group)
 	if (fs->super->s_feature_ro_compat & EXT4_FEATURE_RO_COMPAT_GDT_CSUM) {
 		int offset = offsetof(struct ext2_group_desc, bg_checksum);
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 		struct ext2_group_desc swabdesc = *desc;
 
 		/* Have to swab back to little-endian to do the checksum */
