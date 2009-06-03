@@ -14,7 +14,7 @@ $(pkgconfig_DATA): config.status
 
 if DARWIN
 package:
-	$(SHELL) $(top_srcdir)/tools/macosx/10.5/make-pkg.sh "$(VERSION)" "$(top_builddir)" "$(top_srcdir)/tools/macosx/10.5/"
+	$(SHELL) $(top_srcdir)/tools/macosx/make-pkg.sh "$(VERSION)" "$(top_builddir)" "$(top_srcdir)/tools/macosx/"
 endif
 if LINUX
 package:

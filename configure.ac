@@ -1,5 +1,5 @@
 
-AC_INIT([fuse-ext2], [0.0.5.4], [alper.akcan@gmail.com])
+AC_INIT([fuse-ext2], [0.0.6], [alper.akcan@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADER([config.h])
@@ -15,7 +15,7 @@ AC_PATH_PROG(CHMOD, chmod, :)
 case $target_os in
      *linux*)	arch=linux;;
      *darwin*)	arch=darwin;;
-     *)		arch=unknown;;
+     *)			arch=unknown;;
 esac
 
 # Checks for header files.
@@ -189,7 +189,6 @@ AC_CONFIG_FILES([
 	fuse-ext2/Makefile
 	tools/Makefile
 	tools/macosx/Makefile
-	tools/macosx/10.5/Makefile
 	test/pjd-fstest-20080816/Makefile
 ])
 
