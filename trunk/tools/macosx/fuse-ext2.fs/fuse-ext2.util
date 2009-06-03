@@ -1,0 +1,479 @@
+#!/bin/sh
+
+#
+# This script is heavly based on ntfs-3g mac osx package,
+# thanks to Erik Larsson, and Paul Marks for their efforts.
+#
+
+# fuse-ext2 utility script for use by OS X disk arbitration
+FSNAME=fuse-ext2
+
+# For debugging purposes:
+LOG_ENABLED=1 # 1 = function Log writes to $LOGFILE
+              # 0 = function Log does nothing
+LOGFILE=/var/log/fuse-ext2_util.log
+# Everybody should be able to write to this file.
+FALLBACK_LOGFILE=/var/tmp/fuse-ext2_util.log
+
+# Log level: 0 = no log messages, except explicit invocation of Log ()
+#            1 = error messages are written to log,
+#            2 = error & debug messages are written to log
+LOG_LEVEL=2
+
+# Bundle is at the same level as fuse-ext2.util these days. (1)
+# Change this variable when script is moved to a different hierarchical level.
+LEVELS_ABOVE_BUNDLE=1
+
+# This variable controls if FUSE-EXT2 should probe for EXT2 file systems or not.
+# Setting it to 1 effectively disables the FUSE-EXT2 driver from a DiskArbitration
+# point of view. (Volumes will not be automatically mounted by FUSE-EXT2)
+PROBE_DISABLED=0
+
+# Some important variable definitions from sys/loadable_fs.h	
+FSUR_RECOGNIZED=-1     # response to FSUC_PROBE; implies that a mount is possible
+FSUR_UNRECOGNIZED=-2   # negative response to FSUC_PROBE
+FSUR_IO_SUCCESS=-3     # mount, unmount, repair succeeded
+FSUR_IO_FAIL=-4        # unrecoverable I/O error
+FSUR_IO_UNCLEAN=-5     # mount failed, file system not clean 
+FSUR_INVAL=-6          # invalid argument
+FSUR_LOADERR=-7        # kern_loader error */
+FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies that initialization is possible
+
+# Set paths to bundled executables here (omit /usr/local):
+FUSE_EXT2=/bin/fuse-ext2
+FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
+FUSE_EXT2_MKE2FS=/bin/fuse-ext2.mke2fs
+FUSE_EXT2_E2LABEL=/bin/fuse-ext2.e2label
+FUSE_EXT2_WAIT=/bin/fuse-ext2.wait
+FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
+
+# Writes a line to the log file
+function Log () {
+    if ( [[ ${LOG_ENABLED} -eq 1 ]] ); then
+	LOGMSG=$1
+	LOG_TIME=`date "+%Y-%m-%d %H:%M:%S"`
+	printf "%s\n" "${LOG_TIME}: ${LOGMSG}" 2>&1 >> ${LOGFILE}
+	if ( [[ ! $? -eq 0 ]] ); then
+	    # Try to log to alternate log file
+	    printf "%s\n" "${LOG_TIME}: ${LOGMSG}" 2>&1 >> ${FALLBACK_LOGFILE}
+	fi
+    fi
+}
+
+function LogError () {
+    if ( [[ ${LOG_LEVEL} -ge 1 ]] ); then
+	Log "$1"
+    fi
+}
+
+function LogDebug () {
+    if ( [[ ${LOG_LEVEL} -ge 2 ]] ); then
+	Log "$1"
+    fi
+}
+
+# Pops up a GUI dialog in the Finder to give user feedback (if applicable)
+function ShowDialog () {
+    MESSAGE=$1
+    osascript - "$1" <<-"EOF" > /dev/null &
+      on run argv
+        tell application "SystemUIServer" to display dialog item 1 of argv
+      end run
+EOF
+}
+
+# Get numeric value corresponding to FUSE version
+# Edit: Seems like this function doesn't work with recent MacFUSE versions.
+function GetFuseVersion ()
+{
+	VERS=`"${ROOT}/System/Library/Filesystems/fusefs.fs/Contents/Resources/mount_fusefs" --help 2>&1 | head -n 1 | awk '{ print $3 }'`
+
+	perl - "$VERS" <<-"EOF"
+		$total = 0;
+		foreach my $i (split(/\./, $ARGV[0]))
+		{
+			$total = ($total*256) + int($i);
+		}
+		
+		print $total . "\n";
+	EOF
+}
+
+# Make sure devices are of the form /dev/disk*
+function GetDevice ()
+{
+	echo "$1" | sed -e 's#^\([^/]\)#/dev/\1#' -e 's#/rdisk#/disk#'
+}
+
+# Make sure devices are of the form /dev/rdisk*
+function GetRawDevice ()
+{
+	echo "$1" | sed -e 's#^\([^/]\)#/dev/\1#' -e 's#/disk#/rdisk#'
+}
+
+# Get the absolute pathname for a file
+function GetAbsoluteName ()
+{
+	CWD="$2"
+	CWD=${CWD:=`pwd`}
+
+	echo "$1" | sed -e 's#^\([^/]\)#'"${CWD}"'/\1#' -e 's#//*#/#g' -e 's#/\./#/#g' -e 's#/[^/][^/]*/\.\./#/#g'
+}
+
+# Resolve symbolic links until we've found a non-symlink
+function GetAbsoluteFile ()
+{
+	FILE=`GetAbsoluteName "$1" "$2"`
+	DIR=`dirname "${FILE}"`
+	MAXDEPTH=$3
+	MAXDEPTH=${MAXDEPTH:=64}
+
+	while ( [[ -h "${FILE}" ]] && [[ ${MAXDEPTH} -gt 0 ]] )
+	do
+		FILE=`ls -l "${FILE}" | sed -e 's#^.*[[:space:]]->[[:space:]]##'`
+		FILE=`GetAbsoluteName "${FILE}" "${DIR}"`
+		let MAXDEPTH="${MAXDEPTH} - 1"
+	done
+
+	echo "${FILE}"
+}
+
+# Get the directory name for multiple tiers upward
+function GetDirName ()
+{
+	NUM=${2:=1}
+	echo "$1" | sed -e 's#\(/[^/]*\)\{'${NUM}'\}$##'
+}
+
+# Given our argument, $0, find the real bundle path
+function GetBundle ()
+{
+	#LogDebug "[GetBundle] [0]: \"$0\" [1]: \"$1\""
+	EXEC=`GetAbsoluteFile "$1"`
+	GetDirName "${EXEC}" ${LEVELS_ABOVE_BUNDLE}
+	#echo $RESULT > log.log
+}
+
+# Format a drive
+function Format ()
+{
+    LogDebug "[Format] Entering function Format..."
+    DEVICE=`GetDevice "$3"`
+    LogDebug "[Format] calling '$PFX$FUSE_EXT2_MKE2FS' -L '$2' '$DEVICE'"
+    $PFX$FUSE_EXT2_MKE2FS -L "$2" $DEVICE
+    MKE2FS_RES=$?
+    LogDebug "[Format] mke2fs returned '$MKE2FS_RES'"
+    return 0
+}
+
+# Quick verify a drive. This is to ensure that the file system being mounted
+# is free from very basic, obvious errors. In our case, this is implied by a
+# successful probe operation, so we do nothing.
+function QuickVerify () {
+    LogDebug "[QuickVerify] Entering function QuickVerify."
+    
+    # Quick consistency check; always return that it's fine.
+    LogDebug "[QuickVerify] Reporting that the volume is fine, even though that may not be the case (no fs checks performed)."
+    LogDebug "[QuickVerify] Returning from function QuickVerify."
+    
+    # In this case, no FSUR value is returned. Instead we must mimic whatever
+    # values fsck returns. OS X expects us to do that (I think).
+    return 0
+}
+
+# Verify a drive (read only fsck)
+function Verify () {
+    LogDebug "[Verify] Entering function Verify."
+    LogDebug "[Verify] Reporting that the volume is fine, even though that may not be the case (no fs checks performed)."
+    LogDebug "[Verify] Returning from function Verify."
+    return 0
+}
+
+# Repair a drive (read/write fsck)
+function Repair () {
+    LogDebug "[Repair] Entering function Repair..."
+    DEVICE=`GetDevice "$2"`
+    LogDebug "[Repair] Returning from function Repair with FSUR_INVAL."
+    return 0
+    return ${FSUR_INVAL} # FSUR_INVAL, defined in loadable_fs.h
+}
+
+function Mount ()
+{
+    LogDebug "[Mount] Entering function Mount..."
+    # Setting both defer_auth and defer_permissions. The option was renamed
+    # starting with MacFUSE 1.0.0, and there seems to be no backward
+    # compatibility on the options.
+    OPTIONS="auto_xattr,defer_permissions"
+	
+    # The local option is only enabled on Leopard. It causes strange
+    # behavior for Disk Utility in Tiger.
+    #ISLEOPARD=`uname -r | grep ^9[.][0-9][0-9]*[.][0-9][0-9]*$`
+    #LogDebug "[Mount] ISLEOPARD='${ISLEOPARD}'"
+    # 2008-05-04: Enabled the local option for both Tiger and Leopard after
+    #             new tests with latest MacFUSE didn't reveal any Tiger-
+    #             related issues. Earlier issues included unresponsive
+    #             DiskArbitration, leading to system-wide lockups.
+    #if ( [[ -n "${ISLEOPARD}" ]] ); then
+    OPTIONS="${OPTIONS},local"
+    #fi
+    
+    # Ignore DiskArb's mount options and possibly copy them
+    while [[ "$1" = "-o" ]]
+    do
+	# OPTIONS="${OPTIONS}${2}," # Copy options?
+	shift 2		# Forget the -o [option]
+    done
+
+    # $# is the argument count, which is decremented when we "shift"
+    while ( [[ $# -ne 0 ]] ); do
+	
+	LogDebug "[Mount] Processing argument \"$1\""
+	if ( [[ $# -eq 1 ]] ) ; then
+	    # The very last argument
+	    MOUNTPOINT="$1"
+	elif ( [[ $# -eq 2 ]] ); then
+	    # One argument before the very last argument
+	    DEVICE_ARG="$1"
+	else
+	    LogDebug "[Mount] Warning: Unhandled command line option \"$1\"!"
+	fi
+	
+	shift
+    done
+    
+    if ( [[ -z "${MOUNTPOINT}" ]] || [[ -z "${DEVICE_ARG}" ]] ); then
+	LogDebug "[Mount] Invalid command line! Printing usage and exiting with error..."
+	PrintUsage
+	return $FSUR_INVAL # invalid command line
+    fi
+    
+    # Get all the information we need prior to mounting
+    DEVICE=`GetDevice "${DEVICE_ARG}"`
+    LogDebug "[Mount] Got plain device \"${DEVICE}\""
+    RAWDEVICE=`GetRawDevice "${DEVICE_ARG}"`
+    LogDebug "[Mount] Got raw device \"${RAWDEVICE}\""
+    
+    LogDebug "[Mount] Invoking:"
+    LogDebug "[Mount]   \"${PFX}${FUSE_EXT2_WAIT}\" \"${MOUNTPOINT}\" \"5\" \"${PFX}${FUSE_EXT2}\" \"${DEVICE}\" \"${MOUNTPOINT}\" \"-o${OPTIONS}\""
+    
+    # Go ahead and attempt the mount
+    MOUNT_OUTPUT=`"${PFX}${FUSE_EXT2_WAIT}" "${MOUNTPOINT}" "5" "${PFX}${FUSE_EXT2}" "${DEVICE}" "${MOUNTPOINT}" "-o${OPTIONS}" 2>&1`
+    MOUNT_RES=$?
+    LogDebug "[Mount] ${PFX}${FUSE_EXT2_WAIT} returned with retval: ${MOUNT_RES}"
+    
+    # If anything went wrong, tell the user via GUI.
+    if ( [[ ! ${MOUNT_RES} -eq 0 ]] ); then
+	FAIL_OUTPUT_MSG="FUSE-EXT2 could not mount ${DEVICE}
+at ${MOUNTPOINT} because the following problem occurred:
+
+${MOUNT_OUTPUT}"
+	ShowDialog "${FAIL_OUTPUT_MSG}"
+	LogError "[Mount] ERROR: Mounting ${DEVICE} as ${MOUNTPOINT} failed! Output: ${MOUNT_OUTPUT}" 
+    else
+    	LogDebug "[Mount] Output from mount operation: ${MOUNT_OUTPUT}"
+	LogDebug "[Mount] Executing \"${PFX}${FUSE_EXT2_DAEMON}\""
+	# "${PFX}${FUSE_EXT2_DAEMON}" &
+    fi
+    
+    LogDebug "[Mount] Exiting function mount..."
+    # Return codes based on whether it succeeded or not
+    return $MOUNT_RES
+}
+
+function Unmount ()
+{
+    LogDebug "[Unmount] Entering function Unmount..."
+    
+    # Get the device and unmount it
+    DEVICE=`GetDevice "$1"`
+    umount "${DEVICE}"
+    UMOUNT_RES=$?
+    LogDebug "[Unmount] umount \"${DEVICE}\" returned with retval: $UMOUNT_RES"
+    return $UMOUNT_RES
+}
+
+function Probe ()
+{
+    LogDebug "[Probe] Entering function Probe..."
+    
+    # We can now disable automatic mounting by FUSE-EXT2 completely by setting
+    # the PROBE_DISABLED variable to 1
+    if ( [[ ${PROBE_DISABLED} -eq 1 ]] ); then
+	return ${FSUR_UNRECOGNIZED}			# FSUR_UNRECOGNIZED, defined in loadable_fs.h
+    fi
+    
+    # Get the device and further info
+    DEVICE=`GetDevice "$1"`
+    
+    # We probe for --readonly, and deal with the read only vs. read write situation in Mount ()
+    LogDebug "[Probe] Executing \"${PFX}${FUSE_EXT2_PROBE}\" \"${DEVICE}\" 2>&1"
+    PROBE_OUTPUT=`"${PFX}${FUSE_EXT2_PROBE}" "--readonly" "${DEVICE}" 2>&1`
+    PROBE_RETVAL=$?
+    LogDebug "[Probe]   Return value: ${PROBE_RETVAL}"
+    LogDebug "[Probe]   Output (PROBE_OUTPUT): \"${PROBE_OUTPUT}\""
+    
+    if (    [[ ${PROBE_RETVAL} -eq 0 ]] ); then
+	return ${FSUR_RECOGNIZED}			 # FSUR_RECOGNIZED, defined in loadable_fs.h
+    else
+	LogDebug "[Probe] PROBE_RETVAL indicated that we can not mount this volume."
+	LogDebug "[Probe] returning FSUR_UNRECOGNIZED"
+	return ${FSUR_UNRECOGNIZED}			# FSUR_UNRECOGNIZED, defined in loadable_fs.h	
+    fi
+}
+
+# Probe FS for init only. I didn't find any info on this "init" phase.
+# Default behavior is to just pass the request on to Probe ().
+function ProbeForInit () {
+    LogDebug "[ProbeForInit] Entering function ProbeForInit..."
+    Probe "$@"
+    RETVAL=$?
+    LogDebug "[ProbeForInit] Returning from function ProbeForInit with retval ${RETVAL}..."
+    return $RETVAL
+}
+
+# UUID is a 128 bit number that can be used to uniquely identify the volume.
+# This function may also return a 64-bit number, which OS X automatically
+# hashes to a 128 bit UUID. This is what hfs.util does.
+# It's possible that any string can be returned and that OS X just creates
+# a hash of it if it doesn't fit the 128-bit pattern. TODO: Check that theory.
+function PrintUUID () {
+    LogDebug "[PrintUUID] Entering function PrintUUID..."
+    LogDebug "[PrintUUID] PrintUUID not implemented, returning FSUR_INVAL."
+    LogDebug "[PrintUUID] Returning from function PrintUUID..."
+    return $FSUR_INVAL
+}
+
+function SetUUID () {
+    LogDebug "[SetUUID] Entering function SetUUID..."
+    LogDebug "[SetUUID] SetUUID not implemented, returning FSUR_INVAL."
+    LogDebug "[SetUUID] Returning from function SetUUID..."
+    return $FSUR_INVAL
+}
+
+function PrintUsage () {
+    LogDebug "[PrintUsage] Entering function PrintUsage..."
+    #echo "usage: fuse-ext2.util [-f|-p|-m|-y|-q|-u] <command options>"
+    echo "usage: $SELF action_arg device_arg [mount_point_arg]"
+    echo "action_arg:"
+    echo "       -p (Probe for mounting)"
+    echo "       -m (Mount)"
+    echo "       -u (Unmount)"
+    #echo "       -M (Force mount)"
+    echo "       -y (Repair volume)"
+    echo "       -q (Quick verify volume)"
+    echo "       -v (Verify volume)"
+    #echo "       -n (Verify volume)"
+    echo "       -f (Format volume)"
+    #echo "       -F (Format volume)"
+    echo "device_arg:"
+    echo "       device we are acting upon (for example, 'disk0s2')"
+    echo "mount_point_arg:"
+    echo "       required for Mount" # and Force Mount"
+    #echo "Flags:"
+    #echo "       required for Mount, Force Mount and Probe"
+    #echo "       indicates removable or fixed (for example 'fixed')"
+    #echo "       indicates readonly or writable (for example 'readonly')"
+}
+
+# Entry point
+LogDebug "${FSNAME} script invoked with command line \"$0\" \"$1\" \"$2\" \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\""
+INVOKING_USER=`id -un`
+LogDebug "Invoking user: ${INVOKING_USER}"
+# Get: the actual executed name, the real script file, the bundle folder, and the local bin
+EXEC=`GetAbsoluteFile "$0"`
+BUNDLE=`GetBundle "${EXEC}"`
+ROOT=`GetDirName "${BUNDLE}" 4`
+PFX="${ROOT}/usr/local"
+SELF=`basename "${EXEC}"`
+INVOKEBASENAME=`basename "$0"`
+# FUSE=`GetFuseVersion` # Not really needed unless you want to specify noping_diskarb. I don't see a reason to do that.
+
+# Get the execution mode for this script
+MODE=`echo "${SELF}" | cut -d. -f2`
+
+case "${INVOKEBASENAME}" in
+    mount_${FSNAME})
+	Mount "$@"
+	;;
+    newfs_${FSNAME})
+	Format "$@"
+	;;
+    *)
+	case "${MODE}" in
+	    format)
+		Format "$@"
+		;;
+	    verify)
+		Verify "$@"
+		;;
+	    repair)
+		Repair "$@"
+		;;
+	    mount)
+		Mount "$@"
+		;;
+	    umount)
+		Unmount "$@"
+		;;
+	    probe)
+		Probe "$@"
+		;;
+	    util)
+		case "$1" in
+		    -f)
+			shift
+			Format "$@"
+			;;
+		    -p)
+			shift
+			Probe "$@"
+			;;
+		    -P)
+			shift
+			ProbeForInit "$@"
+			;;
+		    -m|-M)
+			shift
+			Mount "$@"
+			;;
+		    -q)
+			shift
+			QuickVerify "$@"
+			;;
+		    -v)
+			shift
+			Verify "$@"
+			;;
+		    -r|-y)
+			shift
+			Repair "$@"
+			;;
+		    -u)
+			shift
+			Unmount "$@"
+			;;
+		    -k)
+			shift
+			PrintUUID "$@"
+			;;
+		    -s)
+			shift
+			SetUUID "$@"
+			;;
+		    *)
+		        #echo "Please do not call ${SELF} directly" 1>&2
+			PrintUsage
+			exit ${FSUR_INVAL}
+			;;
+		esac
+		;;
+	    *)
+		echo "Unrecognized command specified: ${SELF} $@" 1>&2
+		exit ${FSUR_INVAL}
+		;;
+	esac
+esac
+
+# Exit with the proper return code
+exit $?
