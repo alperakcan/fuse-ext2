@@ -93,6 +93,8 @@ sudo /Developer/Tools/SetFile -a C "$VOLUME_PATH"
 
 # Copy over the license file.
 sudo cp "${MKPKG_FOLDER}/Install_resources/README.rtf" "$VOLUME_PATH"/README.rtf
+sudo cp "${MKPKG_FOLDER}/Install_resources/Authors.rtf" "$VOLUME_PATH"/Authors.rtf
+sudo cp "${MKPKG_FOLDER}/Install_resources/ChangeLog.rtf" "$VOLUME_PATH"/ChangeLog.rtf
 sudo cp "${MKPKG_FOLDER}/Install_resources/License.rtf" "$VOLUME_PATH"/License.rtf
 
 # Detach the volume.
