@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'fuse-ext2' target in the 'fuse-ext2' project.
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <AppKit/AppKit.h>
+#endif
