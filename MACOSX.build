@@ -8,4 +8,3 @@ cd build
 CFLAGS="$OSX_CFLAGS" CXXFLAGS="$OSX_CFLAGS" LDFLAGS="$OSX_LDFLAGS" ../configure --disable-dependency-tracking
 make -s
 make package
-
