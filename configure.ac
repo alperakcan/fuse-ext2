@@ -42,15 +42,23 @@ AC_CHECK_HEADERS([	\
 	sys/stat.h	\
 	sys/mkdev.h	\
 	sys/ioctl.h	\
+	sys/syscall.h	\
 	sys/resource.h	\
 	sys/mman.h	\
 	sys/prctl.h	\
 	sys/disklabel.h \
 	sys/queue.h	\
+	sys/socket.h	\
+	sys/un.h	\
+	sys/sockio.h	\
+	net/if.h	\
+	netinet/in.h	\
+	net/if_dl.h	\
 	errno.h		\
 	unistd.h	\
 	utime.h		\
-	getopt.h    \
+	getopt.h	\
+	inttypes.h	\
 ])
 
 AC_CHECK_HEADERS(sys/disk.h sys/mount.h,,,
@@ -104,8 +112,11 @@ AC_CHECK_FUNCS([	\
 	memmove			\
 	memset			\
 	munmap			\
+	random			\
 	select			\
-	strcasecmp      \
+	srand			\
+	srandom			\
+	strcasecmp      	\
 	strchr			\
 	strdup			\
 	strerror		\
@@ -181,6 +192,7 @@ AC_CONFIG_FILES([
 	fuse-ext2.pc
 	Makefile
 	e2fsprogs-1.41.5/Makefile
+	e2fsprogs-1.41.5/uuid/Makefile
 	e2fsprogs-1.41.5/blkid/Makefile
 	e2fsprogs-1.41.5/et/Makefile
 	e2fsprogs-1.41.5/e2p/Makefile

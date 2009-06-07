@@ -839,6 +839,9 @@ extern errcode_t ext2fs_adjust_ea_refcount(ext2_filsys fs, blk_t blk,
 extern errcode_t ext2fs_extent_header_verify(void *ptr, int size);
 extern errcode_t ext2fs_extent_open(ext2_filsys fs, ext2_ino_t ino,
 				    ext2_extent_handle_t *handle);
+extern errcode_t ext2fs_extent_open2(ext2_filsys fs, ext2_ino_t ino,
+					struct ext2_inode *inode,
+					ext2_extent_handle_t *ret_handle);
 extern void ext2fs_extent_free(ext2_extent_handle_t handle);
 extern errcode_t ext2fs_extent_get(ext2_extent_handle_t handle,
 				   int flags, struct ext2fs_extent *extent);
