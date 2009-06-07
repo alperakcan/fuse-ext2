@@ -20,4 +20,5 @@ fuse_ext2_mke2fs_LDFLAGS = \
 	../ext2fs/libext2fs.a	\
 	../et/libcom_err.a \
 	../e2p/libe2p.a \
-	../blkid/libblkid.a
+	../blkid/libblkid.a \
+	../uuid/libuuid.a

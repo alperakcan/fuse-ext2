@@ -162,7 +162,7 @@ errcode_t ext2fs_bmap2(ext2_filsys fs, ext2_ino_t ino, struct ext2_inode *inode,
 		struct ext2fs_extent	extent;
 		unsigned int		offset;
 
-		retval = ext2fs_extent_open(fs, ino, &handle);
+		retval = ext2fs_extent_open2(fs, ino, inode, &handle);
 		if (retval)
 			goto done;
 		if (bmap_flags & BMAP_SET) {

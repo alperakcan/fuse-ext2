@@ -391,7 +391,8 @@ errcode_t ext2fs_close(ext2_filsys fs)
 		if (!(fs->flags & EXT2_FLAG_SUPER_ONLY))
 			fs->super->s_kbytes_written += meta_blks /
 				(fs->blocksize / 1024);
-		ext2fs_mark_super_dirty(fs);
+		if ((fs->flags & EXT2_FLAG_DIRTY) == 0)
+			fs->flags |= EXT2_FLAG_SUPER_ONLY | EXT2_FLAG_DIRTY;
 	}
 	if (fs->flags & EXT2_FLAG_DIRTY) {
 		retval = ext2fs_flush(fs);

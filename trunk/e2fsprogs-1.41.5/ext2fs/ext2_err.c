@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 static const char * const text[] = {
-		"EXT2FS Library version 1.41.5",
+		"EXT2FS Library version 1.41.6",
 		"Wrong magic number for ext2_filsys structure",
 		"Wrong magic number for badblocks_list structure",
 		"Wrong magic number for badblocks_iterate structure",
@@ -142,7 +142,8 @@ static const char * const text[] = {
 		"Operation not supported for inodes containing extents",
 		"Extent length is invalid",
 		"I/O Channel does not support 64-bit block numbers",
-    0
+		"Can't check if filesystem is mounted due to missing mtab file",
+		0
 };
 
 struct error_table {
@@ -156,7 +157,7 @@ struct et_list {
 };
 extern struct et_list *_et_list;
 
-const struct error_table et_ext2_error_table = { text, 2133571328L, 136 };
+const struct error_table et_ext2_error_table = { text, 2133571328L, 137 };
 
 static struct et_list link = { 0, 0 };
 

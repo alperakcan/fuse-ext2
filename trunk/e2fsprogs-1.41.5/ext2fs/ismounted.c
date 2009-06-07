@@ -55,7 +55,7 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
 
 	*mount_flags = 0;
 	if ((f = setmntent (mtab_file, "r")) == NULL)
-		return errno;
+		return (errno == ENOENT ? EXT2_NO_MTAB_FILE : errno);
 	if (stat(file, &st_buf) == 0) {
 		if (S_ISBLK(st_buf.st_mode)) {
 #ifndef __GNU__ /* The GNU hurd is broken with respect to stat devices */

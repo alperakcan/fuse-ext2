@@ -367,7 +367,7 @@ errcode_t ext2fs_block_iterate2(ext2_filsys fs,
 		int			uninit;
 		unsigned int		j;
 
-		ctx.errcode = ext2fs_extent_open(fs, ino, &handle);
+		ctx.errcode = ext2fs_extent_open2(fs, ino, &inode, &handle);
 		if (ctx.errcode)
 			goto abort_exit;
 
