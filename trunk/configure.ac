@@ -18,6 +18,12 @@ case $target_os in
      *)			arch=unknown;;
 esac
 
+# Large file support
+AC_TYPE_SIZE_T
+AC_TYPE_OFF_T
+AC_DEFINE([_LARGE_FILE_SOURCE], [], [Large files support])
+AC_DEFINE([_FILE_OFFSET_BITS], [64], [File Offset size])
+
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
