@@ -18,4 +18,4 @@ libuuid_a_SOURCES =	\
 	uuidd.h
 
 libuuid_a_CFLAGS =	\
-	-I$(top_srcdir)/e2fsprogs-1.41.5
+	-I$(top_srcdir)/e2fsprogs-1.41.6
