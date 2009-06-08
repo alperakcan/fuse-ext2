@@ -1,5 +1,5 @@
 
-SUBDIRS  = e2fsprogs-1.41.5
+SUBDIRS  = e2fsprogs-1.41.6
 SUBDIRS += fuse-ext2
 SUBDIRS += tools
 SUBDIRS += test/pjd-fstest-20080816
