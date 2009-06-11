@@ -63,11 +63,12 @@ ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.probe ${DISTRIBUTION_FOL
 ${INSTALL_C} -m 644 ${BUILD_FOLDER}/fuse-ext2.pc ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig/fuse-ext2.pc
 ${INSTALL_C} -m 755 ${MKPKG_FOLDER}/fuse-ext2.fs/fuse-ext2.util ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/fuse-ext2.util
 ${INSTALL_C} -m 755 ${MKPKG_FOLDER}/fuse-ext2.fs/mount_fuse-ext2 ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2
+${SED_E} "s/FUSEEXT2_VERSION_LITERAL/$FUSEEXT2_VERSION/g" < ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Info.plist.in > ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Info.plist
 ${INSTALL_C} -m 644 ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Info.plist ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist
 ${INSTALL_C} -m 644 ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/PkgInfo ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/PkgInfo
 ${INSTALL_C} -m 644 ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Resources/English.lproj/InfoPlist.strings ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Resources/English.lproj/InfoPlist.strings
 ${LN_SF} ../System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2 ${DISTRIBUTION_FOLDER}/sbin/mount_fuse-ext2
-${SED_E} "s/FUSEEXT2_VERSION_LITERAL/FUSEEXT2_VERSION/g" < ${MKPKG_FOLDER}/Info.plist.in > ${MKPKG_FOLDER}/Info.plist
+${SED_E} "s/FUSEEXT2_VERSION_LITERAL/$FUSEEXT2_VERSION/g" < ${MKPKG_FOLDER}/Info.plist.in > ${MKPKG_FOLDER}/Info.plist
 ${MV} ${MKPKG_FOLDER}/Info.plist ${TMP_FOLDER}/Info.plist
 ${CHOWN_R} root:wheel ${TMP_FOLDER}
 ${SUDO} find ${DISTRIBUTION_FOLDER} -name ".svn" -type d | xargs ${SUDO} rm

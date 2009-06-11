@@ -13,11 +13,11 @@
 	<key>CFBundlePackageType</key>
 	<string>fs  </string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.3</string>
+	<string>FUSEEXT2_VERSION_LITERAL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.0.3</string>
+	<string>FUSEEXT2_VERSION_LITERAL</string>
 	<key>FSMediaTypes</key>
 	<dict>
 		<key>Linux</key>
