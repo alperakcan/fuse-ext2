@@ -34,13 +34,26 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (IBAction) updateButtonClicked: (id) sender
 {
+	BOOL authorized;
+	[spinnerUpdate startAnimation:self];
 	NSLog(@"update button clicked\n");
-	[self authorize];
+	authorized = [self authorize];
+	if (authorized != YES) {
+		[spinnerUpdate stopAnimation:self];
+	}
+	[spinnerUpdate stopAnimation:self];
 }
 
 - (IBAction) removeButtonClicked: (id) sender
 {
+	BOOL authorized;
+	[spinnerRemove startAnimation:self];
 	NSLog(@"remove button clicked\n");
+	authorized = [self authorize];
+	if (authorized != YES) {
+		[spinnerRemove stopAnimation:self];
+	}
+	[spinnerRemove stopAnimation:self];
 }
 
 - (NSString *) installedVersion
@@ -167,5 +180,7 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 @synthesize updateButton;
 @synthesize installedLabel;
 @synthesize updateLabel;
+@synthesize spinnerRemove;
+@synthesize spinnerUpdate;
 
 @end
