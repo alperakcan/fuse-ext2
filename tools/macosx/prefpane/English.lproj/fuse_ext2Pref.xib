@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9G55</string>
+		<string key="IBDocument.SystemVersion">9J61</string>
 		<string key="IBDocument.InterfaceBuilderVersion">677</string>
-		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -229,11 +229,21 @@
 						</object>
 						<object class="NSProgressIndicator" id="173827884">
 							<reference key="NSNextResponder" ref="1037298196"/>
-							<int key="NSvFlags">-2147482356</int>
+							<int key="NSvFlags">1292</int>
 							<object class="NSPSMatrix" key="NSDrawMatrix"/>
-							<string key="NSFrame">{{450, 22}, {16, 16}}</string>
+							<string key="NSFrame">{{455, 22}, {16, 16}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
-							<int key="NSpiFlags">20746</int>
+							<int key="NSpiFlags">28938</int>
+							<double key="NSMinValue">1.600000e+01</double>
+							<double key="NSMaxValue">1.000000e+02</double>
+						</object>
+						<object class="NSProgressIndicator" id="1034886910">
+							<reference key="NSNextResponder" ref="1037298196"/>
+							<int key="NSvFlags">1292</int>
+							<object class="NSPSMatrix" key="NSDrawMatrix"/>
+							<string key="NSFrame">{{455, 54}, {16, 16}}</string>
+							<reference key="NSSuperview" ref="1037298196"/>
+							<int key="NSpiFlags">28938</int>
 							<double key="NSMinValue">1.600000e+01</double>
 							<double key="NSMaxValue">1.000000e+02</double>
 						</object>
@@ -313,6 +323,22 @@
 					</object>
 					<int key="connectionID">126</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">spinnerUpdate</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="173827884"/>
+					</object>
+					<int key="connectionID">129</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">spinnerRemove</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="1034886910"/>
+					</object>
+					<int key="connectionID">131</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -357,9 +383,10 @@
 							<reference ref="99950424"/>
 							<reference ref="1036738595"/>
 							<reference ref="733484387"/>
-							<reference ref="173827884"/>
 							<reference ref="1060266143"/>
 							<reference ref="290916454"/>
+							<reference ref="1034886910"/>
+							<reference ref="173827884"/>
 						</object>
 						<reference key="parent" ref="660800786"/>
 					</object>
@@ -463,6 +490,11 @@
 						<reference key="object" ref="173827884"/>
 						<reference key="parent" ref="1037298196"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">130</int>
+						<reference key="object" ref="1034886910"/>
+						<reference key="parent" ref="1037298196"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -492,6 +524,7 @@
 					<string>12.ImportedFromIB2</string>
 					<string>12.windowTemplate.hasMinSize</string>
 					<string>12.windowTemplate.minSize</string>
+					<string>130.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.ImportedFromIB2</string>
 				</object>
@@ -514,12 +547,13 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{72, 362}, {668, 181}}</string>
+					<string>{{153, 451}, {668, 181}}</string>
 					<boolean value="YES"/>
-					<string>{{72, 362}, {668, 181}}</string>
+					<string>{{153, 451}, {668, 181}}</string>
 					<integer value="1" id="5"/>
 					<reference ref="5"/>
 					<string>{224.664, 10}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="5"/>
 				</object>
@@ -544,7 +578,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">126</int>
+			<int key="maxID">131</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -605,6 +639,8 @@
 							<string>aboutLabel</string>
 							<string>installedLabel</string>
 							<string>removeButton</string>
+							<string>spinnerRemove</string>
+							<string>spinnerUpdate</string>
 							<string>updateButton</string>
 							<string>updateLabel</string>
 						</object>
@@ -613,6 +649,8 @@
 							<string>NSTextField</string>
 							<string>NSTextField</string>
 							<string>NSButton</string>
+							<string>NSProgressIndicator</string>
+							<string>NSProgressIndicator</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
 						</object>

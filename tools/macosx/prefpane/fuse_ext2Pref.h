@@ -8,7 +8,6 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
-
 @interface fuse_ext2Pref : NSPreferencePane 
 {
 @private
@@ -17,6 +16,8 @@
 	IBOutlet NSButton *updateButton;
 	IBOutlet NSTextField *installedLabel;
 	IBOutlet NSTextField *updateLabel;
+	IBOutlet NSProgressIndicator *spinnerRemove;
+	IBOutlet NSProgressIndicator *spinnerUpdate;
 	AuthorizationRef authorizationReference;
 }
 
@@ -29,5 +30,7 @@
 @property (retain) NSButton *updateButton;
 @property (retain) NSTextField *installedLabel;
 @property (retain) NSTextField *updateLabel;
+@property (retain) NSProgressIndicator *spinnerRemove;
+@property (retain) NSProgressIndicator *spinnerUpdate;
 
 @end
