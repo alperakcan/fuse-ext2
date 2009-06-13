@@ -5,6 +5,13 @@
 //  Created by Alper Akcan on 4/27/09.
 //  Copyright (c) 2009 __MyCompanyName__. All rights reserved.
 //
+//
+// Authorization related functions
+//  authorize
+//  copyRights
+//  deauthorize
+// are heavly based on MacFUSE PrefPane implementation
+//
 
 #import "fuse_ext2Pref.h"
 
@@ -17,6 +24,9 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (NSString *) installedVersion;
 - (void) updateGUI;
+- (BOOL) authorize;
+- (BOOL) copyRights;
+- (void) deauthorize;
 
 @end
 
@@ -24,6 +34,8 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (IBAction) updateButtonClicked: (id) sender
 {
+	NSLog(@"update button clicked\n");
+	[self authorize];
 }
 
 - (IBAction) removeButtonClicked: (id) sender
@@ -72,9 +84,82 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 	[version release];
 }
 
+- (BOOL) authorize
+{
+	BOOL authorized;
+	OSStatus status;
+	AuthorizationRights *kNoRightsSpecified;
+
+	authorized = NO;
+	
+	if (authorizationReference != nil) {
+		authorized = [self copyRights];
+	} else {
+		kNoRightsSpecified = nil;
+		status = AuthorizationCreate(kNoRightsSpecified, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &authorizationReference);
+		if (status == errAuthorizationSuccess) {
+			authorized = [self copyRights];
+		}
+	}
+	return authorized;
+}
+
+- (BOOL) copyRights
+{
+	NSParameterAssert(authorizationReference);
+
+	BOOL isGood;
+	OSStatus status;
+	
+	AuthorizationFlags authorizationFlags =
+		kAuthorizationFlagDefaults |
+		kAuthorizationFlagPreAuthorize |
+		kAuthorizationFlagExtendRights |
+		kAuthorizationFlagInteractionAllowed;
+	AuthorizationItem authorizationItem = {
+		kAuthorizationRightExecute,
+		0,
+		NULL,
+		0,
+	};
+	AuthorizationRights authorizationRights = {
+		1,
+		&authorizationItem,
+	};
+	
+	isGood = NO;
+	status = AuthorizationCopyRights(
+		authorizationReference,
+		&authorizationRights,
+		kAuthorizationEmptyEnvironment,
+		authorizationFlags,
+		NULL);
+	if (status != errAuthorizationSuccess) {
+		[self deauthorize];
+	} else {
+		isGood = YES;
+	}
+	
+	return isGood;
+}
+
+- (void) deauthorize
+{
+	if (authorizationReference != nil) {
+		AuthorizationFree(authorizationReference, kAuthorizationFlagDefaults);
+		authorizationReference = nil;
+	}
+}
+
 - (void) mainViewDidLoad
 {
 	[self updateGUI];
+}
+
+- (void) dealloc
+{
+	[self deauthorize];
+	[super dealloc];
 }
 
 @synthesize aboutLabel;

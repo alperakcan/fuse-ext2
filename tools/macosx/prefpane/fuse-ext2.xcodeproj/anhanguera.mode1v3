@@ -306,6 +306,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -323,14 +325,14 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>55CE1E270FE3188100CCDD5A</string>
+										<string>55CE1E850FE3282400CCDD5A</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
-											<string>55FD657B0FA649E30009BA4B</string>
 											<string>55DE32330FA6638300F94D27</string>
 											<string>55DE32340FA6638300F94D27</string>
-											<string>55CD2AFA0FE1942700F60615</string>
+											<string>55CE1E7A0FE3274100CCDD5A</string>
+											<string>55CE1E7B0FE3274100CCDD5A</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -339,6 +341,10 @@
 											<string>551ADFC50FA6423E00AA0ADB</string>
 											<string>551ADFC60FA6423E00AA0ADB</string>
 											<string>55DE32390FA6638300F94D27</string>
+											<string>55CE1E5E0FE3239B00CCDD5A</string>
+											<string>55CE1E5F0FE3239B00CCDD5A</string>
+											<string>55CE1E7C0FE3274100CCDD5A</string>
+											<string>55CE1E7D0FE3274100CCDD5A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -360,8 +366,6 @@
 							<string>504pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -534,6 +538,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>551ADFCA0FA6423E00AA0ADB</string>
 		<string>/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/prefpane/fuse-ext2.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -565,16 +570,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {500, 218}}</string>
+								<string>{{0, 0}, {733, 230}}</string>
 								<key>RubberWindowFrame</key>
-								<string>285 200 500 500 0 0 1280 778 </string>
+								<string>285 188 733 512 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>218pt</string>
+							<string>230pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -589,9 +596,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 223}, {500, 236}}</string>
+								<string>{{0, 235}, {733, 236}}</string>
 								<key>RubberWindowFrame</key>
-								<string>285 200 500 500 0 0 1280 778 </string>
+								<string>285 188 733 512 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -600,7 +607,7 @@
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>459pt</string>
+					<string>471pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -614,14 +621,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>551ADFCA0FA6423E00AA0ADB</string>
-				<string>55CD2AEE0FE1941600F60615</string>
+				<string>55CE1E4E0FE321AB00CCDD5A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.buildV3</string>
 			<key>WindowString</key>
-			<string>285 200 500 500 0 0 1280 778 </string>
+			<string>285 188 733 512 0 0 1280 778 </string>
 			<key>WindowToolGUID</key>
 			<string>551ADFCA0FA6423E00AA0ADB</string>
 			<key>WindowToolIsVisible</key>
