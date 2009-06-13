@@ -17,6 +17,7 @@
 	IBOutlet NSButton *updateButton;
 	IBOutlet NSTextField *installedLabel;
 	IBOutlet NSTextField *updateLabel;
+	AuthorizationRef authorizationReference;
 }
 
 - (void) mainViewDidLoad;
