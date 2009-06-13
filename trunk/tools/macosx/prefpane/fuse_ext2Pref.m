@@ -14,6 +14,7 @@
 //
 
 #import "fuse_ext2Pref.h"
+#import <Carbon/Carbon.h>
 
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
 static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
@@ -175,12 +176,5 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 	[super dealloc];
 }
 
-@synthesize aboutLabel;
-@synthesize removeButton;
-@synthesize updateButton;
-@synthesize installedLabel;
-@synthesize updateLabel;
-@synthesize spinnerRemove;
-@synthesize spinnerUpdate;
 
 @end

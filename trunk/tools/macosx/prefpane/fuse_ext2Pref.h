@@ -7,6 +7,7 @@
 //
 
 #import <PreferencePanes/PreferencePanes.h>
+#import <Security/Security.h>
 
 @interface fuse_ext2Pref : NSPreferencePane 
 {
@@ -24,13 +25,5 @@
 - (void) mainViewDidLoad;
 - (IBAction) removeButtonClicked: (id) sender;
 - (IBAction) updateButtonClicked: (id) sender;
-
-@property (retain) NSTextField *aboutLabel;
-@property (retain) NSButton *removeButton;
-@property (retain) NSButton *updateButton;
-@property (retain) NSTextField *installedLabel;
-@property (retain) NSTextField *updateLabel;
-@property (retain) NSProgressIndicator *spinnerRemove;
-@property (retain) NSProgressIndicator *spinnerUpdate;
 
 @end
