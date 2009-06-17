@@ -3,8 +3,6 @@
 //  fuse-ext2
 //
 //  Created by Alper Akcan on 4/27/09.
-//  Copyright (c) 2009 __MyCompanyName__. All rights reserved.
-//
 //
 // Authorization related functions
 //  authorize
@@ -14,6 +12,7 @@
 //
 
 #import "fuse_ext2Pref.h"
+
 #import <Carbon/Carbon.h>
 
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
@@ -25,6 +24,7 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (NSString *) installedVersion;
 - (void) updateGUI;
+
 - (BOOL) authorize;
 - (BOOL) copyRights;
 - (void) deauthorize;
@@ -175,6 +175,5 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 	[self deauthorize];
 	[super dealloc];
 }
-
 
 @end
