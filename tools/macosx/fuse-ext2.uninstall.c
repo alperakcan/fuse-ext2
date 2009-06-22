@@ -26,41 +26,38 @@
 
 #include <errno.h>
 
-typedef enum {
-	file,
-	directory,
-} f_type;
+#define debugf(a...) { \
+	printf("debug: "); \
+	printf(a); \
+	printf(" (%s) [%s (%s:%d)]\n", strerror(errno), __FUNCTION__, __FILE__, __LINE__); \
+}
 
-typedef struct f_s {
-	int type;
-	char *name;
-} f_t;
-
-static f_t *files[] = {
-	&(f_t) {directory, "/Library/Filesystems/fuse-ext2.fs"},
-	&(f_t) {directory, "/System/Library/Filesystems/fuse-ext2.fs"},
-	&(f_t) {directory, "/Library/PreferencePanes/fuse-ext2.prefPane"},
-	&(f_t) {directory, "/System/Library/PreferencePanes/fuse-ext2.prefPane"},
-	&(f_t) {file, "/usr/local/bin/fuse-ext2"},
-	&(f_t) {file, "/usr/local/bin/fuse-ext2.wait"},
-	&(f_t) {file, "/usr/local/bin/fuse-ext2.probe"},
-	&(f_t) {file, "/usr/local/bin/fuse-ext2.mke2fs"},
-	&(f_t) {file, "/usr/local/bin/fuse-ext2.e2label"},
-	&(f_t) {file, "/usr/local/lib/pkgconfig/fuse-ext2.pc"},
+static char *files[] = {
+	"/Library/Receipts/fuse-ext2.pkg",
+	"/Library/Filesystems/fuse-ext2.fs",
+	"/System/Library/Filesystems/fuse-ext2.fs",
+	"/Library/PreferencePanes/fuse-ext2.prefPane",
+	"/System/Library/PreferencePanes/fuse-ext2.prefPane",
+	"/usr/local/bin/fuse-ext2",
+	"/usr/local/bin/fuse-ext2.wait",
+	"/usr/local/bin/fuse-ext2.probe",
+	"/usr/local/bin/fuse-ext2.mke2fs",
+	"/usr/local/bin/fuse-ext2.e2label",
+	"/usr/local/lib/pkgconfig/fuse-ext2.pc",
 	NULL,
 };
 
 static int rm_file (const char *path)
 {
 	if (access(path, W_OK | W_OK | F_OK) != 0) {
-		printf("access failed for '%s' (%s)\n", path, strerror(errno));
+		debugf("access failed for '%s'", path);
 		if (errno == ENOENT) {
 			return 0;
 		}
 		return -1;
 	}
 	if (unlink(path) != 0) {
-		printf("unlink failed for '%s' (%s)\n", path, strerror(errno));
+		debugf("unlink failed for '%s'", path);
 	}
 	return 0;
 }
@@ -73,7 +70,7 @@ static int rm_directory (const char *path)
 	struct dirent *current;
 	dp = opendir(path);
 	if (dp == NULL) {
-		printf("opendir() failed for '%s' (%s)\n", path, strerror(errno));
+		debugf("opendir() failed for '%s'", path);
 		if (errno == ENOENT) {
 			return 0;
 		}
@@ -86,45 +83,57 @@ static int rm_directory (const char *path)
 		}
 		p = (char *) malloc(sizeof(char) * (strlen(path) + 1 + strlen(current->d_name) + 1));
 		if (p == NULL) {
-			printf("malloc failed for '%s/%s'\n", path, current->d_name);
+			debugf("malloc failed for '%s/%s'", path, current->d_name);
 			continue;
 		}
 		sprintf(p, "%s/%s", path, current->d_name);
 		if (lstat(p, &stbuf) != 0) {
-			printf("stat failed for '%s' (%s)\n", p, strerror(errno));
+			debugf("lstat failed for '%s'", p);
 			free(p);
 			continue;
 		}
 		if (S_ISDIR(stbuf.st_mode)) {
 			if (rm_directory(p) != 0) {
-				printf("rm_directory() failed for '%s'\n", p);
+				debugf("rm_directory() failed for '%s'", p);
 			}
 		} else {
 			if (rm_file(p) != 0) {
-				printf("rm_file() failed for '%s'\n", p);
+				debugf("rm_file() failed for '%s'", p);
 			}
 		}
 		free(p);
 	}
-	if (rmdir(path) != 0) {
-		printf("rmdir() failed for '%s'\n", path);
-	}
 	closedir(dp);
+	if (rmdir(path) != 0) {
+		debugf("rmdir() failed for '%s'", path);
+	}
 	return 0;
+}
+
+static int rm_path (const char *path)
+{
+	struct stat stbuf;
+	if (lstat(path, &stbuf) != 0) {
+		debugf("lstat failed for '%s'", path);
+		return -1;
+	}
+	if (S_ISDIR(stbuf.st_mode)) {
+		return rm_directory(path);
+	} else {
+		return rm_file(path);
+	}
+	return -1;
 }
 
 int main (int argc, char *argv[])
 {
-	f_t **f;
+	char **f;
+	printf("uninstalling fuse-ext2\n");
 	for (f = files; *f != NULL; f++) {
-		if ((*f)->type == directory) {
-			rm_directory((*f)->name);
-		} else if ((*f)->type == file) {
-			rm_file((*f)->name);
-		} else {
-			printf("unkown file type '%d' for '%s'\n", (*f)->type, (*f)->name);
-			exit(1);
+		if (rm_path(*f) != 0) {
+			debugf("rm_path() for '%s' failed", *f);
 		}
 	}
+	printf("done\n");
 	return 0;
 }
