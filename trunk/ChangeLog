@@ -1,6 +1,7 @@
 
 Mon 22 Jun 2009 05:36:45 PM EEST
-	- uninstall support for mac 
+	- uninstall support for mac
+	- initial updater for mac
 
 Thu 11 Jun 2009 10:55:23 PM EEST
 	- set version information at compile time for info.plist
