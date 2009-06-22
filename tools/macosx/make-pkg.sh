@@ -8,6 +8,7 @@
 SUDO="sudo"
 SED_E="${SUDO} sed -e"
 MV="${SUDO} mv"
+CP_R="${SUDO} cp -R"
 RM_RF="${SUDO} rm -rf"
 MKDIR_P="${SUDO} mkdir -p"
 LN_SF="${SUDO} ln -sf"
@@ -51,10 +52,14 @@ ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/bin
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig
+${MKDIR_P} ${DISTRIBUTION_FOLDER}/Library/PreferencePanes
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs
+${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Support
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Resources
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Contents/Resources/English.lproj
+${CP_R} ${MKPKG_FOLDER}/prefpane/build/Release/fuse-ext2.prefPane ${DISTRIBUTION_FOLDER}/Library/PreferencePanes/fuse-ext2.prefPane
+${INSTALL_C} -m 755 ${BUILD_FOLDER}/tools/macosx/fuse-ext2.uninstall ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Support/fuse-ext2.uninstall
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.6/misc/fuse-ext2.e2label ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.e2label
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.6/misc/fuse-ext2.mke2fs ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.mke2fs
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2 ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2

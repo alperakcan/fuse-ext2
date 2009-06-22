@@ -271,7 +271,6 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
 									<integer>5</integer>
 									<integer>0</integer>
 								</array>
@@ -307,8 +306,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -326,7 +323,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>55CFD50E0FE9A520006AEA9D</string>
+										<string>55315D5B0FEFC6C900B6EBA0</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
@@ -337,7 +334,7 @@
 											<string>55CFD4BE0FE99E8D006AEA9D</string>
 											<string>55CFD4DF0FE9A136006AEA9D</string>
 											<string>55CFD4F60FE9A2A0006AEA9D</string>
-											<string>55CFD4F80FE9A2A0006AEA9D</string>
+											<string>55CFD5120FE9A6AA006AEA9D</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -346,23 +343,9 @@
 											<string>551ADFC50FA6423E00AA0ADB</string>
 											<string>551ADFC60FA6423E00AA0ADB</string>
 											<string>55DE32390FA6638300F94D27</string>
-											<string>55CFD4990FE99A89006AEA9D</string>
-											<string>55CFD49A0FE99A89006AEA9D</string>
 											<string>55CFD49B0FE99A89006AEA9D</string>
-											<string>55CFD49C0FE99A89006AEA9D</string>
-											<string>55CFD49D0FE99A89006AEA9D</string>
-											<string>55CFD49E0FE99A89006AEA9D</string>
-											<string>55CFD49F0FE99A89006AEA9D</string>
-											<string>55CFD4A00FE99A89006AEA9D</string>
-											<string>55CFD4C00FE99E8D006AEA9D</string>
 											<string>55CFD4C10FE99E8D006AEA9D</string>
-											<string>55CFD4C30FE99E8D006AEA9D</string>
-											<string>55CFD4C40FE99E8D006AEA9D</string>
-											<string>55CFD4C50FE99E8D006AEA9D</string>
-											<string>55CFD4C70FE99E8D006AEA9D</string>
-											<string>55CFD4E20FE9A136006AEA9D</string>
 											<string>55CFD4E30FE9A136006AEA9D</string>
-											<string>55CFD4F90FE9A2A0006AEA9D</string>
 											<string>55CFD4FA0FE9A2A0006AEA9D</string>
 										</array>
 									</dict>
@@ -385,6 +368,8 @@
 							<string>504pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -421,9 +406,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>55CFD48F0FE99141006AEA9D</string>
+				<string>55315D570FEFBBBF00B6EBA0</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>55CFD4900FE99141006AEA9D</string>
+				<string>55315D580FEFBBBF00B6EBA0</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -582,7 +567,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>fuse_ext2Pref.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -599,8 +584,6 @@
 							<string>230pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -640,7 +623,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>551ADFCA0FA6423E00AA0ADB</string>
-				<string>55CFD4A20FE99A89006AEA9D</string>
+				<string>55315D590FEFBBBF00B6EBA0</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
