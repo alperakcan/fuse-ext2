@@ -72,6 +72,10 @@ there are no known bugs for read-only mode, read only mode should be ok for ever
 altough, write support is available (and it is pretty stable) please do not mount your
 filesystems with write support unless you do not have anything to loose.
 
+please send output the output of below command while reporting bugs.
+
+$ /usr/local/bin/fuse-ext2 -v /dev/path /mnt/point -o debug
+
 Labels
 ------
 

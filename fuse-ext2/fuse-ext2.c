@@ -117,7 +117,7 @@ static int parse_options (int argc, char *argv[])
 					/* We don't want relative path in /etc/mtab. */
 					if (optarg[0] != '/') {
 						if (!realpath(optarg, opts.device)) {
-							debugf("Cannot mount %s", optarg);
+							debugf("Cannot find device %s", optarg);
 							free(opts.device);
 							opts.device = NULL;
 							return -1;
@@ -315,9 +315,11 @@ int main (int argc, char *argv[])
 	memset(&priv, 0, sizeof(priv));
 
 	if (parse_options(argc, argv)) {
-		usage();
 		return -1;
 	}
+
+	debugf("opts.device: %s", opts.device);
+	debugf("opts.mnt_point: %s", opts.mnt_point);
 
 	if (stat(opts.device, &sbuf)) {
 		debugf("Failed to access '%s'", opts.device);
@@ -337,8 +339,6 @@ int main (int argc, char *argv[])
 		goto err_out;
 	}
 
-	debugf("opts.device: %s", opts.device);
-	debugf("opts.mnt_point: %s", opts.mnt_point);
 	debugf("opts.volname: %s", (opts.volname != NULL) ? opts.volname : "");
 	debugf("opts.options: %s", opts.options);
 	debugf("parsed_options: %s", parsed_options);
