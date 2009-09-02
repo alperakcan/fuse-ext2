@@ -1,11 +1,14 @@
 
+Wed 02 Sep 2009 07:43:48 PM EEST
+	- merge in renzo branch rev.140
+
 Mon 22 Jun 2009 05:36:45 PM EEST
 	- uninstall support for mac
 	- initial updater for mac
 
 Thu 11 Jun 2009 10:55:23 PM EEST
 	- set version information at compile time for info.plist
-	- corrected mke2fs path infotmation in make-pkg.sh
+	- corrected mke2fs path information in make-pkg.sh
 
 Tue 09 Jun 2009 02:09:15 AM EEST
 	- upgrade to e2fsprogs-1.41.6
