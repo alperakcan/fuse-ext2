@@ -19,7 +19,6 @@ if DARWIN
 fuse_ext2_probe_CFLAGS =			\
 	-Wall					\
 	-DHAVE_CONFIG_H				\
-	-D_FILE_OFFSET_BITS=64			\
 	-I$(top_srcdir)/e2fsprogs-1.41.6 \
 	-I/usr/local/include
 
@@ -33,7 +32,6 @@ if LINUX
 fuse_ext2_probe_CFLAGS =			\
 	-Wall					\
 	-DHAVE_CONFIG_H				\
-	-D_FILE_OFFSET_BITS=64			\
 	-I/usr/local/include
 
 fuse_ext2_probe_LDADD =				\
@@ -120,7 +118,6 @@ umfuseext2_la_SOURCES = \
 umfuseext2_la_CFLAGS = \
 	-Wall					\
 	-DHAVE_CONFIG_H				\
-	-D_FILE_OFFSET_BITS=64			\
 	-D_GNU_SOURCE \
 	$(DEVELFLAGS) \
 	-I$(includedir)/umview \
@@ -136,7 +133,6 @@ endif
 fuse_ext2_CFLAGS =				\
 	-Wall					\
 	-DHAVE_CONFIG_H				\
-	-D_FILE_OFFSET_BITS=64			\
 	-I$(top_srcdir)/e2fsprogs-1.41.6 \
 	-I/usr/local/include
 
