@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,18 +39,18 @@ static int ext2_group_spare (int group)
 	return (test_root(group, 3) || test_root(group, 5) || test_root(group, 7));
 }
 
-static int ext2_bg_has_super (int group)
+static int ext2_bg_has_super (ext2_filsys e2fs, int group)
 {
-	if (EXT2_HAS_RO_COMPAT_FEATURE(priv.fs->super, EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER) &&
+	if (EXT2_HAS_RO_COMPAT_FEATURE(e2fs->super, EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER) &&
 	    !ext2_group_spare(group)) {
 		return 0;
 	}
 	return 1;
 }
 
-static int ext2_bg_num_gdb (int group)
+static int ext2_bg_num_gdb (ext2_filsys e2fs, int group)
 {
-	if (EXT2_HAS_RO_COMPAT_FEATURE(priv.fs->super, EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER) &&
+	if (EXT2_HAS_RO_COMPAT_FEATURE(e2fs->super, EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER) &&
 	    !ext2_group_spare(group)) {
 		return 0;
 	}
@@ -64,36 +65,37 @@ int op_statfs(const char *path, struct statvfs *buf)
 	unsigned long s_itb_per_group = 0;
 	unsigned long s_overhead_last = 0;
 	unsigned long s_inodes_per_block = 0;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 
 	memset(buf, 0, sizeof(struct statvfs));
 
-	if (priv.fs->super->s_default_mount_opts & EXT2_MOUNT_MINIX_DF) {
+	if (e2fs->super->s_default_mount_opts & EXT2_MOUNT_MINIX_DF) {
 		s_overhead_last = 0;
 	} else {
-		s_overhead_last = priv.fs->super->s_first_data_block;
-		s_groups_count = ((priv.fs->super->s_blocks_count - priv.fs->super->s_first_data_block - 1) / priv.fs->super->s_blocks_per_group) + 1;
-		s_gdb_count = (s_groups_count + EXT2_DESC_PER_BLOCK(priv.fs->super) - 1) / EXT2_DESC_PER_BLOCK(priv.fs->super);
+		s_overhead_last = e2fs->super->s_first_data_block;
+		s_groups_count = ((e2fs->super->s_blocks_count - e2fs->super->s_first_data_block - 1) / e2fs->super->s_blocks_per_group) + 1;
+		s_gdb_count = (s_groups_count + EXT2_DESC_PER_BLOCK(e2fs->super) - 1) / EXT2_DESC_PER_BLOCK(e2fs->super);
 		for (i = 0; i < s_groups_count; i++) {
-			s_overhead_last += ext2_bg_has_super(i) + ((ext2_bg_num_gdb(i) == 0) ? 0 : s_gdb_count);
+			s_overhead_last += ext2_bg_has_super(e2fs, i) + ((ext2_bg_num_gdb(e2fs, i) == 0) ? 0 : s_gdb_count);
 		}
-		s_inodes_per_block = EXT2_BLOCK_SIZE(priv.fs->super) / EXT2_INODE_SIZE(priv.fs->super);
-		s_itb_per_group = priv.fs->super->s_inodes_per_group / s_inodes_per_block;
+		s_inodes_per_block = EXT2_BLOCK_SIZE(e2fs->super) / EXT2_INODE_SIZE(e2fs->super);
+		s_itb_per_group = e2fs->super->s_inodes_per_group / s_inodes_per_block;
 		s_overhead_last += (s_groups_count * (2 +  s_itb_per_group));
 	}
-	buf->f_bsize = EXT2_BLOCK_SIZE(priv.fs->super);
-	buf->f_frsize = EXT2_FRAG_SIZE(priv.fs->super);
-	buf->f_blocks = priv.fs->super->s_blocks_count - s_overhead_last;
-	buf->f_bfree = priv.fs->super->s_free_blocks_count;
-	if (priv.fs->super->s_free_blocks_count < priv.fs->super->s_r_blocks_count) {
+	buf->f_bsize = EXT2_BLOCK_SIZE(e2fs->super);
+	buf->f_frsize = EXT2_FRAG_SIZE(e2fs->super);
+	buf->f_blocks = e2fs->super->s_blocks_count - s_overhead_last;
+	buf->f_bfree = e2fs->super->s_free_blocks_count;
+	if (e2fs->super->s_free_blocks_count < e2fs->super->s_r_blocks_count) {
 		buf->f_bavail = 0;
 	} else {
-		buf->f_bavail = priv.fs->super->s_free_blocks_count - priv.fs->super->s_r_blocks_count;
+		buf->f_bavail = e2fs->super->s_free_blocks_count - e2fs->super->s_r_blocks_count;
 	}
-	buf->f_files = priv.fs->super->s_inodes_count;
-	buf->f_ffree = priv.fs->super->s_free_inodes_count;
-	buf->f_favail = priv.fs->super->s_free_inodes_count;
+	buf->f_files = e2fs->super->s_inodes_count;
+	buf->f_ffree = e2fs->super->s_free_inodes_count;
+	buf->f_favail = e2fs->super->s_free_inodes_count;
 	buf->f_namemax = EXT2_NAME_LEN;
 
 	debugf("leave");

@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,22 +23,31 @@
 void * op_init (struct fuse_conn_info *conn)
 {
 	errcode_t rc;
+	struct fuse_context *cntx=fuse_get_context();
+	struct extfs_data *e2data=cntx->private_data;
 
-	debugf("enter");
-	priv.name = opts.device;
-	rc = ext2fs_open(priv.name, EXT2_FLAG_RW, 0, 0, unix_io_manager, &priv.fs);
+	debugf("enter %s",e2data->device);
+
+	rc = ext2fs_open(e2data->device, 
+			(e2data->readonly)?0:EXT2_FLAG_RW, 
+			//EXT2_FLAG_RW,
+			0, 0, unix_io_manager, &e2data->e2fs);
 	if (rc) {
-		debugf("Error while trying to open %s", priv.name);
+		debugf("Error while trying to open %s", e2data->device);
 		exit(1);
 	}
 #if 1
-	rc = ext2fs_read_bitmaps(priv.fs);
+	rc = ext2fs_read_bitmaps(e2data->e2fs);
 	if (rc) {
 		debugf("Error while reading bitmaps");
-		ext2fs_close(priv.fs);
+		ext2fs_close(e2data->e2fs);
 		exit(1);
 	}
 #endif
+	debugf("FileSystem %s",
+			(e2data->e2fs->flags & EXT2_FLAG_RW)?"Read&Write":"ReadOnly");
+
 	debugf("leave");
-	return NULL;
+
+	return e2data;
 }

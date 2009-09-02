@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,34 +22,44 @@
 
 int do_check (const char *path)
 {
-	char *p_path;
-	char *r_path;
-	char *t_path;
-
-	debugf("enter");
-	debugf("path = %s", path);
-
-	p_path = strdup(path);
-	if (p_path == NULL) {
-		return -ENOMEM;
-	}
-	t_path = strrchr(p_path, '/');
-	if (t_path == NULL) {
-		debugf("this should not happen %s", p_path);
-		free(p_path);
+	char *basename_path;
+	basename_path = strrchr(path, '/');
+	if (basename_path == NULL) {
+		debugf("this should not happen %s", path);
 		return -ENOENT;
 	}
-	*t_path = '\0';
-	r_path = t_path + 1;
-	debugf("parent: %s, child: %s, pathmax: %d", p_path, r_path, PATH_MAX);
-
-	if (strlen(r_path) > 255) {
-		debugf("path exceeds 255 characters");
-		free(p_path);
+	basename_path++;
+	if (strlen(basename_path) > 255) {
+		debugf("basename exceeds 255 characters %s",path);
 		return -ENAMETOOLONG;
 	}
-	free(p_path);
-
-	debugf("leave");
 	return 0;
 }
+
+int do_check_split (const char *path,char **dirname,char **basename)
+{
+	char *cpath=strdup(path);
+	char *tmp;
+	tmp = strrchr(cpath, '/');
+	if (tmp == NULL) {
+		debugf("this should not happen %s", path);
+		free(cpath);
+		return -ENOENT;
+	}
+	*tmp='\0';
+	tmp++;
+	if (strlen(tmp) > 255) {
+		debugf("basename exceeds 255 characters %s",path);
+		free(cpath);
+		return -ENAMETOOLONG;
+	}
+	*dirname=cpath;
+	*basename=tmp;
+	return 0;
+}
+
+void free_split(char *dirname, char *basename)
+{
+	free(dirname);
+}
+
