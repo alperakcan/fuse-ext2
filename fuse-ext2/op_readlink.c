@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +29,12 @@ int op_readlink (const char *path, char *buf, size_t size)
 	char *b = NULL;
 	char *pathname;
 	struct ext2_inode inode;
+	ext2_filsys e2fs = current_ext2fs();
 	
 	debugf("enter");
 	debugf("path = %s", path);
 
-	rt = do_readinode(path, &ino, &inode);
+	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &inode); failed", path);
 		return rt;
@@ -43,16 +45,16 @@ int op_readlink (const char *path, char *buf, size_t size)
 		return -EINVAL;
 	}
 	
-	if (ext2fs_inode_data_blocks(priv.fs, &inode)) {
-		rc = ext2fs_get_mem(EXT2_BLOCK_SIZE(priv.fs->super), &b);
+	if (ext2fs_inode_data_blocks(e2fs, &inode)) {
+		rc = ext2fs_get_mem(EXT2_BLOCK_SIZE(e2fs->super), &b);
 		if (rc) {
-			debugf("ext2fs_get_mem(EXT2_BLOCK_SIZE(priv.fs->super), &b); failed");
+			debugf("ext2fs_get_mem(EXT2_BLOCK_SIZE(e2fs->super), &b); failed");
 			return -ENOMEM;
 		}
-		rc = io_channel_read_blk(priv.fs->io, inode.i_block[0], 1, b);
+		rc = io_channel_read_blk(e2fs->io, inode.i_block[0], 1, b);
 		if (rc) {
 			ext2fs_free_mem(&b);
-			debugf("io_channel_read_blk(priv.fs->io, inode.i_block[0], 1, b); failed");
+			debugf("io_channel_read_blk(e2fs->io, inode.i_block[0], 1, b); failed");
 			return -EIO;
 		}
 		pathname = b;

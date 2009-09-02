@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,23 +25,28 @@ int op_chown (const char *path, uid_t uid, gid_t gid)
 	int rt;
 	errcode_t rc;
 	ext2_ino_t ino;
-	struct ext2_inode inode;
+	struct ext2_vnode *vnode;
+	struct ext2_inode *inode;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s", path);
 	
-	rt = do_readinode(path, &ino, &inode);
+	rt = do_readvnode(e2fs, path, &ino, &vnode);
 	if (rt) {
-		debugf("do_readinode(%s, &ino, &inode); failed", path);
+		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
 		return rt;
 	}
+	inode = vnode2inode(vnode);
 	
-	inode.i_gid = gid;
-	inode.i_uid = uid;
+	if (uid != -1)
+		inode->i_gid = gid;
+	if (gid != -1)
+		inode->i_uid = uid;
 
-	rc = ext2fs_write_inode(priv.fs, ino, &inode);
+	rc=vnode_put(vnode,1);
 	if (rc) {
-		debugf("ext2fs_write_inode(priv.fs, ino, &inode); failed");
+		debugf("vnode_put(vnode,1); failed");
 		return -EIO;
 	}
 

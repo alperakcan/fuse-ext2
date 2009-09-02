@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +23,12 @@
 int op_mknod (const char *path, mode_t mode, dev_t dev)
 {
 	int rt;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s 0%o", path, mode);
 
-	rt = do_create(path, mode);
+	rt = do_create(e2fs, path, mode, dev, NULL);
 
 	debugf("leave");
 	return rt;

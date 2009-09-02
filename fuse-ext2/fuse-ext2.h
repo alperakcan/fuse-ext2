@@ -28,6 +28,7 @@
 #include <stdarg.h>
 #include <getopt.h>
 #include <assert.h>
+#include <dirent.h>
 #include <errno.h>
 
 #include <fuse.h>
@@ -41,37 +42,51 @@
 #error "***********************************************************"
 #endif
 
+/* extra definitions not yet included in ext2fs.h */
+#define EXT2_FILE_SHARED_INODE 0x8000
+errcode_t ext2fs_file_close2(ext2_file_t file, void (*close_callback) (struct ext2_inode *inode, int flags));
+
 #ifndef PATH_MAX
 #define PATH_MAX 4096
 #endif
 
 #define EXT2FS_FILE(efile) ((void *) (unsigned long) (efile))
+/* max timeout to flush bitmaps, to reduce inconsistencies */
+#define FLUSH_BITMAPS_TIMEOUT 10
 
-struct options_s {
-	int debug;
-	int silent;
-	int force;
-	int readonly;
+struct extfs_data {
+	unsigned char debug;
+	unsigned char silent;
+	unsigned char force;
+	unsigned char readonly;
+	time_t last_flush;
 	char *mnt_point;
 	char *options;
 	char *device;
 	char *volname;
+	ext2_filsys e2fs;
 };
 
-struct private_s {
-	char *name;
-	ext2_filsys fs;
-};
-
-extern struct options_s opts;
-extern struct private_s priv;
+static inline ext2_filsys current_ext2fs(void)
+{
+	struct fuse_context *mycontext=fuse_get_context();
+	struct extfs_data *e2data=mycontext->private_data;
+	time_t now=time(NULL);
+	if ((now - e2data->last_flush) > FLUSH_BITMAPS_TIMEOUT) {
+		ext2fs_write_bitmaps(e2data->e2fs);
+		e2data->last_flush=now;
+	}
+	return (ext2_filsys) e2data->e2fs;
+}
 
 #if ENABLE_DEBUG
 
 static inline void debug_printf (const char *function, char *file, int line, const char *fmt, ...)
 {
 	va_list args;
-	if (opts.debug == 0 || opts.silent == 1) {
+	struct fuse_context *mycontext=fuse_get_context();
+	struct extfs_data *e2data=mycontext->private_data;
+	if (e2data && (e2data->debug == 0 || e2data->silent == 1)) {
 		return;
 	}
 	printf("%s: ", PACKAGE);
@@ -85,11 +100,36 @@ static inline void debug_printf (const char *function, char *file, int line, con
 	debug_printf(__FUNCTION__, __FILE__, __LINE__, a); \
 }
 
+static inline void debug_main_printf (const char *function, char *file, int line, const char *fmt, ...)
+{
+	va_list args;
+	printf("%s: ", PACKAGE);
+	va_start(args, fmt);
+	vprintf(fmt, args);
+	va_end(args);
+	printf(" [%s (%s:%d)]\n", function, file, line);
+}
+
+#define debugf_main(a...) { \
+	debug_main_printf(__FUNCTION__, __FILE__, __LINE__, a); \
+}
+
 #else /* ENABLE_DEBUG */
 
 #define debugf(a...) do { } while(0)
+#define debugf_main(a...) do { } while(0)
 
 #endif /* ENABLE_DEBUG */
+
+struct ext2_vnode;
+
+struct ext2_vnode *vnode_get(ext2_filsys e2fs, ext2_ino_t ino);
+
+int vnode_put(struct ext2_vnode *vnode,int dirty);
+
+static inline struct ext2_inode *vnode2inode(struct ext2_vnode *vnode) {
+	return (struct ext2_inode *)vnode;
+}
 
 void * op_init (struct fuse_conn_info *conn);
 
@@ -97,17 +137,23 @@ void op_destroy (void *userdata);
 
 /* helper functions */
 
-int do_probe (void);
+int do_probe (struct extfs_data *opts);
 
 int do_label (void);
 
 int do_check (const char *path);
 
-void do_fillstatbuf (ext2_ino_t ino, struct ext2_inode *inode, struct stat *st);
+int do_check_split(const char *path, char **dirname,char **basename);
 
-int do_readinode (const char *path, ext2_ino_t *ino, struct ext2_inode *inode);
+void free_split(char *dirname, char *basename);
 
-int do_killfilebyinode (ext2_ino_t ino, struct ext2_inode *inode);
+void do_fillstatbuf (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode, struct stat *st);
+
+int do_readinode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ext2_inode *inode);
+
+int do_readvnode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ext2_vnode **vnode);
+
+int do_killfilebyinode (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode);
 
 /* read support */
 
@@ -117,7 +163,7 @@ int op_fgetattr (const char *path, struct stat *stbuf, struct fuse_file_info *fi
 
 int op_getattr (const char *path, struct stat *stbuf);
 
-ext2_file_t do_open (const char *path);
+ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags);
 
 int op_open (const char *path, struct fuse_file_info *fi);
 
@@ -141,7 +187,7 @@ int op_chmod (const char *path, mode_t mode);
 
 int op_chown (const char *path, uid_t uid, gid_t gid);
 
-int do_create (const char *path, mode_t mode);
+int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const char *fastsymlink);
 
 int op_create (const char *path, mode_t mode, struct fuse_file_info *fi);
 
@@ -150,6 +196,8 @@ int op_flush (const char *path, struct fuse_file_info *fi);
 int op_fsync (const char *path, int datasync, struct fuse_file_info *fi);
 
 int op_mkdir (const char *path, mode_t mode);
+
+int do_check_empty_dir(ext2_filsys e2fs, ext2_ino_t ino);
 
 int op_rmdir (const char *path);
 
@@ -167,6 +215,10 @@ int op_symlink (const char *sourcename, const char *destname);
 
 int op_truncate(const char *path, off_t length);
 
+int op_ftruncate(const char *path, off_t length, struct fuse_file_info *fi);
+
 int op_link (const char *source, const char *dest);
+
+int op_rename (const char *source, const char *dest);
 
 #endif /* FUSEEXT2_H_ */

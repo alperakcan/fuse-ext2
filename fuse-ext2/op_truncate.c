@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ int op_truncate(const char *path, off_t length)
 {
 	int rt;
 	ext2_file_t efile;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s", path);
@@ -32,7 +34,7 @@ int op_truncate(const char *path, off_t length)
 		debugf("do_check(%s); failed", path);
 		return rt;
 	}
-	efile = do_open(path);
+	efile = do_open(e2fs, path, O_WRONLY);
 	if (efile == NULL) {
 		debugf("do_open(%s); failed", path);
 		return -ENOENT;
@@ -41,7 +43,7 @@ int op_truncate(const char *path, off_t length)
 	rt = ext2fs_file_set_size(efile, length);
 	if (rt) {
 		do_release(efile);
-		debugf("extfs_file_set_size(efile, %d); failed", length);
+		debugf("ext2fs_file_set_size(efile, %d); failed", length);
 		return rt;
 	}
 
@@ -53,4 +55,22 @@ int op_truncate(const char *path, off_t length)
 
 	debugf("leave");
 	return 0;
+}
+
+int op_ftruncate(const char *path, off_t length, struct fuse_file_info *fi)
+{
+	size_t rt;
+	ext2_file_t efile = EXT2FS_FILE(fi->fh);
+
+	debugf("enter");
+	debugf("path = %s", path);
+
+	rt = ext2fs_file_set_size(efile, length);
+	if (rt) {
+		debugf("ext2fs_file_set_size(efile, %d); failed", length);
+		return rt;
+	}
+
+	debugf("leave");
+	  return 0;
 }

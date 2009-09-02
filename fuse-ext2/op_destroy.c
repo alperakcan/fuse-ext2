@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,25 +23,13 @@
 void op_destroy (void *userdata)
 {
 	errcode_t rc;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
-	ext2fs_flush(priv.fs);
-	if (priv.fs->flags & EXT2_FLAG_IB_DIRTY) {
-		rc = ext2fs_write_inode_bitmap(priv.fs);
-		if (rc) {
-			debugf("Error while writing inode bitmap");
-		}
-	}
-	if (priv.fs->flags & EXT2_FLAG_BB_DIRTY) {
-		rc = ext2fs_write_block_bitmap(priv.fs);
-		if (rc) {
-			debugf("Error while writing block bitmap");
-		}
-	}
-	rc = ext2fs_close(priv.fs);
+	rc = ext2fs_close(e2fs);
 	if (rc) {
-		debugf("Error while trying to close %s", priv.name);
+		debugf("Error while trying to close ext2 filesystem");
 	}
-	priv.fs = NULL;
+	e2fs = NULL;
 	debugf("leave");
 }

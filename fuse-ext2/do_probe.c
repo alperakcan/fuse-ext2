@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,34 +22,34 @@
 
 #define VOLNAME_SIZE_MAX 16
 
-int do_probe (void)
+int do_probe (struct extfs_data *opts)
 {
 	errcode_t rc;
+	ext2_filsys e2fs;
 
-	debugf("enter");
+	debugf_main("enter");
 
-	priv.name = opts.device;
-	rc = ext2fs_open(priv.name, EXT2_FLAG_RW, 0, 0, unix_io_manager, &priv.fs);
+	rc = ext2fs_open(opts->device, EXT2_FLAG_RW, 0, 0, unix_io_manager, &e2fs);
 	if (rc) {
-		debugf("Error while trying to open %s (rc=%d)", priv.name, rc);
+		debugf_main("Error while trying to open %s (rc=%d)", opts->device, rc);
 		return -1;
 	}
-	rc = ext2fs_read_bitmaps(priv.fs);
+	rc = ext2fs_read_bitmaps(e2fs);
 	if (rc) {
-		debugf("Error while reading bitmaps (rc=%d)", rc);
-		ext2fs_close(priv.fs);
+		debugf_main("Error while reading bitmaps (rc=%d)", rc);
+		ext2fs_close(e2fs);
 		return -2;
 	}
-	if (priv.fs->super != NULL) {
-		opts.volname = (char *) malloc(sizeof(char) * (VOLNAME_SIZE_MAX + 1));
-		if (opts.volname != NULL) {
-			memset(opts.volname, 0, sizeof(char) * (VOLNAME_SIZE_MAX + 1));
-			strncpy(opts.volname, priv.fs->super->s_volume_name, VOLNAME_SIZE_MAX);
-			opts.volname[VOLNAME_SIZE_MAX] = '\0';
+	if (e2fs->super != NULL) {
+		opts->volname = (char *) malloc(sizeof(char) * (VOLNAME_SIZE_MAX + 1));
+		if (opts->volname != NULL) {
+			memset(opts->volname, 0, sizeof(char) * (VOLNAME_SIZE_MAX + 1));
+			strncpy(opts->volname, e2fs->super->s_volume_name, VOLNAME_SIZE_MAX);
+			opts->volname[VOLNAME_SIZE_MAX] = '\0';
 		}
 	}
-	ext2fs_close(priv.fs);
+	ext2fs_close(e2fs);
 
-	debugf("leave");
+	debugf_main("leave");
 	return 0;
 }

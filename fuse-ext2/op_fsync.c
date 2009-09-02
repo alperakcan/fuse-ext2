@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +23,12 @@
 int op_fsync (const char *path, int datasync, struct fuse_file_info *fi)
 {
 	errcode_t rc;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s (%p)", path, fi);
 	
-	rc = ext2fs_flush(priv.fs);
+	rc = ext2fs_flush(e2fs);
 	if (rc) {
 		return -EIO;
 	}

@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +22,12 @@
 
 int op_access (const char *path, int mask)
 {
+	ext2_filsys e2fs = current_ext2fs();
+
 	debugf("enter");
 	debugf("path = %s, mask = 0%o", path, mask);
 	
-	if ((mask & W_OK) && !(priv.fs->flags & EXT2_FLAG_RW)) {
+	if ((mask & W_OK) && !(e2fs->flags & EXT2_FLAG_RW)) {
 		return -1;
 	}
 	

@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2008-2009 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +24,8 @@ int op_getattr (const char *path, struct stat *stbuf)
 {
 	int rt;
 	ext2_ino_t ino;
-	struct ext2_inode inode;
+	struct ext2_vnode *vnode;
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s", path);
@@ -34,12 +36,13 @@ int op_getattr (const char *path, struct stat *stbuf)
 		return rt;
 	}
 
-	rt = do_readinode(path, &ino, &inode);
+	rt = do_readvnode(e2fs, path, &ino, &vnode);
 	if (rt) {
-		debugf("do_readinode(%s, &ino, &inode); failed", path);
+		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
 		return rt;
 	}
-	do_fillstatbuf(ino, &inode, stbuf);
+	do_fillstatbuf(e2fs, ino, vnode2inode(vnode), stbuf);
+	vnode_put(vnode,0);
 
 	debugf("leave");
 	return 0;
