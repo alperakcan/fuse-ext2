@@ -1,6 +1,9 @@
 
 Wed 02 Sep 2009 07:43:48 PM EEST
-	- merge in renzo branch rev.140
+	- merge in renzo branch rev.140 including:
+	-- support of file truncate
+	-- support of concurrent file access
+	-- view-os compatibility (see wiki.virtualsquare.org, umfuse)
 
 Mon 22 Jun 2009 05:36:45 PM EEST
 	- uninstall support for mac
