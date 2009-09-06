@@ -1,0 +1,128 @@
+.TH FUSE-EXT2 "1" "September 2009" "FUSE/UMFUSE modules" "User Commands"
+.SH NAME
+FUSE-EXT2 \- FUSE module for Second Extended File System
+.SH SYNOPSIS
+.B fuse-ext2
+.RI [ OPTION ]...\&
+.I imagefile mountpoint
+.LP
+.B fuse-ext2
+.I imagefile mountpoint
+.RI [ OPTION ]...
+.SH DESCRIPTION
+Fuse-ext2 mounts an ext2 partition or image file. It uses Fuse support 
+(Filesystem in Userspace) included in modern Linux kernels.
+The same module is available for view-os (umview(1), kmview(1)) under
+the name \fBumfuseext2\fR.
+.SH OPTIONS
+.SS "General options"
+.TP
+\fB\-o\fR opt,[opt...]
+mount options
+.TP
+\fB\-h\fR   \fB\-\-help\fR
+print help
+.TP
+\fB\-V\fR   \fB\-\-version\fR
+print version
+.SS "FUSE-EXT2 options:"
+.TP
+\fB\-o\fR force
+force read-write mount (\fBEXPERIMENTAL\fR, the option \fBrw\fR without \fBforce\fR
+mounts the file system in read-only mode, with a warning).
+.TP
+\fB\-o\fR rw+
+enable read-write mount (\fBEXPERIMENTAL\fR, is a shortcut for -o rw,force)
+.SS "FUSE options:"
+
+.TP
+\fB\-d, \-o debug\fR
+enable debug output (implies \fB\-f\fR)
+.TP
+\fB\-f\fR
+foreground operation
+.TP
+\fB\-s\fR
+disable multi\-threaded operation
+.TP
+\fB\-o allow_other\fR
+allow access to other users
+.TP
+\fB\-o allow_root\fR
+allow access to root
+.TP
+\fB\-o nonempty\fR
+allow mounts over non\-empty file/dir
+.TP
+\fB\-o default_permissions\fR
+enable permission checking by kernel
+.TP
+\fB\-o fsname=\fINAME\fR
+set filesystem name
+.TP
+\fB\-o large_read\fR
+issue large read requests (2.4 only)
+.TP
+\fB\-o max_read=\fIN\fR
+set maximum size of read requests
+.TP
+\fB\-o hard_remove\fR
+immediate removal (don't hide files)
+.TP
+\fB\-o use_ino\fR
+let filesystem set inode numbers
+.TP
+\fB\-o readdir_ino\fR
+try to fill in d_ino in readdir
+.TP
+\fB\-o direct_io\fR
+use direct I/O
+.TP
+\fB\-o kernel_cache\fR
+cache files in kernel
+.TP
+\fB\-o [no]auto_cache\fR
+enable caching based on modification times
+.TP
+\fB\-o umask=\fIM\fR
+set file permissions (octal)
+.TP
+\fB\-o uid=\fIN\fR
+set file owner
+.TP
+\fB\-o gid=\fIN\fR
+set file group
+.TP
+\fB\-o entry_timeout=\fIT\fR
+cache timeout for names (1.0s)
+.TP
+\fB\-o negative_timeout=\fIT\fR
+cache timeout for deleted names (0.0s)
+.TP
+\fB\-o attr_timeout=\fIT\fR
+cache timeout for attributes (1.0s)
+.TP
+\fB\-o ac_attr_timeout=\fIT\fR
+auto cache timeout for attributes (attr_timeout)
+.TP
+\fB\-o intr\fR
+allow requests to be interrupted
+.TP
+\fB\-o intr_signal=\fINUM\fR
+signal to send on interrupt (10)
+.TP
+\fB\-o max_write=\fIN\fR
+set maximum size of write requests
+.TP
+\fB\-o max_readahead=\fIN\fR
+set maximum readahead
+.TP
+\fB\-o async_read\fR
+perform reads asynchronously (default)
+.TP
+\fB\-o sync_read\fR
+perform reads synchronously
+.SH AUTHORS
+Alper Akcan <alper.akcan@gmail.com>
+Renzo Davoli <renzo@cs.unibo.it>
+See \fIhttp://sourceforge.net/projects/fuse-ext2/, http://alperakcan.org/, http://www.virtualsquare.org\fR.
