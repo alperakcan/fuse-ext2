@@ -375,11 +375,11 @@ ext2_off_t ext2fs_file_get_size(ext2_file_t file)
 }
 
 struct truncate_st {
-	int fileblkcount;
-	int newblksize;
-	int okind;
-	int okdind;
-	int oktind;
+	__u32 fileblkcount;
+	__u32 newblksize;
+	__u8 okind;
+	__u8 okdind;
+	__u8 oktind;
 };
 
 static int truncate_blocks (ext2_filsys fs, blk_t *blocknr, int blockcnt, void *private)
@@ -391,22 +391,28 @@ static int truncate_blocks (ext2_filsys fs, blk_t *blocknr, int blockcnt, void *
 	switch (blockcnt) {
 		case BLOCK_COUNT_IND:
 			keep = (tr_data->okind > 0);
-			if (keep)
-				tr_data->okdind++;
 			tr_data->okind=0;
 			break;
 		case BLOCK_COUNT_DIND:
 			keep = (tr_data->okdind > 0);
-			if (keep)
-				tr_data->oktind++;
 			tr_data->okdind=0;
 			break;
 		case BLOCK_COUNT_TIND:
 			keep = (tr_data->oktind > 0);
 			break;
 		default:
-			if ((keep = (blockcnt < tr_data->fileblkcount)) != 0)
-				tr_data->okind++;
+			keep = (blockcnt < tr_data->fileblkcount);
+			if (keep) {
+				if (blockcnt >= EXT2_NDIR_BLOCKS) {
+					int limit = fs->blocksize >> 2;
+					tr_data->okind=1;
+					if (blockcnt >= EXT2_NDIR_BLOCKS + limit) {
+						tr_data->okdind=1;
+						if (blockcnt >= EXT2_NDIR_BLOCKS + limit * (limit + 1))
+							tr_data->oktind=1;
+					}
+				}
+			}
 	}
 
 	if (keep)
@@ -443,9 +449,9 @@ errcode_t ext2fs_file_set_size(ext2_file_t file, ext2_off_t size)
 		struct truncate_st tr_data={
 			.fileblkcount= (size + (blocksize - 1)) / blocksize,
 			.newblksize=0,
-			.okind=-EXT2_NDIR_BLOCKS,
-			.okdind=-1,
-			.oktind=-1};
+			.okind=0,
+			.okdind=0,
+			.oktind=0};
 		char scratchbuf[3*blocksize];
 
 		ext2fs_file_flush(file);
