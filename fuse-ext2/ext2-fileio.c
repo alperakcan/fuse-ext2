@@ -390,13 +390,15 @@ static int truncate_blocks (ext2_filsys fs, blk_t *blocknr, int blockcnt, void *
 
 	switch (blockcnt) {
 		case BLOCK_COUNT_IND:
-			tr_data->okdind++;
 			keep = (tr_data->okind > 0);
+			if (keep)
+				tr_data->okdind++;
 			tr_data->okind=0;
 			break;
 		case BLOCK_COUNT_DIND:
-			tr_data->oktind++;
 			keep = (tr_data->okdind > 0);
+			if (keep)
+				tr_data->oktind++;
 			tr_data->okdind=0;
 			break;
 		case BLOCK_COUNT_TIND:
@@ -453,11 +455,9 @@ errcode_t ext2fs_file_set_size(ext2_file_t file, ext2_off_t size)
 			retval = ext2fs_write_inode(file->fs, file->ino, file->inode);
 			if (retval)
 				return retval;
-		}
 
-		ext2fs_block_iterate(file->fs, file->ino, BLOCK_FLAG_DEPTH_TRAVERSE, scratchbuf, truncate_blocks, &tr_data);
+			ext2fs_block_iterate(file->fs, file->ino, BLOCK_FLAG_DEPTH_TRAVERSE, scratchbuf, truncate_blocks, &tr_data);
 
-		if (file->ino) {
 			retval = ext2fs_read_inode(file->fs, file->ino, file->inode);
 			if (retval)
 				return retval;
