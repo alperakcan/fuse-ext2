@@ -278,6 +278,8 @@ int op_rename(const char *source, const char *dest)
 		goto out_free;
 	}
 
+	free_split(p_src, r_src);
+	free_split(p_dest, r_dest);
 	return 0;
 
 out:
@@ -286,7 +288,6 @@ out:
 out_vsrc:
 	vnode_put(src_vnode,0);
 out_free:
-	free_split(p_src, r_src);
 	free_split(p_dest, r_dest);
 out_free_src:
 	free_split(p_src, r_src);
