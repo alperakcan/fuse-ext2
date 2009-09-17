@@ -152,7 +152,7 @@ void print_csum(const char *msg, ext2_filsys fs, dgrp_t group)
 	struct ext2_group_desc *desc = &fs->group_desc[group];
 	struct ext2_super_block *sb = fs->super;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) || (BYTE_ORDER == BIG_ENDIAN)
 	struct ext2_group_desc swabdesc = fs->group_desc[group];
 
 	/* Have to swab back to little-endian to do the checksum */

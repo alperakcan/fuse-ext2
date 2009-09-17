@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <fcntl.h>
 #include <ctype.h>
 #include <time.h>
@@ -1823,7 +1824,7 @@ static int mke2fs_setup_tdb(const char *name, io_manager *io_ptr)
 	tmp_name = strdup(name);
 	if (!tmp_name) {
 	alloc_fn_fail:
-		com_err(program_name, ENOMEM,
+		com_err(program_name, ENOMEM, 
 			_("Couldn't allocate memory for tdb filename\n"));
 		return ENOMEM;
 	}

@@ -21,6 +21,41 @@
 #include "ext2_fs.h"
 #include "ext2fsP.h"
 
+#define EXT4_MAX_REC_LEN		((1<<16)-1)
+
+errcode_t ext2fs_get_rec_len(ext2_filsys fs,
+			     struct ext2_dir_entry *dirent,
+			     unsigned int *rec_len)
+{
+	unsigned int len = dirent->rec_len;
+
+	if (len == EXT4_MAX_REC_LEN || len == 0)
+		*rec_len = fs->blocksize;
+	else 
+		*rec_len = (len & 65532) | ((len & 3) << 16);
+	return 0;
+}
+
+errcode_t ext2fs_set_rec_len(ext2_filsys fs,
+			     unsigned int len,
+			     struct ext2_dir_entry *dirent)
+{
+	if ((len > fs->blocksize) || (fs->blocksize > (1 << 18)) || (len & 3))
+		return EINVAL;
+	if (len < 65536) {
+		dirent->rec_len = len;
+		return 0;
+	}
+	if (len == fs->blocksize) {
+		if (fs->blocksize == 65536)
+			dirent->rec_len = EXT4_MAX_REC_LEN;
+		else 
+			dirent->rec_len = 0;
+	} else
+		dirent->rec_len = (len & 65532) | ((len >> 16) & 3);
+	return 0;
+}
+
 /*
  * This function checks to see whether or not a potential deleted
  * directory entry looks valid.  What we do is check the deleted entry
@@ -29,20 +64,23 @@
  * undeleted entry.  Returns 1 if the deleted entry looks valid, zero
  * if not valid.
  */
-static int ext2fs_validate_entry(ext2_filsys fs, char *buf, int offset,
-				 int final_offset)
+static int ext2fs_validate_entry(ext2_filsys fs, char *buf,
+				 unsigned int offset,
+				 unsigned int final_offset)
 {
 	struct ext2_dir_entry *dirent;
-	int	rec_len;
+	unsigned int rec_len;
+#define DIRENT_MIN_LENGTH 12
 
-	while (offset < final_offset) {
+	while ((offset < final_offset) &&
+	       (offset <= fs->blocksize - DIRENT_MIN_LENGTH)) {
 		dirent = (struct ext2_dir_entry *)(buf + offset);
-		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
-			dirent->rec_len : 65536;
+		if (ext2fs_get_rec_len(fs, dirent, &rec_len))
+			return 0;
 		offset += rec_len;
 		if ((rec_len < 8) ||
 		    ((rec_len % 4) != 0) ||
-		    (((dirent->name_len & 0xFF)+8) > rec_len))
+		    ((((unsigned) dirent->name_len & 0xFF)+8) > rec_len))
 			return 0;
 	}
 	return (offset == final_offset);
@@ -148,7 +186,8 @@ int ext2fs_process_dir_block(ext2_filsys fs,
 	int		ret = 0;
 	int		changed = 0;
 	int		do_abort = 0;
-	int		rec_len, entry, size;
+	unsigned int	rec_len, size;
+	int		entry;
 	struct ext2_dir_entry *dirent;
 
 	if (blockcnt < 0)
@@ -162,12 +201,12 @@ int ext2fs_process_dir_block(ext2_filsys fs,
 
 	while (offset < fs->blocksize) {
 		dirent = (struct ext2_dir_entry *) (ctx->buf + offset);
-		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
-			dirent->rec_len : 65536;
+		if (ext2fs_get_rec_len(fs, dirent, &rec_len))
+			return BLOCK_ABORT;
 		if (((offset + rec_len) > fs->blocksize) ||
 		    (rec_len < 8) ||
 		    ((rec_len % 4) != 0) ||
-		    (((dirent->name_len & 0xFF)+8) > rec_len)) {
+		    ((((unsigned) dirent->name_len & 0xFF)+8) > rec_len)) {
 			ctx->errcode = EXT2_ET_DIR_CORRUPTED;
 			return BLOCK_ABORT;
 		}
@@ -185,8 +224,8 @@ int ext2fs_process_dir_block(ext2_filsys fs,
 			entry++;
 
 		if (ret & DIRENT_CHANGED) {
-			rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
-				dirent->rec_len : 65536;
+			if (ext2fs_get_rec_len(fs, dirent, &rec_len))
+				return BLOCK_ABORT;
 			changed++;
 		}
 		if (ret & DIRENT_ABORT) {

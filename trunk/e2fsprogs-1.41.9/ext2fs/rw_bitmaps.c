@@ -248,7 +248,7 @@ static errcode_t read_bitmaps(ext2_filsys fs, int do_inode, int do_block)
 					goto cleanup;
 				}
 			} else
-				memset(block_bitmap, 0xff, block_nbytes);
+				memset(block_bitmap, 0, block_nbytes);
 			cnt = block_nbytes << 3;
 			retval = ext2fs_set_block_bitmap_range(fs->block_map,
 					       blk_itr, cnt, block_bitmap);
@@ -270,7 +270,7 @@ static errcode_t read_bitmaps(ext2_filsys fs, int do_inode, int do_block)
 					goto cleanup;
 				}
 			} else
-				memset(inode_bitmap, 0xff, inode_nbytes);
+				memset(inode_bitmap, 0, inode_nbytes);
 			cnt = inode_nbytes << 3;
 			retval = ext2fs_set_inode_bitmap_range(fs->inode_map,
 					       ino_itr, cnt, inode_bitmap);

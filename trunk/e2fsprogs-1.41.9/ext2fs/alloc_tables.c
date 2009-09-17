@@ -178,7 +178,7 @@ errcode_t ext2fs_allocate_group_table(ext2_filsys fs, dgrp_t group,
 	 * Allocate the inode table
 	 */
 	if (flexbg_size) {
-		int prev_block = 0;
+		blk_t prev_block = 0;
 		if (group && fs->group_desc[group-1].bg_inode_table)
 			prev_block = fs->group_desc[group-1].bg_inode_table;
 		group_blk = flexbg_offset(fs, group, prev_block, bmap,

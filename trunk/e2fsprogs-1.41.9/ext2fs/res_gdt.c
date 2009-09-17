@@ -208,7 +208,7 @@ out_inode:
 #endif
 	if (inode_dirty) {
 		inode.i_atime = inode.i_mtime = fs->now ? fs->now : time(0);
-		retval2 = ext2fs_write_inode(fs, EXT2_RESIZE_INO, &inode);
+		retval2 = ext2fs_write_new_inode(fs, EXT2_RESIZE_INO, &inode);
 		if (!retval)
 			retval = retval2;
 	}

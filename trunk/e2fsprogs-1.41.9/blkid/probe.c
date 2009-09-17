@@ -334,7 +334,7 @@ static int probe_ext4dev(struct blkid_probe *probe,
 	    EXT3_FEATURE_INCOMPAT_JOURNAL_DEV)
 		return -BLKID_ERR_PARAM;
 
-	/*
+	/* 
 	 * If the filesystem does not have a journal and ext2 and ext4
 	 * is not present, then force this to be detected as an
 	 * ext4dev filesystem.
@@ -378,7 +378,7 @@ static int probe_ext4(struct blkid_probe *probe, struct blkid_magic *id,
 	    EXT3_FEATURE_INCOMPAT_JOURNAL_DEV)
 		return -BLKID_ERR_PARAM;
 
-	/*
+	/* 
 	 * If the filesystem does not have a journal and ext2 is not
 	 * present, then force this to be detected as an ext2
 	 * filesystem.
@@ -456,7 +456,7 @@ static int probe_ext2(struct blkid_probe *probe, struct blkid_magic *id,
 	     EXT2_FEATURE_INCOMPAT_UNSUPPORTED))
 		return -BLKID_ERR_PARAM;
 
-	/*
+	/* 
 	 * If ext2 is not present, but ext4 or ext4dev are, then
 	 * disclaim we are ext2
 	 */
