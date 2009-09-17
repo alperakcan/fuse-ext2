@@ -796,6 +796,12 @@ extern errcode_t ext2fs_dirhash(int version, const char *name, int len,
 
 
 /* dir_iterate.c */
+extern errcode_t ext2fs_get_rec_len(ext2_filsys fs,
+				    struct ext2_dir_entry *dirent,
+				    unsigned int *rec_len);
+extern errcode_t ext2fs_set_rec_len(ext2_filsys fs,
+				    unsigned int len,
+				    struct ext2_dir_entry *dirent);
 extern errcode_t ext2fs_dir_iterate(ext2_filsys fs,
 			      ext2_ino_t dir,
 			      int flags,

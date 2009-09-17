@@ -142,7 +142,6 @@
 #define EXT2_ET_EXTENT_INVALID_LENGTH            (2133571462L)
 #define EXT2_ET_IO_CHANNEL_NO_SUPPORT_64         (2133571463L)
 #define EXT2_NO_MTAB_FILE                        (2133571464L)
-
 extern const struct error_table et_ext2_error_table;
 extern void initialize_ext2_error_table(void);
 

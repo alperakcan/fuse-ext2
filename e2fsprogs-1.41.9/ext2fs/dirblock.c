@@ -48,8 +48,8 @@ errcode_t ext2fs_read_dir_block2(ext2_filsys fs, blk_t block,
 		if (flags & EXT2_DIRBLOCK_V2_STRUCT)
 			dirent->name_len = ext2fs_swab16(dirent->name_len);
 #endif
-		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
-			dirent->rec_len : 65536;
+		if ((retval = ext2fs_get_rec_len(fs, dirent, &rec_len)) != 0)
+			return retval;
 		if ((rec_len < 8) || (rec_len % 4)) {
 			rec_len = 8;
 			retval = EXT2_ET_DIR_CORRUPTED;
@@ -74,7 +74,7 @@ errcode_t ext2fs_write_dir_block2(ext2_filsys fs, blk_t block,
 	errcode_t	retval;
 	char		*p, *end;
 	char		*buf = 0;
-	int		rec_len;
+	unsigned int	rec_len;
 	struct ext2_dir_entry *dirent;
 
 	retval = ext2fs_get_mem(fs->blocksize, &buf);
@@ -85,8 +85,8 @@ errcode_t ext2fs_write_dir_block2(ext2_filsys fs, blk_t block,
 	end = buf + fs->blocksize;
 	while (p < end) {
 		dirent = (struct ext2_dir_entry *) p;
-		rec_len = (dirent->rec_len || fs->blocksize < 65536) ?
-			dirent->rec_len : 65536;
+		if ((retval = ext2fs_get_rec_len(fs, dirent, &rec_len)) != 0)
+			return retval;
 		if ((rec_len < 8) ||
 		    (rec_len % 4)) {
 			ext2fs_free_mem(&buf);

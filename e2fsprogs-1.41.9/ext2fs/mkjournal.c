@@ -356,7 +356,7 @@ static errcode_t write_journal_inode(ext2_filsys fs, ext2_ino_t journal_ino,
 	inode.i_links_count = 1;
 	inode.i_mode = LINUX_S_IFREG | 0600;
 
-	if ((retval = ext2fs_write_inode(fs, journal_ino, &inode)))
+	if ((retval = ext2fs_write_new_inode(fs, journal_ino, &inode)))
 		goto errout;
 	retval = 0;
 

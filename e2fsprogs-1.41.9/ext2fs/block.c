@@ -488,8 +488,10 @@ errcode_t ext2fs_block_iterate2(ext2_filsys fs,
 abort_exit:
 	if (ret & BLOCK_CHANGED) {
 		retval = ext2fs_write_inode(fs, ino, &inode);
-		if (retval)
-			return retval;
+		if (retval) {
+			ret |= BLOCK_ERROR;
+			ctx.errcode = retval;
+		}
 	}
 errout:
 	if (!block_buf)
