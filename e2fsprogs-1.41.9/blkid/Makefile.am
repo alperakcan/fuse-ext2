@@ -16,4 +16,4 @@ libblkid_a_SOURCES =	\
 	save.c
 
 libblkid_a_CFLAGS =	\
-	-I$(top_srcdir)/e2fsprogs-1.41.6
+	-I$(top_srcdir)/e2fsprogs-1.41.9

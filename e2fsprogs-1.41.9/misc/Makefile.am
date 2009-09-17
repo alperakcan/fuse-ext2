@@ -14,7 +14,7 @@ fuse_ext2_mke2fs_SOURCES = \
 	default_profile.c
 
 fuse_ext2_mke2fs_CFLAGS = \
-	-I$(top_srcdir)/e2fsprogs-1.41.6
+	-I$(top_srcdir)/e2fsprogs-1.41.9
 
 fuse_ext2_mke2fs_LDFLAGS = \
 	../ext2fs/libext2fs.a	\
