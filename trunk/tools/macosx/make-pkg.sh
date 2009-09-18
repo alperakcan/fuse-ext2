@@ -21,24 +21,31 @@ DISTRIBUTION_FOLDER="${TMP_FOLDER}/Distribution_folder/"
 FUSEEXT2_NAME="fuse-ext2"
 
 FUSEEXT2_VERSION="$1"
-BUILD_FOLDER="$2"
-MKPKG_FOLDER="$3"
+SOURCE_FOLDER="$2"
+BUILD_FOLDER="$3"
+MKPKG_FOLDER="$4"
 
 if [ x"$FUSEEXT2_VERSION" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
+  exit 1
+fi
+
+if [ x"$SOURCE_FOLDER" = x"" ]
+then
+  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
   exit 1
 fi
 
 if [ x"$BUILD_FOLDER" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
   exit 1
 fi
 
 if [ x"$MKPKG_FOLDER" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
   exit 1
 fi
 
@@ -57,6 +64,7 @@ ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/bin
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig
+${MKDIR_P} ${DISTRIBUTION_FOLDER}/usr/local/share/man/man1/
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/Library/PreferencePanes
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/Support
@@ -72,6 +80,7 @@ ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2 ${DISTRIBUTION_FOLDER}/u
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.wait ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.wait
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.probe ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.probe
 ${INSTALL_C} -m 644 ${BUILD_FOLDER}/fuse-ext2.pc ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig/fuse-ext2.pc
+${INSTALL_C} -m 644 ${SOURCE_FOLDER}/fuse-ext2.1 ${DISTRIBUTION_FOLDER}/usr/local/share/man/man1/fuse-ext2.1
 ${INSTALL_C} -m 755 ${MKPKG_FOLDER}/fuse-ext2.fs/fuse-ext2.util ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/fuse-ext2.util
 ${INSTALL_C} -m 755 ${MKPKG_FOLDER}/fuse-ext2.fs/mount_fuse-ext2 ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2
 ${SED_E} "s/FUSEEXT2_VERSION_LITERAL/$FUSEEXT2_VERSION/g" < ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Info.plist.in > ${MKPKG_FOLDER}/fuse-ext2.fs/Contents/Info.plist

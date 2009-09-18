@@ -44,6 +44,7 @@ static char *files[] = {
 	"/usr/local/bin/fuse-ext2.mke2fs",
 	"/usr/local/bin/fuse-ext2.e2label",
 	"/usr/local/lib/pkgconfig/fuse-ext2.pc",
+	"/usr/local/share/man/man1/fuse-ext2.1",
 	NULL,
 };
 
