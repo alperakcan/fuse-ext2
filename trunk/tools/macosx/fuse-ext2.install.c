@@ -100,6 +100,7 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 		NSLog(@"nodesForXPath:fuse-ext2 failed (%@)", error);
 		return nil;
 	}
+
 	version = [[NSString alloc] initWithString:[[nodes objectAtIndex:([nodes count] - 1)] stringValue]];
 	[doc release];
 

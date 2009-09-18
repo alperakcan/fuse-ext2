@@ -313,12 +313,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>NSString.h</string>
+								<string>fuse_ext2Pref.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -326,11 +328,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>NSString.h</string>
+										<string>fuse_ext2Pref.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>5555ECFD1063C4C30070D2C0</string>
+										<string>552B1D3210641D7700C87812</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
@@ -340,20 +342,28 @@
 											<string>55CFD4BC0FE99E8D006AEA9D</string>
 											<string>55CFD4BE0FE99E8D006AEA9D</string>
 											<string>55CFD4DF0FE9A136006AEA9D</string>
-											<string>55B6841F0FEFF2E500676E62</string>
-											<string>552FA8C31063C3AE008999A9</string>
+											<string>552B1D2510641D7700C87812</string>
+											<string>552B1D2610641D7700C87812</string>
+											<string>552B1D2810641D7700C87812</string>
+											<string>552B1D2A10641D7700C87812</string>
+											<string>552B1D2C10641D7700C87812</string>
+											<string>552B1D2E10641D7700C87812</string>
+										</array>
+										<key>nextStack</key>
+										<array>
+											<string>552B1D3010641D7700C87812</string>
 										</array>
 										<key>prevStack</key>
 										<array>
 											<string>551ADFC30FA6423E00AA0ADB</string>
 											<string>551ADFC40FA6423E00AA0ADB</string>
 											<string>551ADFC50FA6423E00AA0ADB</string>
-											<string>551ADFC60FA6423E00AA0ADB</string>
 											<string>55DE32390FA6638300F94D27</string>
 											<string>55CFD49B0FE99A89006AEA9D</string>
 											<string>55CFD4C10FE99E8D006AEA9D</string>
 											<string>55CFD4E30FE9A136006AEA9D</string>
 											<string>55CFD4FA0FE9A2A0006AEA9D</string>
+											<string>552B1D2F10641D7700C87812</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -375,8 +385,6 @@
 							<string>504pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -413,9 +421,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>5555ECFF1063C4C30070D2C0</string>
+				<string>552B1D3310641D7700C87812</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>5555ED001063C4C30070D2C0</string>
+				<string>552B1D3410641D7700C87812</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -549,7 +557,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>5555ED011063C4C30070D2C0</string>
 		<string>/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/prefpane/fuse-ext2.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
