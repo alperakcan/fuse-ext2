@@ -59,6 +59,9 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (NSString *) installedVersion
 {
+	NSError *error;
+	NSArray *array;
+	NSXMLDocument *xmldoc;
 	NSString *fuse_ext2Path;
 	NSString *versionString;
 	NSString *bundleVersion;
@@ -73,7 +76,7 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 		fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
 	}
 	if (fuse_ext2Plist != nil) {
-		bundleVersion = [fuse_ext2Plist objectForKey:@"CFBundleVersion"];
+		bundleVersion = [fuse_ext2Plist objectForKey:(NSString *) kCFBundleVersionKey];
 		if (bundleVersion != nil) {
 			versionString = [[NSString alloc] initWithString:bundleVersion];
 		}

@@ -33,7 +33,7 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 }
 
 - (NSString *) installedVersion;
-- (NSString *) availableVersion;
+- (NSString *) availableVersion: (NSString *) urlString;
 
 @end
 
@@ -55,7 +55,7 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 		fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
 	}
 	if (fuse_ext2Plist != nil) {
-		bundleVersion = [fuse_ext2Plist objectForKey:@"CFBundleVersion"];
+		bundleVersion = [fuse_ext2Plist objectForKey:(NSString *) kCFBundleVersionKey];
 		if (bundleVersion != nil) {
 			versionString = [[NSString alloc] initWithString:bundleVersion];
 		}
@@ -64,9 +64,46 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 	return versionString;
 }
 
-- (NSString *) availableVersion
+- (NSString *) availableVersion: (NSString *) urlString
 {
-	return nil;
+	NSURL *url;
+	NSData *data;
+	NSArray *node;
+	NSArray *nodes;
+	NSError *error;
+	NSString *version;
+	NSXMLDocument *doc;
+	NSURLRequest *request;
+	NSURLResponse *response;
+
+	NSLog(@"checking from '%@'", urlString);
+
+	url = [NSURL URLWithString:urlString];
+	request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30.0];
+
+	data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+	if (data == nil) {
+		NSLog(@"NSURLConnection failed (%@)", error);
+		return nil;
+	}
+
+	doc = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
+	if (doc == nil) {
+		NSLog(@"NSXMLDocument failed (%@)", error);
+		return nil;
+	}
+	NSLog(@"doc=%@", doc);
+
+	nodes = [doc nodesForXPath:@"release/fuse-ext2/version" error:&error];
+	if (nodes == nil || [nodes count] == 0) {
+		[doc release];
+		NSLog(@"nodesForXPath:fuse-ext2 failed (%@)", error);
+		return nil;
+	}
+	version = [[NSString alloc] initWithString:[[nodes objectAtIndex:([nodes count] - 1)] stringValue]];
+	[doc release];
+
+	return version;
 }
 
 @end
@@ -78,7 +115,11 @@ static void print_help (const char *pname)
 	printf("  available / a : print available version\n");
 	printf("  url / u       : available version file url\n");
 	printf("  help / h      : this text\n");
+	printf(" example;\n");
+	printf("  %s -i\n");
+	printf("  %s -a -u url\n");
 }
+
 int main (int argc, char *argv[])
 {
 	int c;
@@ -147,18 +188,22 @@ int main (int argc, char *argv[])
 	if (list_installed == 1) {
 		installed = [installer installedVersion];
 		if (installed != nil) {
-			printf("Installed Version: %s\n", [installed UTF8String]);
+			NSLog(@"Installed Version: %@", installed);
 		} else {
 			ret = -4;
 		}
 		goto out;
 	} else if (list_available == 1) {
-		installer = [[Installer alloc] init];
-		available = [installer availableVersion];
-		if (available != nil) {
-			printf("Available Version: %s\n", [available UTF8String]);
-		} else {
+		if (version_url == NULL) {
+			NSLog(@"missing url variable");
 			ret = -5;
+			goto out;
+		}
+		available = [installer availableVersion:[NSString stringWithFormat:@"%s", version_url]];
+		if (available != nil) {
+			NSLog(@"Available Version: %@", available);
+		} else {
+			ret = -6;
 		}
 		goto out;
 	}
