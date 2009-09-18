@@ -38,19 +38,21 @@ void do_fillstatbuf (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode,
 	memset(st, 0, sizeof(*st));
 	/* XXX workaround
 	 * should be unique and != existing devices */
-	st->st_dev = (dev_t) ((long)e2fs);
+	st->st_dev = (dev_t) ((long) e2fs);
 	st->st_ino = ino;
 	st->st_mode = inode->i_mode;
 	st->st_nlink = inode->i_links_count;
 	st->st_uid = inode->i_uid;	/* add in uid_high */
 	st->st_gid = inode->i_gid;	/* add in gid_high */
 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
-		if (inode->i_block[0])
+		if (inode->i_block[0]) {
 			st->st_rdev = old_decode_dev(ext2fs_le32_to_cpu(inode->i_block[0]));
-		else
+		} else {
 			st->st_rdev = new_decode_dev(ext2fs_le32_to_cpu(inode->i_block[1]));
-	} else
+		}
+	} else {
 		st->st_rdev = 0;
+	}
 	st->st_size = EXT2_I_SIZE(inode);
 	st->st_blksize = EXT2_BLOCK_SIZE(e2fs->super);
 	st->st_blocks = inode->i_blocks;
