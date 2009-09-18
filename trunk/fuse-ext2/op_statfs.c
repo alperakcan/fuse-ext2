@@ -57,14 +57,19 @@ static int ext2_bg_num_gdb (ext2_filsys e2fs, int group)
 	return 1;
 }
 
+#define EXT2_BLOCKS_COUNT(s) ((s)->s_blocks_count | ((__u64) (s)->s_blocks_count_hi << 32))
+#define EXT2_RBLOCKS_COUNT(s) ((s)->s_r_blocks_count | ((__u64) (s)->s_r_blocks_count_hi << 32))
+#define EXT2_FBLOCKS_COUNT(s) ((s)->s_free_blocks_count | ((__u64) (s)->s_free_blocks_hi << 32))
+
 int op_statfs(const char *path, struct statvfs *buf)
 {
-	unsigned long i;
-	unsigned long s_gdb_count = 0;
-	unsigned long s_groups_count = 0;
-	unsigned long s_itb_per_group = 0;
-	unsigned long s_overhead_last = 0;
-	unsigned long s_inodes_per_block = 0;
+	unsigned long long i;
+	unsigned long long s_gdb_count = 0;
+	unsigned long long s_groups_count = 0;
+	unsigned long long s_itb_per_group = 0;
+	unsigned long long s_overhead_last = 0;
+	unsigned long long s_inodes_per_block = 0;
+
 	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
@@ -75,7 +80,7 @@ int op_statfs(const char *path, struct statvfs *buf)
 		s_overhead_last = 0;
 	} else {
 		s_overhead_last = e2fs->super->s_first_data_block;
-		s_groups_count = ((e2fs->super->s_blocks_count - e2fs->super->s_first_data_block - 1) / e2fs->super->s_blocks_per_group) + 1;
+		s_groups_count = ((EXT2_BLOCKS_COUNT(e2fs->super) - e2fs->super->s_first_data_block - 1) / e2fs->super->s_blocks_per_group) + 1;
 		s_gdb_count = (s_groups_count + EXT2_DESC_PER_BLOCK(e2fs->super) - 1) / EXT2_DESC_PER_BLOCK(e2fs->super);
 		for (i = 0; i < s_groups_count; i++) {
 			s_overhead_last += ext2_bg_has_super(e2fs, i) + ((ext2_bg_num_gdb(e2fs, i) == 0) ? 0 : s_gdb_count);
@@ -86,12 +91,12 @@ int op_statfs(const char *path, struct statvfs *buf)
 	}
 	buf->f_bsize = EXT2_BLOCK_SIZE(e2fs->super);
 	buf->f_frsize = EXT2_FRAG_SIZE(e2fs->super);
-	buf->f_blocks = e2fs->super->s_blocks_count - s_overhead_last;
-	buf->f_bfree = e2fs->super->s_free_blocks_count;
-	if (e2fs->super->s_free_blocks_count < e2fs->super->s_r_blocks_count) {
+	buf->f_blocks = EXT2_BLOCKS_COUNT(e2fs->super) - s_overhead_last;
+	buf->f_bfree = EXT2_FBLOCKS_COUNT(e2fs->super);
+	if (EXT2_FBLOCKS_COUNT(e2fs->super) < EXT2_RBLOCKS_COUNT(e2fs->super)) {
 		buf->f_bavail = 0;
 	} else {
-		buf->f_bavail = e2fs->super->s_free_blocks_count - e2fs->super->s_r_blocks_count;
+		buf->f_bavail = EXT2_FBLOCKS_COUNT(e2fs->super) - EXT2_RBLOCKS_COUNT(e2fs->super);
 	}
 	buf->f_files = e2fs->super->s_inodes_count;
 	buf->f_ffree = e2fs->super->s_free_inodes_count;
