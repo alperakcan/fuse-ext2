@@ -1,11 +1,11 @@
-{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf540
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
 {\colortbl;\red255\green255\blue255;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww15040\viewh9400\viewkind0
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\fs22 \cf0 \
-\pard\pardeftab720\ql\qnatural
+\pard\pardeftab720
 \cf0 Fuse-ext2 is a EXT2 Filesystem support for FUSE.\
 \
 This software is based on both ntfs-3g, and ext2fuse packages.\
@@ -78,6 +78,10 @@ there are no known bugs for read-only mode, read only mode should be ok for ever
 \
 altough, write support is available (and it is pretty stable) please do not mount your\
 filesystems with write support unless you do not have anything to loose.\
+\
+please send output the output of below command while reporting bugs.\
+\
+$ /usr/local/bin/fuse-ext2 -v /dev/path /mnt/point -o debug\
 \
 Labels\
 ------\

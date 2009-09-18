@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
+
+#include <Foundation/Foundation.h>
 #include <Carbon/Carbon.h>
 
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";

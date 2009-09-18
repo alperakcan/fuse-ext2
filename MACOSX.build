@@ -3,8 +3,8 @@ export OSX_SDK="/Developer/SDKs/MacOSX10.4u.sdk"
 export OSX_CFLAGS="-isysroot $OSX_SDK -arch ppc -arch i386"
 export OSX_LDFLAGS="-Wl,-syslibroot,$OSX_SDK -arch ppc -arch i386"
 LIBTOOL=glibtoolize ./autogen.sh
+rm -rf build
 mkdir build
 cd build
 CFLAGS="$OSX_CFLAGS" CXXFLAGS="$OSX_CFLAGS" LDFLAGS="$OSX_LDFLAGS" ../configure --disable-dependency-tracking
-make -s
-make package
+make -s && make package
