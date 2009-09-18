@@ -51,7 +51,7 @@ void do_fillstatbuf (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode,
 			st->st_rdev = new_decode_dev(ext2fs_le32_to_cpu(inode->i_block[1]));
 	} else
 		st->st_rdev = 0;
-	st->st_size = inode->i_size;
+	st->st_size = EXT2_I_SIZE(inode);
 	st->st_blksize = EXT2_BLOCK_SIZE(e2fs->super);
 	st->st_blocks = inode->i_blocks;
 	st->st_atime = inode->i_atime;
