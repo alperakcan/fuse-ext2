@@ -228,6 +228,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -266,11 +268,6 @@
 								<string>089C166AFE841209C02AAC07</string>
 								<string>08FB77AFFE84173DC02AAC07</string>
 								<string>089C167CFE841241C02AAC07</string>
-								<string>089C1671FE841209C02AAC07</string>
-								<string>1058C7ACFEA557BF11CA2CBB</string>
-								<string>1058C7ADFEA557BF11CA2CBB</string>
-								<string>1058C7AEFEA557BF11CA2CBB</string>
-								<string>089C1672FE841209C02AAC07</string>
 								<string>19C28FB8FE9D52D311CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -278,7 +275,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>20</integer>
+									<integer>3</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -313,8 +311,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -332,26 +328,23 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>55CCFFA21066846100F0CE1D</string>
+										<string>55CCFFE21066966000F0CE1D</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
-											<string>55CFD4950FE99A89006AEA9D</string>
 											<string>55CFD4960FE99A89006AEA9D</string>
 											<string>55CFD4970FE99A89006AEA9D</string>
-											<string>55CFD4BC0FE99E8D006AEA9D</string>
 											<string>55CFD4BE0FE99E8D006AEA9D</string>
-											<string>55CFD4DF0FE9A136006AEA9D</string>
-											<string>552B1D2510641D7700C87812</string>
 											<string>552B1D2610641D7700C87812</string>
 											<string>552B1D2810641D7700C87812</string>
 											<string>552B1D2A10641D7700C87812</string>
 											<string>552B1D2C10641D7700C87812</string>
-											<string>552B1D3210641D7700C87812</string>
-										</array>
-										<key>nextStack</key>
-										<array>
-											<string>552B1D3010641D7700C87812</string>
+											<string>55CCFFC71066910A00F0CE1D</string>
+											<string>55CCFFDC1066966000F0CE1D</string>
+											<string>55CCFFDD1066966000F0CE1D</string>
+											<string>55CCFFDE1066966000F0CE1D</string>
+											<string>55CCFFDF1066966000F0CE1D</string>
+											<string>55CCFFE01066966000F0CE1D</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -359,10 +352,7 @@
 											<string>551ADFC40FA6423E00AA0ADB</string>
 											<string>551ADFC50FA6423E00AA0ADB</string>
 											<string>55DE32390FA6638300F94D27</string>
-											<string>55CFD49B0FE99A89006AEA9D</string>
-											<string>55CFD4C10FE99E8D006AEA9D</string>
-											<string>55CFD4E30FE9A136006AEA9D</string>
-											<string>55CFD4FA0FE9A2A0006AEA9D</string>
+											<string>55CCFFE11066966000F0CE1D</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
