@@ -15,7 +15,7 @@
 
 #import <Carbon/Carbon.h>
 
-static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Support/fuse-ext2.uninstall";
+static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
 static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
 static NSString *kinstalledString = @"Installed Version:";
 static NSString *kupdateString = @"No Updates Available At This Time.";
@@ -47,6 +47,9 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (IBAction) removeButtonClicked: (id) sender
 {
+	int ret;
+	NSTask *task;
+	NSArray *args;
 	BOOL authorized;
 	[spinnerRemove startAnimation:self];
 	NSLog(@"remove button clicked\n");
@@ -54,13 +57,34 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 	if (authorized != YES) {
 		[spinnerRemove stopAnimation:self];
 	}
+	task = [[NSTask alloc] init];
+	[task setLaunchPath:@"/usr/local/bin/fuse-ext2.uninstall"];
+	args = [NSArray arrayWithObjects:nil];
+	[task setArguments:args];
+	@try {
+		ret = 0;
+		[task launch];
+	}
+	@catch (NSException *exception) {
+		ret = -1;
+		NSLog(@"Cought: %@/%@", [exception name], [exception reason]);
+	}
+	if (ret == 0) {
+		[task waitUntilExit];
+		ret = [task terminationStatus];
+		if (ret != 0) {
+			NSLog(@"fuse-ext2.uninstall failed\n");
+		} else {
+			NSLog(@"fuse-ext2.uninstall success\n");
+		}
+	} else {
+		NSLog(@"could not launch fuse-ext2.uninstall\n");
+	}
 	[spinnerRemove stopAnimation:self];
 }
 
 - (NSString *) installedVersion
 {
-	NSString *
-	
 	NSString *fuse_ext2Path;
 	NSString *versionString;
 	NSString *bundleVersion;
