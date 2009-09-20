@@ -138,7 +138,9 @@ fuse_ext2_CFLAGS =				\
 
 if DARWIN
 bin_PROGRAMS += \
-	fuse-ext2.wait
+	fuse-ext2.wait \
+	fuse-ext2.install \
+	fuse-ext2.uninstall
 
 fuse_ext2_wait_SOURCES = \
 	fuse-ext2.wait.c
@@ -150,18 +152,31 @@ fuse_ext2_wait_CFLAGS = \
 fuse_ext2_wait_LDFLAGS = \
 	-framework CoreFoundation
 
-fuse_ext2_probe_CFLAGS +=			\
+fuse_ext2_install_SOURCES = \
+	fuse-ext2.install.c
+
+fuse_ext2_install_CFLAGS = \
+	-ObjC
+
+fuse_ext2_install_LDFLAGS = \
+	-framework Foundation
+
+fuse_ext2_uninstall_SOURCES = \
+	fuse-ext2.uninstall.c
+
+fuse_ext2_probe_CFLAGS += \
 	-D__FreeBSD__=10
 
-fuse_ext2_CFLAGS +=				\
+fuse_ext2_CFLAGS +=	\
 	-D__FreeBSD__=10
 
-fuse_ext2_LDADD =				\
+fuse_ext2_LDADD = \
 	../e2fsprogs-1.41.9/ext2fs/libext2fs.a	\
 	../e2fsprogs-1.41.9/et/libcom_err.a	\
 	-L/usr/local/lib \
 	-lfuse
 endif
+
 if LINUX
 fuse_ext2_LDADD =				\
 	-L/usr/local/lib \
