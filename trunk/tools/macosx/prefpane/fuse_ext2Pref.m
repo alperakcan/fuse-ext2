@@ -15,7 +15,7 @@
 
 #import <Carbon/Carbon.h>
 
-static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
+static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Support/fuse-ext2.uninstall";
 static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
 static NSString *kinstalledString = @"Installed Version:";
 static NSString *kupdateString = @"No Updates Available At This Time.";
@@ -59,9 +59,8 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 
 - (NSString *) installedVersion
 {
-	NSError *error;
-	NSArray *array;
-	NSXMLDocument *xmldoc;
+	NSString *
+	
 	NSString *fuse_ext2Path;
 	NSString *versionString;
 	NSString *bundleVersion;
