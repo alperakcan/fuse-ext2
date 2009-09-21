@@ -177,7 +177,6 @@ static const NSTimeInterval kNetworkTimeOutInterval = 15;
 		[updateLabel setStringValue:@"Removed fuse-ext2."];
 	}
 	[spinnerRemove stopAnimation:self];
-	[self updateGUI];
 }
 
 - (NSString *) installedVersion
@@ -211,7 +210,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 15;
 	NSString *versionString;
 	
 	version = [self installedVersion];
-	versionString = [[NSString alloc] initWithFormat:@"%@ %@", kinstalledString, (version == nil) ? @"unknown" : version];
+	versionString = [[NSString alloc] initWithFormat:@"%@ %@", kinstalledString, (version == nil) ? @"Not Installed." : version];
 	
 	[aboutLabel setStringValue:kaboutLabelString];
 	[installedLabel setStringValue: versionString];
