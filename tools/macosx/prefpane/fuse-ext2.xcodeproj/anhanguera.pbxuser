@@ -53,30 +53,30 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 275152661;
-			PBXWorkspaceStateSaveDate = 275152661;
+			PBXPerProjectTemplateStateSaveDate = 275181954;
+			PBXWorkspaceStateSaveDate = 275181954;
 		};
 		perUserProjectItems = {
-			551ADFBF0FA6423E00AA0ADB /* PBXBookmark */ = 551ADFBF0FA6423E00AA0ADB /* PBXBookmark */;
-			551ADFC30FA6423E00AA0ADB /* PBXBookmark */ = 551ADFC30FA6423E00AA0ADB /* PBXBookmark */;
-			551ADFC40FA6423E00AA0ADB /* PlistBookmark */ = 551ADFC40FA6423E00AA0ADB /* PlistBookmark */;
-			551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */ = 551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */;
-			552B1D2610641D7700C87812 /* PBXTextBookmark */ = 552B1D2610641D7700C87812 /* PBXTextBookmark */;
-			552B1D2810641D7700C87812 /* PBXTextBookmark */ = 552B1D2810641D7700C87812 /* PBXTextBookmark */;
-			552B1D2A10641D7700C87812 /* PBXTextBookmark */ = 552B1D2A10641D7700C87812 /* PBXTextBookmark */;
-			552B1D2C10641D7700C87812 /* PBXTextBookmark */ = 552B1D2C10641D7700C87812 /* PBXTextBookmark */;
-			55CCFFC71066910A00F0CE1D /* PBXTextBookmark */ = 55CCFFC71066910A00F0CE1D /* PBXTextBookmark */;
-			55CCFFDC1066966000F0CE1D /* PBXTextBookmark */ = 55CCFFDC1066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFDD1066966000F0CE1D /* PBXTextBookmark */ = 55CCFFDD1066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFDE1066966000F0CE1D /* PBXTextBookmark */ = 55CCFFDE1066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFDF1066966000F0CE1D /* PBXTextBookmark */ = 55CCFFDF1066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFE01066966000F0CE1D /* PBXTextBookmark */ = 55CCFFE01066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFE11066966000F0CE1D /* PBXTextBookmark */ = 55CCFFE11066966000F0CE1D /* PBXTextBookmark */;
-			55CCFFE21066966000F0CE1D /* PBXTextBookmark */ = 55CCFFE21066966000F0CE1D /* PBXTextBookmark */;
-			55CFD4960FE99A89006AEA9D /* PlistBookmark */ = 55CFD4960FE99A89006AEA9D /* PlistBookmark */;
-			55CFD4970FE99A89006AEA9D /* PBXTextBookmark */ = 55CFD4970FE99A89006AEA9D /* PBXTextBookmark */;
-			55CFD4BE0FE99E8D006AEA9D /* PBXTextBookmark */ = 55CFD4BE0FE99E8D006AEA9D /* PBXTextBookmark */;
-			55DE32390FA6638300F94D27 /* PBXTextBookmark */ = 55DE32390FA6638300F94D27 /* PBXTextBookmark */;
+			551ADFBF0FA6423E00AA0ADB = 551ADFBF0FA6423E00AA0ADB /* PBXBookmark */;
+			551ADFC30FA6423E00AA0ADB = 551ADFC30FA6423E00AA0ADB /* PBXBookmark */;
+			551ADFC40FA6423E00AA0ADB = 551ADFC40FA6423E00AA0ADB /* PlistBookmark */;
+			551ADFC50FA6423E00AA0ADB = 551ADFC50FA6423E00AA0ADB /* PBXTextBookmark */;
+			552B1D2610641D7700C87812 = 552B1D2610641D7700C87812 /* PBXTextBookmark */;
+			552B1D2810641D7700C87812 = 552B1D2810641D7700C87812 /* PBXTextBookmark */;
+			552B1D2A10641D7700C87812 = 552B1D2A10641D7700C87812 /* PBXTextBookmark */;
+			552B1D2C10641D7700C87812 = 552B1D2C10641D7700C87812 /* PBXTextBookmark */;
+			55CCFFC71066910A00F0CE1D = 55CCFFC71066910A00F0CE1D /* PBXTextBookmark */;
+			55CCFFDC1066966000F0CE1D = 55CCFFDC1066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFDD1066966000F0CE1D = 55CCFFDD1066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFDE1066966000F0CE1D = 55CCFFDE1066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFDF1066966000F0CE1D = 55CCFFDF1066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFE01066966000F0CE1D = 55CCFFE01066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFE11066966000F0CE1D = 55CCFFE11066966000F0CE1D /* PBXTextBookmark */;
+			55CCFFE21066966000F0CE1D = 55CCFFE21066966000F0CE1D /* PBXTextBookmark */;
+			55CFD4960FE99A89006AEA9D = 55CFD4960FE99A89006AEA9D /* PlistBookmark */;
+			55CFD4970FE99A89006AEA9D = 55CFD4970FE99A89006AEA9D /* PBXTextBookmark */;
+			55CFD4BE0FE99E8D006AEA9D = 55CFD4BE0FE99E8D006AEA9D /* PBXTextBookmark */;
+			55DE32390FA6638300F94D27 = 55DE32390FA6638300F94D27 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 551ADF910FA6403300AA0ADB /* Source Control */;
 		userBuildSettings = {
@@ -204,11 +204,6 @@
 		name = NSTask.h;
 		path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSTask.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {863, 1036}}";
-			sepNavSelRange = "{1728, 67}";
-			sepNavVisRange = "{932, 864}";
-		};
 	};
 	55CCFFC71066910A00F0CE1D /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -328,11 +323,6 @@
 		name = NSProgressIndicator.h;
 		path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSProgressIndicator.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {863, 1932}}";
-			sepNavSelRange = "{3436, 35}";
-			sepNavVisRange = "{2707, 1279}";
-		};
 	};
 	55CFD4E40FE9A136006AEA9D /* NSObjCRuntime.h */ = {
 		isa = PBXFileReference;
@@ -340,11 +330,6 @@
 		name = NSObjCRuntime.h;
 		path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSObjCRuntime.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {863, 1582}}";
-			sepNavSelRange = "{1931, 53}";
-			sepNavVisRange = "{1350, 1222}";
-		};
 	};
 	55CFD4FB0FE9A2A0006AEA9D /* NSString.h */ = {
 		isa = PBXFileReference;
@@ -352,11 +337,6 @@
 		name = NSString.h;
 		path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSString.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {3012, 4256}}";
-			sepNavSelRange = "{2270, 71}";
-			sepNavVisRange = "{7041, 2921}";
-		};
 	};
 	55DE32390FA6638300F94D27 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;

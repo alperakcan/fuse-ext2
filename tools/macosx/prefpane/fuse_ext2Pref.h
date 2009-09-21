@@ -19,6 +19,7 @@
 	IBOutlet NSProgressIndicator *spinnerRemove;
 	IBOutlet NSProgressIndicator *spinnerUpdate;
 	AuthorizationRef authorizationReference;
+	BOOL taskRunning;
 }
 
 - (void) mainViewDidLoad;
