@@ -49,11 +49,6 @@ then
   exit 1
 fi
 
-(
-  cd $MKPKG_FOLDER/prefpane;
-  xcodebuild;
-)
-
 ${RM_RF} ${TMP_FOLDER} *.pkg *.dmg
 ${MKDIR_P} ${TMP_FOLDER}
 ${MKDIR_P} ${DISTRIBUTION_FOLDER}
@@ -79,6 +74,8 @@ ${INSTALL_C} -m 755 ${BUILD_FOLDER}/e2fsprogs-1.41.9/misc/fuse-ext2.mke2fs ${DIS
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2 ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.wait ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.wait
 ${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.probe ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.probe
+${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.install ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.install
+${INSTALL_C} -m 755 ${BUILD_FOLDER}/fuse-ext2/fuse-ext2.uninstall ${DISTRIBUTION_FOLDER}/usr/local/bin/fuse-ext2.uninstall
 ${INSTALL_C} -m 644 ${BUILD_FOLDER}/fuse-ext2.pc ${DISTRIBUTION_FOLDER}/usr/local/lib/pkgconfig/fuse-ext2.pc
 ${INSTALL_C} -m 644 ${SOURCE_FOLDER}/fuse-ext2.1 ${DISTRIBUTION_FOLDER}/usr/local/share/man/man1/fuse-ext2.1
 ${INSTALL_C} -m 755 ${MKPKG_FOLDER}/fuse-ext2.fs/fuse-ext2.util ${DISTRIBUTION_FOLDER}/System/Library/Filesystems/fuse-ext2.fs/fuse-ext2.util
