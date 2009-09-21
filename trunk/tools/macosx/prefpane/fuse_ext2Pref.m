@@ -8,6 +8,7 @@
 //  authorize
 //  copyRights
 //  deauthorize
+//  runTaskForPath
 // are heavly based on MacFUSE PrefPane implementation
 //
 
@@ -15,10 +16,12 @@
 
 #import <Carbon/Carbon.h>
 
+static NSString *kuninstallPath = @"/usr/local/bin/fuse-ext2.uninstall";
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
 static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
 static NSString *kinstalledString = @"Installed Version:";
 static NSString *kupdateString = @"No Updates Available At This Time.";
+static const NSTimeInterval kNetworkTimeOutInterval = 15; 
 
 @interface fuse_ext2Pref (PrivateMethods)
 
@@ -29,9 +32,113 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 - (BOOL) copyRights;
 - (void) deauthorize;
 
+- (BOOL) isTaskRunning;
+- (void) setTaskRunning: (BOOL) value;
+- (int) runTaskForPath:(NSString *) path withArguments:(NSArray *) arguments authorized:(BOOL) authorized output:(NSData **) output;
+
 @end
 
 @implementation fuse_ext2Pref
+
+- (BOOL) isTaskRunning
+{
+	return taskRunning;
+}
+
+- (void) setTaskRunning: (BOOL) value
+{
+	if (taskRunning != value) {
+		taskRunning = value;
+	}
+}
+
+- (int) runTaskForPath:(NSString *) path withArguments:(NSArray *) arguments authorized:(BOOL) authorized output:(NSData **) output
+{
+	int result = 0;
+	NSFileHandle *outFile = nil;
+	[self setTaskRunning:YES];
+	if (authorized == NO) {
+		// non-authorized 
+		NSTask* task = [[[NSTask alloc] init] autorelease];
+		[task setLaunchPath:path];
+		[task setArguments:arguments];
+		[task setEnvironment:[NSDictionary dictionary]];
+		NSPipe *outPipe = [NSPipe pipe];    
+		[task setStandardOutput:outPipe];
+		
+		@try {
+			[task launch];
+		} @catch (NSException *err) {
+			NSLog(@"caught exception %@ when launching task %@", err, task);
+			[self setTaskRunning:NO];
+			return -1;
+		} 
+		
+		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+		NSDate *startDate = [NSDate date];
+		do {
+			NSDate *waitDate = [NSDate dateWithTimeIntervalSinceNow:0.01];
+			if ([waitDate timeIntervalSinceDate:startDate] > kNetworkTimeOutInterval) {
+				result = -1;
+				[task terminate];
+			}
+			[runLoop runUntilDate:waitDate];
+		} while ([task isRunning]);
+		
+		if (result == 0) {
+			result = [task terminationStatus];
+		}
+		if (output) {
+			outFile = [outPipe fileHandleForReading];
+		}
+	} else {
+		// authorized
+		if ([self authorize] == NO) {
+			return -1;
+		}
+		FILE *outPipe = NULL;
+		unsigned int numArgs = [arguments count];
+		const char **args = malloc(sizeof(char*) * (numArgs + 1));
+		if (!args) {
+			[self setTaskRunning:NO];
+			return -1;
+		}
+		const char *cPath = [path fileSystemRepresentation];
+		for (unsigned int i = 0; i < numArgs; i++) {
+			args[i] = [[arguments objectAtIndex:i] fileSystemRepresentation];
+		}
+		
+		args[numArgs] = NULL;
+		
+		AuthorizationFlags myFlags = kAuthorizationFlagDefaults; 
+		result = AuthorizationExecuteWithPrivileges(authorizationReference,  cPath, myFlags, (char * const *) args, &outPipe);
+		free(args);
+		if (result == 0) {
+			int wait_status;
+			int pid = 0;
+			NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+			do {
+				NSDate *waitDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
+				[runLoop runUntilDate:waitDate];
+				pid = waitpid(-1, &wait_status, WNOHANG);
+			} while (pid == 0);
+			if (pid == -1 || !WIFEXITED(wait_status)) {
+				result = -1;
+			} else {
+				result = WEXITSTATUS(wait_status);
+			}
+			if (output) {
+				int fd = fileno(outPipe);
+				outFile = [[[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:YES] autorelease];
+			}
+		}
+	}
+	if (outFile && output) {
+		*output = [outFile readDataToEndOfFile];
+	}      
+	[self setTaskRunning:NO];
+	return result;
+}
 
 - (IBAction) updateButtonClicked: (id) sender
 {
@@ -48,39 +155,29 @@ static NSString *kupdateString = @"No Updates Available At This Time.";
 - (IBAction) removeButtonClicked: (id) sender
 {
 	int ret;
-	NSTask *task;
-	NSArray *args;
-	BOOL authorized;
+	int authorized;
+	NSData *output = nil;
 	[spinnerRemove startAnimation:self];
-	NSLog(@"remove button clicked\n");
 	authorized = [self authorize];
 	if (authorized != YES) {
 		[spinnerRemove stopAnimation:self];
+		return;
 	}
-	task = [[NSTask alloc] init];
-	[task setLaunchPath:@"/usr/local/bin/fuse-ext2.uninstall"];
-	args = [NSArray arrayWithObjects:nil];
-	[task setArguments:args];
-	@try {
-		ret = 0;
-		[task launch];
+	[updateLabel setStringValue:@"Removing fuse-ext2..."];
+	NSLog(@"remove button clicked\n");
+	ret = [self runTaskForPath:kuninstallPath withArguments:[NSArray arrayWithObjects:nil] authorized:YES output:&output];
+	NSLog(@"runtaskforpath returned:%d\n", ret);
+	if (output) {
+		NSString *string = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+		NSLog(@"output: %@\n", string);
 	}
-	@catch (NSException *exception) {
-		ret = -1;
-		NSLog(@"Cought: %@/%@", [exception name], [exception reason]);
-	}
-	if (ret == 0) {
-		[task waitUntilExit];
-		ret = [task terminationStatus];
-		if (ret != 0) {
-			NSLog(@"fuse-ext2.uninstall failed\n");
-		} else {
-			NSLog(@"fuse-ext2.uninstall success\n");
-		}
+	if (ret != 0) {
+		[updateLabel setStringValue:@"Removing fuse-ext2 failed, check console log for details."];
 	} else {
-		NSLog(@"could not launch fuse-ext2.uninstall\n");
+		[updateLabel setStringValue:@"Removed fuse-ext2."];
 	}
 	[spinnerRemove stopAnimation:self];
+	[self updateGUI];
 }
 
 - (NSString *) installedVersion

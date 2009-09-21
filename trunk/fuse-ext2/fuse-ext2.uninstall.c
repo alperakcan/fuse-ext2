@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -32,6 +33,8 @@
 	printf(" (%s) [%s (%s:%d)]\n", strerror(errno), __FUNCTION__, __FILE__, __LINE__); \
 }
 
+static int verbose = 0;
+
 static char *files[] = {
 	"/Library/Receipts/fuse-ext2.pkg",
 	"/Library/Filesystems/fuse-ext2.fs",
@@ -43,6 +46,8 @@ static char *files[] = {
 	"/usr/local/bin/fuse-ext2.probe",
 	"/usr/local/bin/fuse-ext2.mke2fs",
 	"/usr/local/bin/fuse-ext2.e2label",
+	"/usr/local/bin/fuse-ext2.install",
+	"/usr/local/bin/fuse-ext2.uninstall",
 	"/usr/local/lib/pkgconfig/fuse-ext2.pc",
 	"/usr/local/share/man/man1/fuse-ext2.1",
 	NULL,
@@ -50,14 +55,8 @@ static char *files[] = {
 
 static int rm_file (const char *path)
 {
-	if (access(path, W_OK | W_OK | F_OK) != 0) {
-		debugf("access failed for '%s'", path);
-		if (errno == ENOENT) {
-			return 0;
-		}
-		return -1;
-	}
-	if (unlink(path) != 0) {
+	printf("removing file '%s'\n", path);
+	if (verbose == 0 && unlink(path) != 0) {
 		debugf("unlink failed for '%s'", path);
 	}
 	return 0;
@@ -105,7 +104,8 @@ static int rm_directory (const char *path)
 		free(p);
 	}
 	closedir(dp);
-	if (rmdir(path) != 0) {
+	printf("removing directory '%s'\n", path);
+	if (verbose == 0 && rmdir(path) != 0) {
 		debugf("rmdir() failed for '%s'", path);
 	}
 	return 0;
@@ -126,9 +126,36 @@ static int rm_path (const char *path)
 	return -1;
 }
 
+static void print_help (const char *pname)
+{
+	printf("%s usage;\n", pname);
+	printf("  verbose / v : just print, do not remove\n");
+	printf("  help / h    : this text\n");
+}
+
 int main (int argc, char *argv[])
 {
+	int c;
+	static const char *sopt = "vh";
+	static const struct option lopt[] = {
+		{ "verbose", no_argument, NULL, 'v' },
+		{ "help", no_argument, NULL, 'h' },
+		{ NULL, 0, NULL,  0  }
+	};
+
 	char **f;
+
+	while ((c = getopt_long(argc, argv, sopt, lopt, NULL)) != -1) {
+		switch (c) {
+			case 'v':
+				verbose = 1;
+				break;
+			case 'h':
+				print_help(argv[0]);
+				return 0;
+		}
+	}
+
 	printf("uninstalling fuse-ext2\n");
 	for (f = files; *f != NULL; f++) {
 		if (rm_path(*f) != 0) {
