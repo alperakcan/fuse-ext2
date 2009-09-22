@@ -1,4 +1,9 @@
 
+Wed 23 Sep 2009 00:15:10 AM EEST
+	- version 0.0.6
+	- fixed big file support for size > 4Gb
+	- prefpane supports uninstall/update
+
 Mon 07 Sep 2009 00:02:40 AM EEST
 	- added fuse-ext2.1 man page written by Renzo
 
