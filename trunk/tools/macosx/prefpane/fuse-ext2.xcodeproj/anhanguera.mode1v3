@@ -308,6 +308,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -325,7 +327,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>55CE6FDD10683EFD00EACB6D</string>
+										<string>5551879A10685AB400437031</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
@@ -342,7 +344,7 @@
 											<string>55CCFFDF1066966000F0CE1D</string>
 											<string>55CC00561067012F00F0CE1D</string>
 											<string>55CC00571067012F00F0CE1D</string>
-											<string>55CC00601067012F00F0CE1D</string>
+											<string>5551878B10684CEF00437031</string>
 										</array>
 										<key>nextStack</key>
 										<array>
@@ -376,8 +378,6 @@
 							<string>540pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -414,9 +414,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>55CE6FD910683E6200EACB6D</string>
+				<string>5551879B10685AB400437031</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>55CE6FDA10683E6200EACB6D</string>
+				<string>5551879C10685AB400437031</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -562,7 +562,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>551ADFCA0FA6423E00AA0ADB</string>
 		<string>/Users/anhanguera/Self/fuse-ext2/trunk/tools/macosx/prefpane/fuse-ext2.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -604,8 +603,6 @@
 							<string>244pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -645,7 +642,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>551ADFCA0FA6423E00AA0ADB</string>
-				<string>55CE6FD010683E5300EACB6D</string>
+				<string>55FB8C831068431C0058F1DC</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -656,7 +653,7 @@
 			<key>WindowToolGUID</key>
 			<string>551ADFCA0FA6423E00AA0ADB</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

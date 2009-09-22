@@ -17,23 +17,67 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ * example version xml
+ *
+ * <release>
+ *   <fuse-ext2>
+ *     <version>version</version>
+ *     <location>location</location>
+ *     <md5sum>md5sum</md5sum>
+ *   </fuse-ext2>
+ *   <fuse-ext2>
+ *     <version>version</version>
+ *     <location>location</location>
+ *     <md5sum>md5sum</md5sum>
+ *   </fuse-ext2>
+ * </release>
+ *
+ * <release>
+ *   <fuse-ext2>
+ *     <version>0.0.6</version>
+ *     <location>http://prdownloads.sourceforge.net/fuse-ext2/fuse-ext2-0.0.6.dmg?download</location>
+ *     <md5sum>md5sum</md5sum>
+ *   </fuse-ext2>
+ *   <fuse-ext2>
+ *     <version>0.0.5</version>
+ *     <location>http://prdownloads.sourceforge.net/fuse-ext2/fuse-ext2-0.0.5.dmg?download</location>
+ *     <md5sum>md5sum</md5sum>
+ *   </fuse-ext2>
+ * </release>
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
 
 #include <Foundation/Foundation.h>
-#include <Carbon/Carbon.h>
 
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
+static NSString *kversionVersion = @"release/fuse-ext2/version";
+static NSString *kversionLocation = @"release/fuse-ext2/location";
+static NSString *kversionMd5sum = @"release/fuse-ext2/md5sum";
+static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 
 @interface Installer: NSObject
 {
-
+	BOOL isDownloading;
+	BOOL isDownloaded;
+	unsigned bytesReceived;
+	NSURLResponse *downloadResponse;
 }
 
 - (NSString *) installedVersion;
+- (int) downloadFileFromUrl: (NSString *) urlString toFile: (NSString *) toFile;
+- (NSString *) getValueFromUrl: (NSString *) urlString valueName: (NSString *) valueName;
 - (NSString *) availableVersion: (NSString *) urlString;
+- (int) updateVersion: (NSString *) urlString;
+
+- (void) download: (NSURLDownload *) download didFailWithError: (NSError *) error;
+- (void) downloadDidFinish: (NSURLDownload *) download;
+- (void) download: (NSURLDownload *) download didReceiveResponse: (NSURLResponse *) response;
+- (void) download: (NSURLDownload *) download didReceiveDataOfLength: (unsigned) length;
 
 @end
 
@@ -64,47 +108,140 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 	return versionString;
 }
 
-- (NSString *) availableVersion: (NSString *) urlString
+- (void) download: (NSURLDownload *) download didFailWithError: (NSError *) error
+{
+	[download release];
+	isDownloading = NO;
+	isDownloaded = NO;
+	NSLog(@"Download failed! Error - %@ %@",
+		[error localizedDescription],
+		[[error userInfo] objectForKey:NSErrorFailingURLStringKey]);
+}
+
+- (void) downloadDidFinish: (NSURLDownload *) download
+{
+	[download release];
+	isDownloading = NO;
+	isDownloaded = YES;
+	NSLog(@"%@",@"downloadDidFinish");
+}
+
+- (void) download: (NSURLDownload *) download didReceiveResponse: (NSURLResponse *) response
+{
+	NSLog(@"connected to server");
+	bytesReceived = 0;
+	[response retain];
+	[downloadResponse release];
+	downloadResponse = response;
+}
+
+- (void) download: (NSURLDownload *) download didReceiveDataOfLength: (unsigned) length
+{
+	long long expectedSize;
+	expectedSize = [downloadResponse expectedContentLength];
+	bytesReceived += length;
+	if (expectedSize != NSURLResponseUnknownLength) {
+		float percentComplete;
+		percentComplete = (bytesReceived / (float) expectedSize) * 100.00;
+		NSLog(@"percent complete: %f", percentComplete);
+	} else {
+		NSLog(@"bytes received: %d", bytesReceived);
+	}
+}
+
+- (int) downloadFileFromUrl: (NSString *) urlString toFile: (NSString *) toFile
+{
+	NSURLRequest *urlRequest;
+	NSURLDownload *urlDownload;
+	NSLog(@"downloading from:%@, to:%@", urlString, toFile);
+	urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]
+	                           cachePolicy:NSURLRequestUseProtocolCachePolicy
+	                           timeoutInterval:60.0];
+	urlDownload = [[NSURLDownload alloc] initWithRequest:urlRequest delegate:self];
+	if (urlDownload == nil) {
+		NSLog(@"NSURLDownload[] failed");
+		return -1;
+	}
+	[urlDownload setDestination:toFile allowOverwrite:YES];
+	NSLog(@"downloading started");
+	isDownloading = YES;
+	isDownloaded = NO;
+	while (isDownloading == YES) {
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+	}
+	if (isDownloaded == NO) {
+		NSLog(@"downloading failed");
+		return -1;
+	}
+	return 0;
+}
+
+- (NSString *) getValueFromUrl: (NSString *) urlString valueName: (NSString *) valueName
 {
 	NSURL *url;
 	NSData *data;
 	NSArray *node;
 	NSArray *nodes;
 	NSError *error;
-	NSString *version;
+	NSString *value;
 	NSXMLDocument *doc;
 	NSURLRequest *request;
 	NSURLResponse *response;
-
 	NSLog(@"checking from '%@'", urlString);
-
 	url = [NSURL URLWithString:urlString];
 	request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30.0];
-
 	data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 	if (data == nil) {
 		NSLog(@"NSURLConnection failed (%@)", error);
 		return nil;
 	}
-
 	doc = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
 	if (doc == nil) {
 		NSLog(@"NSXMLDocument failed (%@)", error);
 		return nil;
 	}
 	NSLog(@"doc=%@", doc);
-
-	nodes = [doc nodesForXPath:@"release/fuse-ext2/version" error:&error];
+	nodes = [doc nodesForXPath:valueName error:&error];
 	if (nodes == nil || [nodes count] == 0) {
 		[doc release];
 		NSLog(@"nodesForXPath:fuse-ext2 failed (%@)", error);
 		return nil;
 	}
-
-	version = [[NSString alloc] initWithString:[[nodes objectAtIndex:([nodes count] - 1)] stringValue]];
+	value = [[NSString alloc] initWithString:[[nodes objectAtIndex:0] stringValue]];
 	[doc release];
+	return value;
+}
 
-	return version;
+- (NSString *) availableVersion: (NSString *) urlString
+{
+	return [self getValueFromUrl: urlString valueName:kversionVersion];
+}
+
+- (int) updateVersion: (NSString *) urlString
+{
+	int ret;
+	NSString *md5sum;
+	NSString *version;
+	NSString *location;
+	md5sum = [self getValueFromUrl: urlString valueName:kversionMd5sum];
+	version = [self getValueFromUrl: urlString valueName:kversionVersion];
+	location = [self getValueFromUrl: urlString valueName:kversionLocation];
+	if (md5sum == nil || version == nil || location == nil) {
+		NSLog(@"could not get version, location, or md5sum");
+		goto out;
+	}
+	NSLog(@"updating from version: %@, location: %@, md5sum: %@", version, location, md5sum);
+	ret = [self downloadFileFromUrl:location toFile:kdownloadFilePath];
+	if (ret != 0) {
+		NSLog(@"downloading file failed");
+		goto out;
+	}
+	return 0;
+out:
+	[md5sum release];
+	[version release];
+	[location release];
+	return -1;
 }
 
 @end
@@ -114,6 +251,7 @@ static void print_help (const char *pname)
 	printf("%s usage;\n", pname);
 	printf("  installed / i : print installed version\n");
 	printf("  available / a : print available version\n");
+	printf("  update / r    : update version\n");
 	printf("  url / u       : available version file url\n");
 	printf("  help / h      : this text\n");
 	printf(" example;\n");
@@ -125,6 +263,7 @@ int main (int argc, char *argv[])
 {
 	int c;
 	int ret;
+	int update;
 	char *version_url;
 	int list_installed;
 	int list_available;
@@ -135,10 +274,11 @@ int main (int argc, char *argv[])
 
 	NSAutoreleasePool *pool;
 
-	static const char *sopt = "iau:h";
+	static const char *sopt = "iaru:h";
 	static const struct option lopt[] = {
 		{ "installed", no_argument, NULL, 'i' },
 		{ "available", no_argument, NULL, 'a' },
+		{ "update", no_argument, NULL, 'r' },
 		{ "url", required_argument, NULL, 'u' },
 		{ "help", no_argument, NULL, 'h' },
 		{ NULL, 0, NULL,  0  }
@@ -150,6 +290,7 @@ int main (int argc, char *argv[])
 	installed = nil;
 	available = nil;
 
+	update = 0;
 	version_url = NULL;
 	list_installed = 0;
 	list_available = 0;
@@ -161,6 +302,9 @@ int main (int argc, char *argv[])
 				break;
 			case 'a':
 				list_available = 1;
+				break;
+			case 'r':
+				update = 1;
 				break;
 			case 'u':
 				version_url = optarg;
@@ -205,6 +349,18 @@ int main (int argc, char *argv[])
 			NSLog(@"Available Version: %@", available);
 		} else {
 			ret = -6;
+		}
+		goto out;
+	} else if (update == 1) {
+		if (version_url == NULL) {
+			NSLog(@"missing url variable");
+			ret = -7;
+			goto out;
+		}
+		ret = [installer updateVersion:[NSString stringWithFormat:@"%s", version_url]];
+		if (ret != 0) {
+			NSLog(@"updateVersion failed");
+			ret = -8;
 		}
 		goto out;
 	}
