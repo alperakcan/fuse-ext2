@@ -286,6 +286,8 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	
 	NSLog(@"updating gui\n");
 	
+	[spinnerUpdate startAnimation:self];
+
 	updateString = nil;
 	version = [self installedVersion];
 	available = [self availableVersion];
