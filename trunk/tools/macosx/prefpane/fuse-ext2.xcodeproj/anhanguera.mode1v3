@@ -328,7 +328,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>55D440991069742A00BBD9D1</string>
+										<string>55227F3A1069799900F55953</string>
 										<key>history</key>
 										<array>
 											<string>551ADFBF0FA6423E00AA0ADB</string>
@@ -345,8 +345,8 @@
 											<string>55D43FFF1069623500BBD9D1</string>
 											<string>55D4402610696A7400BBD9D1</string>
 											<string>55D4402710696A7400BBD9D1</string>
-											<string>55D4408310696F3F00BBD9D1</string>
-											<string>55D4408410696F3F00BBD9D1</string>
+											<string>55227F361069799900F55953</string>
+											<string>55227F371069799900F55953</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -355,26 +355,9 @@
 											<string>551ADFC50FA6423E00AA0ADB</string>
 											<string>55DE32390FA6638300F94D27</string>
 											<string>55CCFFE11066966000F0CE1D</string>
-											<string>55D43F70106954E100BBD9D1</string>
-											<string>55D43F72106954E100BBD9D1</string>
-											<string>55D43F74106954E100BBD9D1</string>
-											<string>55D43F76106954E100BBD9D1</string>
-											<string>55D43F78106954E100BBD9D1</string>
-											<string>55D43F7A106954E100BBD9D1</string>
 											<string>55D4403F10696B1D00BBD9D1</string>
-											<string>55D4404010696B1D00BBD9D1</string>
-											<string>55D4405310696BA700BBD9D1</string>
-											<string>55D4405410696BA700BBD9D1</string>
-											<string>55D4406010696D0600BBD9D1</string>
-											<string>55D4406B10696D9400BBD9D1</string>
-											<string>55D4406C10696D9400BBD9D1</string>
-											<string>55D4406D10696D9400BBD9D1</string>
-											<string>55D4407710696EB100BBD9D1</string>
-											<string>55D4407810696EB100BBD9D1</string>
-											<string>55D4407910696EB100BBD9D1</string>
-											<string>55D4407A10696EB100BBD9D1</string>
-											<string>55D4408510696F3F00BBD9D1</string>
-											<string>55D4408610696F3F00BBD9D1</string>
+											<string>55227F381069799900F55953</string>
+											<string>55227F391069799900F55953</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -432,9 +415,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>55D43F5E1069479200BBD9D1</string>
+				<string>55227F3B1069799900F55953</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>55D43F5F1069479200BBD9D1</string>
+				<string>55227F3C1069799900F55953</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -600,14 +583,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>fuse_ext2Pref.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -663,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>551ADFCA0FA6423E00AA0ADB</string>
-				<string>55D43F6C106954DE00BBD9D1</string>
+				<string>55227F3D1069799900F55953</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -674,7 +655,7 @@
 			<key>WindowToolGUID</key>
 			<string>551ADFCA0FA6423E00AA0ADB</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
