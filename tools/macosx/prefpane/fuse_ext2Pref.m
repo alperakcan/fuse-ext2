@@ -154,6 +154,8 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	if (taskRunning == YES) {
 		return;
 	}
+	[removeButton setEnabled:NO];
+	[updateButton setEnabled:NO];
 	if (doUpdate == NO) {
 		[spinnerUpdate startAnimation:self];
 		[updateLabel setStringValue:kcheckingString];
@@ -181,10 +183,13 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	if (taskRunning == YES) {
 		return;
 	}
+	[removeButton setEnabled:NO];
+	[updateButton setEnabled:NO];
 	[spinnerRemove startAnimation:self];
 	authorized = [self authorize];
 	if (authorized != YES) {
 		[spinnerRemove stopAnimation:self];
+		[self updateGUI];
 		return;
 	}
 	[updateLabel setStringValue:@"Removing fuse-ext2..."];
@@ -302,6 +307,9 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	[versionString release];
 	[version release];
 	[available release];
+	
+	[removeButton setEnabled:YES];
+	[updateButton setEnabled:YES];
 	
 	[spinnerUpdate stopAnimation:self];
 
