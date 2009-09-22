@@ -16,15 +16,21 @@
 
 #import <Carbon/Carbon.h>
 
+static NSString *kreleasePath = @"http://fuse-ext2.svn.sourceforge.net/viewvc/fuse-ext2/release/release.xml";
+static NSString *kinstallPath = @"/usr/local/bin/fuse-ext2.install";
 static NSString *kuninstallPath = @"/usr/local/bin/fuse-ext2.uninstall";
 static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist";
-static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 homepage for more information.";
+static NSString *kaboutLabelString = @"fuse-ext2 is a ext2/ext3 filesystem support for Fuse. Please visit fuse-ext2 webpage (http://fuse-ext2.sourceforge.net/) for more information.";
 static NSString *kinstalledString = @"Installed Version:";
+static NSString *kinstallingString = @"Installing new version.";
+static NSString *kcheckingString = @"Checking for new version.";
+static NSString *kavailableString = @"New version availeble:";
 static NSString *kupdateString = @"No Updates Available At This Time.";
-static const NSTimeInterval kNetworkTimeOutInterval = 15; 
+static const NSTimeInterval kNetworkTimeOutInterval = 60.00; 
 
 @interface fuse_ext2Pref (PrivateMethods)
 
+- (NSString *) availableVersion;
 - (NSString *) installedVersion;
 - (void) updateGUI;
 
@@ -140,23 +146,41 @@ static const NSTimeInterval kNetworkTimeOutInterval = 15;
 	return result;
 }
 
-- (IBAction) updateButtonClicked: (id) sender
+- (IBAction) updateFuseExt2: (id) sender
 {
-	BOOL authorized;
-	[spinnerUpdate startAnimation:self];
+	int ret;
+	NSData *output = nil;
 	NSLog(@"update button clicked\n");
-	authorized = [self authorize];
-	if (authorized != YES) {
-		[spinnerUpdate stopAnimation:self];
+	if (taskRunning == YES) {
+		return;
 	}
-	[spinnerUpdate stopAnimation:self];
+	if (doUpdate == NO) {
+		[spinnerUpdate startAnimation:self];
+		[updateLabel setStringValue:kcheckingString];
+		[self updateGUI];
+	} else {
+		[spinnerUpdate startAnimation:self];
+		[updateLabel setStringValue:kinstallingString];
+		ret = [self runTaskForPath:kinstallPath withArguments:[NSArray arrayWithObjects:@"-u", kreleasePath, @"-r", nil] authorized:YES output:&output];
+		if (ret != 0) {
+			NSLog(@"fuse-ext2.install -u -r failed");
+		}
+		if (output) {
+			NSString *string = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+			NSLog(@"output: %@\n", string);
+		}
+		[self updateGUI];
+	}
 }
 
-- (IBAction) removeButtonClicked: (id) sender
+- (IBAction) removeFuseExt2: (id) sender
 {
 	int ret;
 	int authorized;
 	NSData *output = nil;
+	if (taskRunning == YES) {
+		return;
+	}
 	[spinnerRemove startAnimation:self];
 	authorized = [self authorize];
 	if (authorized != YES) {
@@ -178,6 +202,49 @@ static const NSTimeInterval kNetworkTimeOutInterval = 15;
 	}
 	[spinnerRemove stopAnimation:self];
 	[self updateGUI];
+}
+
+- (NSString *) availableVersion
+{
+	int ret;
+	NSData *output;
+	NSString *string;
+	NSString *versionString;
+	NSString *versionTag;
+	NSScanner *dataScanner;
+	output = nil;
+	versionTag = @"Available Version:";
+	ret = [self runTaskForPath:kinstallPath withArguments:[NSArray arrayWithObjects:@"-u", kreleasePath, @"-a", nil] authorized:NO output:&output];
+	if (ret != 0) {
+		NSLog(@"fuse-ext2.install -u -a failed");
+		return nil;
+	}
+	if (output == nil) {
+		NSLog(@"fuse-ext2.install -u -a failed");
+		return nil;
+	}
+	string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+	NSLog(@"output:%@", string);
+	dataScanner = [[NSScanner alloc] initWithString:string];
+	if ([dataScanner scanString:versionTag intoString:&versionString]) {
+		NSLog(@"versionString:%@", versionString);
+		versionString = nil;
+		if ([dataScanner scanUpToString:@";" intoString:&versionString]) {
+			if (versionString == nil) {
+				NSLog(@"version is nil");
+			} else {
+				NSLog(@"version is not nil:%@", versionString);
+			}
+			return [[NSString alloc] initWithString: versionString];
+		} else {
+			NSLog(@"scanuptostring failed");
+		}
+	} else {
+		NSLog(@"datascanner failed");
+	}
+	[string release];
+	[dataScanner release];
+	return nil;
 }
 
 - (NSString *) installedVersion
@@ -208,19 +275,35 @@ static const NSTimeInterval kNetworkTimeOutInterval = 15;
 - (void) updateGUI
 {
 	NSString *version;
+	NSString *available;
+	NSString *updateString;
 	NSString *versionString;
 	
 	NSLog(@"updating gui\n");
 	
+	updateString = nil;
 	version = [self installedVersion];
+	available = [self availableVersion];
 	versionString = [[NSString alloc] initWithFormat:@"%@ %@", kinstalledString, (version == nil) ? @"Not Installed." : version];
-	
 	[aboutLabel setStringValue:kaboutLabelString];
 	[installedLabel setStringValue: versionString];
-	[updateLabel setStringValue:kupdateString];
-
+	if (available == nil || [version compare:available] == NSOrderedSame) {
+		[updateLabel setStringValue:kupdateString];
+		[updateButton setTitle:@"Check for Update"];
+		doUpdate = NO;
+	} else {
+		updateString = [[NSString alloc] initWithFormat:@"%@ %@", kavailableString, available];
+		[updateLabel setStringValue:updateString];
+		[updateButton setTitle:@"Install Update"];
+		doUpdate = YES;
+	}
+	
+	[updateString release];
 	[versionString release];
 	[version release];
+	[available release];
+	
+	[spinnerUpdate stopAnimation:self];
 
 	NSLog(@"gui updated\n");
 }

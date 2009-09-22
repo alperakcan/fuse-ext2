@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9J61</string>
+		<string key="IBDocument.SystemVersion">9L30</string>
 		<string key="IBDocument.InterfaceBuilderVersion">677</string>
-		<string key="IBDocument.AppKitVersion">949.46</string>
+		<string key="IBDocument.AppKitVersion">949.54</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -308,22 +308,6 @@
 					<int key="connectionID">124</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">removeButtonClicked:</string>
-						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="99950424"/>
-					</object>
-					<int key="connectionID">125</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">updateButtonClicked:</string>
-						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="934737218"/>
-					</object>
-					<int key="connectionID">126</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">spinnerUpdate</string>
 						<reference key="source" ref="294453543"/>
@@ -338,6 +322,22 @@
 						<reference key="destination" ref="1034886910"/>
 					</object>
 					<int key="connectionID">131</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">removeFuseExt2:</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="99950424"/>
+					</object>
+					<int key="connectionID">132</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">updateFuseExt2:</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="934737218"/>
+					</object>
+					<int key="connectionID">133</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -547,9 +547,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{153, 451}, {668, 181}}</string>
+					<string>{{138, 286}, {668, 181}}</string>
 					<boolean value="YES"/>
-					<string>{{153, 451}, {668, 181}}</string>
+					<string>{{138, 286}, {668, 181}}</string>
 					<integer value="1" id="5"/>
 					<reference ref="5"/>
 					<string>{224.664, 10}</string>
@@ -578,7 +578,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">131</int>
+			<int key="maxID">133</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -623,8 +623,8 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>removeButtonClicked:</string>
-							<string>updateButtonClicked:</string>
+							<string>removeFuseExt2:</string>
+							<string>updateFuseExt2:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
