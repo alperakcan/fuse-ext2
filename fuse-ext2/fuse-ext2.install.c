@@ -58,7 +58,11 @@ static NSString *kinstalledPath = @"/Library/Filesystems/fuse-ext2.fs/Contents/I
 static NSString *kversionVersion = @"release/fuse-ext2/version";
 static NSString *kversionLocation = @"release/fuse-ext2/location";
 static NSString *kversionMd5sum = @"release/fuse-ext2/md5sum";
-static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
+static NSString *ktempPath = @"/var/tmp/fuse-ext2.tmp";
+static NSString *kmountPath = @"/var/tmp/fuse-ext2.tmp/mnt";
+static NSString *kpkgPath = @"/var/tmp/fuse-ext2.tmp/mnt/fuse-ext2.pkg";
+static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.tmp/fuse-ext2.dmg";
+static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 
 @interface Installer: NSObject
 {
@@ -69,6 +73,7 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 }
 
 - (NSString *) installedVersion;
+- (int) runTaskForPath: (NSString *) path withArguments: (NSArray *) args output: (NSData **) output;
 - (int) downloadFileFromUrl: (NSString *) urlString toFile: (NSString *) toFile;
 - (NSString *) getValueFromUrl: (NSString *) urlString valueName: (NSString *) valueName;
 - (NSString *) availableVersion: (NSString *) urlString;
@@ -89,9 +94,7 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 	NSString *versionString;
 	NSString *bundleVersion;
 	NSDictionary *fuse_ext2Plist;
-
 	versionString = nil;
-
 	fuse_ext2Path = kinstalledPath;
 	fuse_ext2Plist = [NSDictionary dictionaryWithContentsOfFile:fuse_ext2Path];
 	if (fuse_ext2Plist == nil) {
@@ -104,7 +107,6 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 			versionString = [[NSString alloc] initWithString:bundleVersion];
 		}
 	}
-
 	return versionString;
 }
 
@@ -156,7 +158,7 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 	NSLog(@"downloading from:%@, to:%@", urlString, toFile);
 	urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]
 	                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-	                           timeoutInterval:60.0];
+	                           timeoutInterval:kNetworkTimeOutInterval];
 	urlDownload = [[NSURLDownload alloc] initWithRequest:urlRequest delegate:self];
 	if (urlDownload == nil) {
 		NSLog(@"NSURLDownload[] failed");
@@ -217,12 +219,67 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 	return [self getValueFromUrl: urlString valueName:kversionVersion];
 }
 
+- (int) runTaskForPath: (NSString *) path withArguments: (NSArray *) args output: (NSData **) output
+{
+	int ret;
+	NSTask *task;
+	NSPipe *pipe;
+	NSDate *date;
+	NSRunLoop *loop;
+	NSFileHandle *outFile;
+	task = [[[NSTask alloc] init] autorelease];
+	[task setLaunchPath:path];
+	[task setArguments:args];
+	[task setEnvironment:[NSDictionary dictionary]];
+	pipe = [NSPipe pipe];
+	[task setStandardOutput:pipe];
+	@try {
+		[task launch];
+	} @catch (NSException *err) {
+		NSLog(@"caught exception %@ when launching task %@", err, task);
+		return -1;
+	}
+	ret = 0;
+	outFile = nil;
+	loop = [NSRunLoop currentRunLoop];
+	date = [NSDate date];
+	do {
+		NSDate *waitDate = [NSDate dateWithTimeIntervalSinceNow:0.01];
+		if ([waitDate timeIntervalSinceDate:date] > kNetworkTimeOutInterval) {
+			ret = -1;
+			[task terminate];
+		}
+		[loop runUntilDate:waitDate];
+	} while ([task isRunning]);
+
+	if (ret == 0) {
+		ret = [task terminationStatus];
+	}
+	if (output) {
+		outFile = [pipe fileHandleForReading];
+	}
+	if (outFile && output) {
+		*output = [outFile readDataToEndOfFile];
+	}
+	return ret;
+}
+
 - (int) updateVersion: (NSString *) urlString
 {
 	int ret;
 	NSString *md5sum;
 	NSString *version;
 	NSString *location;
+	ret = [self runTaskForPath:@"/bin/mkdir" withArguments:[NSArray arrayWithObjects:@"-p", ktempPath, nil] output:nil];
+	if (ret != 0) {
+		NSLog(@"/bin/mkdir failed");
+		goto out;
+	}
+	ret = [self runTaskForPath:@"/bin/mkdir" withArguments:[NSArray arrayWithObjects:@"-p", kmountPath, nil] output:nil];
+	if (ret != 0) {
+		NSLog(@"/bin/mkdir failed");
+		goto out;
+	}
 	md5sum = [self getValueFromUrl: urlString valueName:kversionMd5sum];
 	version = [self getValueFromUrl: urlString valueName:kversionVersion];
 	location = [self getValueFromUrl: urlString valueName:kversionLocation];
@@ -236,8 +293,49 @@ static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.dmg";
 		NSLog(@"downloading file failed");
 		goto out;
 	}
+	/*
+	 * hdiutil attach -private -nobrowse -mountpoint /var/tmp/fuse-ext2.tmp/mnt /var/tmp/fuse-ext2.tmp/fuse-ext2.dmg
+	 * hdiutil detach /var/tmp/fuse-ext2.tmp/mnt
+	 */
+	ret = [self runTaskForPath:@"/usr/bin/hdiutil"
+	            withArguments:[NSArray arrayWithObjects:@"attach",
+	                                                    @"-private",
+	                                                    @"-nobrowse",
+	                                                    @"-mountpoint",
+	                                                    kmountPath,
+	                                                    kdownloadFilePath,
+	                                                    nil]
+	            output:nil];
+	if (ret != 0) {
+		NSLog(@"hdiutil attach failed");
+		goto out;
+	}
+	ret = [self runTaskForPath:@"/usr/local/bin/fuse-ext2.uninstall" withArguments:[NSArray arrayWithObjects:nil] output:nil];
+	/*
+	 * sudo installer -pkg /Volumes/fuse-ext2/fuse-ext2.pkg -target / -verbose -dumplog
+	 */
+	ret = [self runTaskForPath:@"/usr/sbin/installer"
+	            withArguments:[NSArray arrayWithObjects:@"-pkg",
+							    kpkgPath,
+							    @"-target",
+							    @"/",
+							    @"-verbose",
+							    @"-dumplog",
+							    nil]
+		    output:nil];
+	if (ret != 0) {
+		NSLog(@"installer failed");
+		goto out;
+	}
+	[self runTaskForPath:@"/usr/bin/hdiutil" withArguments:[NSArray arrayWithObjects:@"detach", kmountPath, nil] output:nil];
+	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath] output:nil];
+	[md5sum release];
+	[version release];
+	[location release];
 	return 0;
 out:
+	[self runTaskForPath:@"/usr/bin/hdiutil" withArguments:[NSArray arrayWithObjects:@"detach", kmountPath, nil] output:nil];
+	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath] output:nil];
 	[md5sum release];
 	[version release];
 	[location release];
@@ -333,7 +431,7 @@ int main (int argc, char *argv[])
 	if (list_installed == 1) {
 		installed = [installer installedVersion];
 		if (installed != nil) {
-			NSLog(@"Installed Version: %@", installed);
+			printf("Installed Version:%s\n", [installed UTF8String]);
 		} else {
 			ret = -4;
 		}
@@ -346,7 +444,7 @@ int main (int argc, char *argv[])
 		}
 		available = [installer availableVersion:[NSString stringWithFormat:@"%s", version_url]];
 		if (available != nil) {
-			NSLog(@"Available Version: %@", available);
+			printf("Available Version:%s;\n", [available UTF8String]);
 		} else {
 			ret = -6;
 		}
@@ -362,6 +460,9 @@ int main (int argc, char *argv[])
 			NSLog(@"updateVersion failed");
 			ret = -8;
 		}
+		goto out;
+	} else {
+		print_help(argv[0]);
 		goto out;
 	}
 
