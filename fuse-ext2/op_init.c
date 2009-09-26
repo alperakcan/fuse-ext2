@@ -36,7 +36,7 @@ void * op_init (struct fuse_conn_info *conn)
 		debugf("Error while trying to open %s", e2data->device);
 		exit(1);
 	}
-#if 1
+#if 0
 	rc = ext2fs_read_bitmaps(e2data->e2fs);
 	if (rc) {
 		debugf("Error while reading bitmaps");

@@ -140,13 +140,14 @@ static int parse_options (int argc, char *argv[], struct extfs_data *opts)
 				opts->device = NULL;
 				return -1;
 			} else
-				opts->device=strdup(fulldevice);
+				opts->device = strdup(fulldevice);
 		} else
-			opts->device=strdup(optarg);
+			opts->device = strdup(optarg);
 	}
 
-	if (optind < argc) 
+	if (optind < argc) {
 		opts->mnt_point = argv[optind++];
+	}
 
 	if (optind < argc) {
 		debugf_main("You must specify exactly one device and exactly one mount point");
