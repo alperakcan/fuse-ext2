@@ -34,12 +34,14 @@ int do_probe (struct extfs_data *opts)
 		debugf_main("Error while trying to open %s (rc=%d)", opts->device, rc);
 		return -1;
 	}
+#if 0
 	rc = ext2fs_read_bitmaps(e2fs);
 	if (rc) {
 		debugf_main("Error while reading bitmaps (rc=%d)", rc);
 		ext2fs_close(e2fs);
 		return -2;
 	}
+#endif
 	if (e2fs->super != NULL) {
 		opts->volname = (char *) malloc(sizeof(char) * (VOLNAME_SIZE_MAX + 1));
 		if (opts->volname != NULL) {
