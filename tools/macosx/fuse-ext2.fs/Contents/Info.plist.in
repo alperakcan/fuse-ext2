@@ -34,7 +34,7 @@
 			<key>FSProbeExecutable</key>
 			<string>../../fuse-ext2.util</string>
 			<key>FSProbeOrder</key>
-			<integer>50</integer>
+			<integer>3500</integer>
 		</dict>
 		<key>EBD0A0A2-B9E5-4433-87C0-68B6B72699C7</key>
 		<dict>
@@ -98,7 +98,7 @@
 			<key>FSProbeExecutable</key>
 			<string>../../fuse-ext2.util</string>
 			<key>FSProbeOrder</key>
-			<integer>50</integer>
+			<integer>3500</integer>
 		</dict>
 		<key>Windows_FAT_16</key>
 		<dict>
@@ -114,7 +114,7 @@
 			<key>FSProbeExecutable</key>
 			<string>../../fuse-ext2.util</string>
 			<key>FSProbeOrder</key>
-			<integer>50</integer>
+			<integer>3500</integer>
 		</dict>
 		<key>Whole</key>
 		<dict>

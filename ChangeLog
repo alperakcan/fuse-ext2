@@ -1,4 +1,14 @@
 
+Tue 29 Sep 2009 05:25:08 AM EEST
+	- improved probe time (mount time improved %50)
+	- improved mount time for read-only mode
+	- mount time reduced from ~8 secs to ~2 secs
+	- added windows_fat_(16/32) partition type to probe types
+	- added 0.0.6 md5sum to release.xml
+	- added release-beta.xml, just like macfuse
+	- linux fs type probe decreasd from 50 to 3500
+	- disabled apple double files
+
 Wed 23 Sep 2009 00:15:10 AM EEST
 	- version 0.0.6
 	- fixed big file support for size > 4Gb

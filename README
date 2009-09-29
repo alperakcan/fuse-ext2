@@ -7,7 +7,8 @@ This software is based on both ntfs-3g, and ext2fuse packages.
 Dependencies
 ------------
 
-Fuse-ext2 requires at least Fuse version 2.6.0
+  Fuse-ext2 requires at least Fuse version 2.6.0 for linux, for max os latest
+version of macfuse would be fine (2.0.3).
 
 - Linux:
 	Fuse from http://fuse.sourceforge.net/
