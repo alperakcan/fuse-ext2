@@ -75,7 +75,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 		@try {
 			[task launch];
 		} @catch (NSException *err) {
-			NSLog(@"caught exception %@ when launching task %@", err, task);
+			NSLog(@"fuse-ext2.PrefPane: caught exception %@ when launching task %@", err, task);
 			[self setTaskRunning:NO];
 			return -1;
 		} 
@@ -150,7 +150,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 {
 	int ret;
 	NSData *output = nil;
-	NSLog(@"update button clicked\n");
+	NSLog(@"fuse-ext2.PrefPane: update button clicked\n");
 	if (taskRunning == YES) {
 		return;
 	}
@@ -165,11 +165,11 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 		[updateLabel setStringValue:kinstallingString];
 		ret = [self runTaskForPath:kinstallPath withArguments:[NSArray arrayWithObjects:@"-u", kreleasePath, @"-r", nil] authorized:YES output:&output];
 		if (ret != 0) {
-			NSLog(@"fuse-ext2.install -u -r failed");
+			NSLog(@"fuse-ext2.PrefPane: fuse-ext2.install -u -r failed");
 		}
 		if (output) {
 			NSString *string = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
-			NSLog(@"output: %@\n", string);
+			NSLog(@"fuse-ext2.PrefPane: output;\n'%@'\n", string);
 		}
 		[self updateGUI];
 	}
@@ -193,12 +193,12 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 		return;
 	}
 	[updateLabel setStringValue:@"Removing fuse-ext2..."];
-	NSLog(@"remove button clicked\n");
+	NSLog(@"fuse-ext2.PrefPane: remove button clicked\n");
 	ret = [self runTaskForPath:kuninstallPath withArguments:[NSArray arrayWithObjects:nil] authorized:YES output:&output];
-	NSLog(@"runtaskforpath returned:%d\n", ret);
+	NSLog(@"fuse-ext2.PrefPane: runtaskforpath returned:%d\n", ret);
 	if (output) {
 		NSString *string = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
-		NSLog(@"output: %@\n", string);
+		NSLog(@"fuse-ext2.PrefPane: output;\n'%@'\n", string);
 	}
 	if (ret != 0) {
 		[updateLabel setStringValue:@"Removing fuse-ext2 failed, check console log for details."];
@@ -221,31 +221,31 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	versionTag = @"Available Version:";
 	ret = [self runTaskForPath:kinstallPath withArguments:[NSArray arrayWithObjects:@"-u", kreleasePath, @"-a", nil] authorized:NO output:&output];
 	if (ret != 0) {
-		NSLog(@"fuse-ext2.install -u -a failed");
+		NSLog(@"fuse-ext2.PrefPane: fuse-ext2.install -u -a failed");
 		return nil;
 	}
 	if (output == nil) {
-		NSLog(@"fuse-ext2.install -u -a failed");
+		NSLog(@"fuse-ext2.PrefPane: fuse-ext2.install -u -a failed");
 		return nil;
 	}
 	string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-	NSLog(@"output:%@", string);
+	NSLog(@"fuse-ext2.PrefPane: output;\n'%@'", string);
 	dataScanner = [[NSScanner alloc] initWithString:string];
 	if ([dataScanner scanString:versionTag intoString:&versionString]) {
-		NSLog(@"versionString:%@", versionString);
+		NSLog(@"fuse-ext2.PrefPane: versionString:%@", versionString);
 		versionString = nil;
-		if ([dataScanner scanUpToString:@";" intoString:&versionString]) {
+		if ([dataScanner scanUpToString:@"\n" intoString:&versionString]) {
 			if (versionString == nil) {
-				NSLog(@"version is nil");
+				NSLog(@"fuse-ext2.PrefPane: version is nil");
 			} else {
-				NSLog(@"version is not nil:%@", versionString);
+				NSLog(@"fuse-ext2.PrefPane: version is not nil:%@", versionString);
 			}
 			return [[NSString alloc] initWithString: versionString];
 		} else {
-			NSLog(@"scanuptostring failed");
+			NSLog(@"fuse-ext2.PrefPane: scanuptostring failed");
 		}
 	} else {
-		NSLog(@"datascanner failed");
+		NSLog(@"fuse-ext2.PrefPane: datascanner failed");
 	}
 	[string release];
 	[dataScanner release];
@@ -284,7 +284,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	NSString *updateString;
 	NSString *versionString;
 	
-	NSLog(@"updating gui\n");
+	NSLog(@"fuse-ext2.PrefPane: updating gui\n");
 	
 	[spinnerUpdate startAnimation:self];
 
@@ -315,7 +315,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	
 	[spinnerUpdate stopAnimation:self];
 
-	NSLog(@"gui updated\n");
+	NSLog(@"fuse-ext2.PrefPane: gui updated\n");
 }
 
 - (BOOL) authorize

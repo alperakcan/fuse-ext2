@@ -28,7 +28,7 @@
 #include <errno.h>
 
 #define debugf(a...) { \
-	printf("debug: "); \
+	printf("fuse-ext2.uninstall: "); \
 	printf(a); \
 	printf(" (%s) [%s (%s:%d)]\n", strerror(errno), __FUNCTION__, __FILE__, __LINE__); \
 }
