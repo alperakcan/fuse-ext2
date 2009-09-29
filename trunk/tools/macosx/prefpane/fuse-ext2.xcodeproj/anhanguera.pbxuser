@@ -73,6 +73,7 @@
 			5534A2A2107251A30096523B /* PBXTextBookmark */ = 5534A2A2107251A30096523B /* PBXTextBookmark */;
 			5534A2A61072539C0096523B /* PBXTextBookmark */ = 5534A2A61072539C0096523B /* PBXTextBookmark */;
 			5534A2A71072539C0096523B /* PBXTextBookmark */ = 5534A2A71072539C0096523B /* PBXTextBookmark */;
+			5534A2A8107255920096523B /* PBXTextBookmark */ = 5534A2A8107255920096523B /* PBXTextBookmark */;
 			55CC00571067012F00F0CE1D = 55CC00571067012F00F0CE1D /* PBXTextBookmark */;
 			55CCFFC71066910A00F0CE1D = 55CCFFC71066910A00F0CE1D /* PBXTextBookmark */;
 			55CCFFDE1066966000F0CE1D = 55CCFFDE1066966000F0CE1D /* PBXTextBookmark */;
@@ -277,6 +278,16 @@
 		vrLoc = 7901;
 	};
 	5534A2A71072539C0096523B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */;
+		name = "fuse_ext2Pref.m: 29";
+		rLen = 0;
+		rLoc = 1201;
+		rType = 0;
+		vrLen = 1359;
+		vrLoc = 0;
+	};
+	5534A2A8107255920096523B /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* fuse_ext2Pref.m */;
 		name = "fuse_ext2Pref.m: 29";

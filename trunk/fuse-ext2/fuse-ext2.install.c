@@ -63,7 +63,7 @@ static NSString *kmountPath = @"/var/tmp/fuse-ext2.tmp/mnt";
 static NSString *kpkgPath = @"/var/tmp/fuse-ext2.tmp/mnt/fuse-ext2.pkg";
 static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.tmp/fuse-ext2.dmg";
 static NSString *kdefaultUrl = @"http://fuse-ext2.svn.sourceforge.net/viewvc/fuse-ext2/release/release.xml";
-static const NSTimeInterval kNetworkTimeOutInterval = 30.00;
+static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 
 @interface Installer: NSObject
 {
