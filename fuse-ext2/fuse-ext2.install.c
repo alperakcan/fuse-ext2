@@ -62,7 +62,8 @@ static NSString *ktempPath = @"/var/tmp/fuse-ext2.tmp";
 static NSString *kmountPath = @"/var/tmp/fuse-ext2.tmp/mnt";
 static NSString *kpkgPath = @"/var/tmp/fuse-ext2.tmp/mnt/fuse-ext2.pkg";
 static NSString *kdownloadFilePath = @"/var/tmp/fuse-ext2.tmp/fuse-ext2.dmg";
-static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
+static NSString *kdefaultUrl = @"http://fuse-ext2.svn.sourceforge.net/viewvc/fuse-ext2/release/release.xml";
+static const NSTimeInterval kNetworkTimeOutInterval = 30.00;
 
 @interface Installer: NSObject
 {
@@ -362,9 +363,9 @@ int main (int argc, char *argv[])
 	int c;
 	int ret;
 	int update;
-	char *version_url;
 	int list_installed;
 	int list_available;
+	const char *version_url;
 
 	NSString *installed;
 	NSString *available;
@@ -439,9 +440,8 @@ int main (int argc, char *argv[])
 		goto out;
 	} else if (list_available == 1) {
 		if (version_url == NULL) {
-			NSLog(@"fuse-ext2.install: missing url variable");
-			ret = -5;
-			goto out;
+			NSLog(@"fuse-ext2.install: using default url:%@", kdefaultUrl);
+			version_url = [kdefaultUrl UTF8String];
 		}
 		available = [installer availableVersion:[NSString stringWithFormat:@"%s", version_url]];
 		if (available != nil) {
@@ -453,9 +453,8 @@ int main (int argc, char *argv[])
 		goto out;
 	} else if (update == 1) {
 		if (version_url == NULL) {
-			NSLog(@"fuse-ext2.install: missing url variable");
-			ret = -7;
-			goto out;
+			NSLog(@"fuse-ext2.install: using default url:%@", kdefaultUrl);
+			version_url = [kdefaultUrl UTF8String];
 		}
 		ret = [installer updateVersion:[NSString stringWithFormat:@"%s", version_url]];
 		if (ret != 0) {

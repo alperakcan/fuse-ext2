@@ -26,7 +26,7 @@ static NSString *kinstallingString = @"Installing new version.";
 static NSString *kcheckingString = @"Checking for new version.";
 static NSString *kavailableString = @"New version availeble:";
 static NSString *kupdateString = @"No Updates Available At This Time.";
-static const NSTimeInterval kNetworkTimeOutInterval = 60.00; 
+static const NSTimeInterval kNetworkTimeOutInterval = 30.00; 
 
 @interface fuse_ext2Pref (PrivateMethods)
 
