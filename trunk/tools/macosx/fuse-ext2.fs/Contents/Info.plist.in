@@ -84,6 +84,22 @@
 			<key>FSProbeOrder</key>
 			<integer>3500</integer>
 		</dict>
+		<key>DOS_FAT_16</key>
+		<dict>
+			<key>FSMediaProperties</key>
+			<dict>
+				<key>Content Hint</key>
+				<string>DOS_FAT_16</string>
+				<key>Leaf</key>
+				<true/>
+			</dict>
+			<key>FSProbeArguments</key>
+			<string>-p</string>
+			<key>FSProbeExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSProbeOrder</key>
+			<integer>3500</integer>
+		</dict>
 		<key>Windows_FAT_32</key>
 		<dict>
 			<key>FSMediaProperties</key>
