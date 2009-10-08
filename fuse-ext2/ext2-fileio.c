@@ -431,6 +431,52 @@ static int truncate_blocks (ext2_filsys fs, blk_t *blocknr, int blockcnt, void *
  * This function sets the size of the file, truncating it if necessary
  *
  */
+errcode_t ext2fs_file_set_lsize(ext2_file_t file, __u64 size)
+{
+	int retval;
+	EXT2_CHECK_MAGIC(file, EXT2_ET_MAGIC_EXT2_FILE);
+
+	if (size >= file->inode->i_size) {
+		file->inode->i_size = size & 0xffffffff;
+		file->inode->i_size_high = (size >> 32) & 0xffffffff;
+		if (file->ino) {
+			retval = ext2fs_write_inode(file->fs, file->ino, file->inode);
+			if (retval)
+				return retval;
+		}
+	} else {
+		unsigned int blocksize=file->fs->blocksize;
+		struct truncate_st tr_data={
+			.fileblkcount = (size + (blocksize - 1)) / blocksize,
+			.newblksize = 0,
+			.okind = 0,
+			.okdind = 0,
+			.oktind = 0};
+		char scratchbuf[3 * blocksize];
+
+		ext2fs_file_flush(file);
+		file->inode->i_size = size & 0xffffffff;
+		file->inode->i_size_high = (size >> 32) & 0xffffffff;
+		if (file->ino) {
+			retval = ext2fs_write_inode(file->fs, file->ino, file->inode);
+			if (retval)
+				return retval;
+
+			ext2fs_block_iterate(file->fs, file->ino, BLOCK_FLAG_DEPTH_TRAVERSE, scratchbuf, truncate_blocks, &tr_data);
+
+			retval = ext2fs_read_inode(file->fs, file->ino, file->inode);
+			if (retval)
+				return retval;
+			file->inode->i_blocks= tr_data.newblksize * (blocksize / 512);
+			retval = ext2fs_write_inode(file->fs, file->ino, file->inode);
+			if (retval)
+				return retval;
+		}
+	}
+
+	return 0;
+}
+
 errcode_t ext2fs_file_set_size(ext2_file_t file, ext2_off_t size)
 {
 	int retval;
@@ -447,12 +493,12 @@ errcode_t ext2fs_file_set_size(ext2_file_t file, ext2_off_t size)
 	} else {
 		unsigned int blocksize=file->fs->blocksize;
 		struct truncate_st tr_data={
-			.fileblkcount= (size + (blocksize - 1)) / blocksize,
-			.newblksize=0,
-			.okind=0,
-			.okdind=0,
-			.oktind=0};
-		char scratchbuf[3*blocksize];
+			.fileblkcount = (size + (blocksize - 1)) / blocksize,
+			.newblksize = 0,
+			.okind = 0,
+			.okdind = 0,
+			.oktind = 0};
+		char scratchbuf[3 * blocksize];
 
 		ext2fs_file_flush(file);
 		file->inode->i_size = size;

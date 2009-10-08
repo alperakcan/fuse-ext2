@@ -1,4 +1,7 @@
 
+Fri 09 Oct 2009 12:53:02 AM EEST
+	- fixed big file support (write > 4G)
+
 Tue 29 Sep 2009 05:25:08 AM EEST
 	- improved probe time (mount time improved %50)
 	- improved mount time for read-only mode

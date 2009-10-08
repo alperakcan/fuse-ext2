@@ -58,7 +58,7 @@ int do_check_split (const char *path,char **dirname,char **basename)
 	return 0;
 }
 
-void free_split(char *dirname, char *basename)
+void free_split (char *dirname, char *basename)
 {
 	free(dirname);
 }
