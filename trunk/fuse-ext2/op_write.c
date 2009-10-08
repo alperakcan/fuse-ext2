@@ -20,28 +20,34 @@
 
 #include "fuse-ext2.h"
 
+errcode_t ext2fs_file_set_lsize (ext2_file_t file, __u64 size);
+
 size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 {
 	int rt;
-	unsigned int wr;
 	const char *tmp;
-	ext2_off_t fsize;
-	unsigned int npos;
+	unsigned int wr;
+	unsigned long long npos;
+	unsigned long long fsize;
 
 	debugf("enter");
 
-	fsize = ext2fs_file_get_size(efile);
+	rt = ext2fs_file_get_lsize(efile, &fsize);
+	if (rt != 0) {
+		debugf("ext2fs_file_get_lsize(efile, &fsize); failed");
+		return rt;
+	}
 	if (offset + size > fsize) {
-		rt = ext2fs_file_set_size(efile, offset + size);
+		rt = ext2fs_file_set_lsize(efile, offset + size);
 		if (rt) {
-			debugf("extfs_file_set_size(efile, %d); failed", offset + size);
+			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
 			return rt;
 		}
 	}
 
-	rt = ext2fs_file_lseek(efile, offset, SEEK_SET, &npos);
+	rt = ext2fs_file_llseek(efile, offset, SEEK_SET, &npos);
 	if (rt) {
-		debugf("ext2fs_file_lseek(efile, %d, SEEK_SET, &npos); failed", offset);
+		debugf("ext2fs_file_lseek(efile, %lld, SEEK_SET, &npos); failed", offset);
 		return rt;
 	}
 

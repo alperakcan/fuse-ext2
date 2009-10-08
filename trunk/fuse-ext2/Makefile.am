@@ -2,39 +2,39 @@ moddir = $(libdir)/umview/modules
 
 DEVELFLAGS =
 
-bin_PROGRAMS =		\
-	fuse-ext2	\
+bin_PROGRAMS = \
+	fuse-ext2 \
 	fuse-ext2.probe
 
 if LINUX
 mod_LTLIBRARIES = umfuseext2.la
 endif
 
-fuse_ext2_probe_SOURCES =	\
+fuse_ext2_probe_SOURCES = \
 	fuse-ext2.h \
 	fuse-ext2.probe.c \
 	do_probe.c
 
 if DARWIN
-fuse_ext2_probe_CFLAGS =			\
-	-Wall					\
-	-DHAVE_CONFIG_H				\
+fuse_ext2_probe_CFLAGS = \
+	-Wall \
+	-DHAVE_CONFIG_H \
 	-I$(top_srcdir)/e2fsprogs-1.41.9 \
 	-I/usr/local/include
 
-fuse_ext2_probe_LDADD =				\
-	../e2fsprogs-1.41.9/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.41.9/et/libcom_err.a	\
+fuse_ext2_probe_LDADD =	\
+	../e2fsprogs-1.41.9/ext2fs/libext2fs.a \
+	../e2fsprogs-1.41.9/et/libcom_err.a \
 	-L/usr/local/lib \
 	-lfuse
 endif
 if LINUX
-fuse_ext2_probe_CFLAGS =			\
-	-Wall					\
-	-DHAVE_CONFIG_H				\
+fuse_ext2_probe_CFLAGS = \
+	-Wall \
+	-DHAVE_CONFIG_H \
 	-I/usr/local/include
 
-fuse_ext2_probe_LDADD =				\
+fuse_ext2_probe_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
 	-lext2fs
@@ -116,8 +116,8 @@ umfuseext2_la_SOURCES = \
 	op_rename.c
 
 umfuseext2_la_CFLAGS = \
-	-Wall					\
-	-DHAVE_CONFIG_H				\
+	-Wall \
+	-DHAVE_CONFIG_H \
 	-D_GNU_SOURCE \
 	$(DEVELFLAGS) \
 	-I$(includedir)/umview \
@@ -130,9 +130,9 @@ umfuseext2_la_LDFLAGS = \
 	-lext2fs
 endif
 
-fuse_ext2_CFLAGS =				\
-	-Wall					\
-	-DHAVE_CONFIG_H				\
+fuse_ext2_CFLAGS = \
+	-Wall \
+	-DHAVE_CONFIG_H \
 	-I$(top_srcdir)/e2fsprogs-1.41.9 \
 	-I/usr/local/include
 
@@ -178,7 +178,7 @@ fuse_ext2_LDADD = \
 endif
 
 if LINUX
-fuse_ext2_LDADD =				\
+fuse_ext2_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
 	-lext2fs

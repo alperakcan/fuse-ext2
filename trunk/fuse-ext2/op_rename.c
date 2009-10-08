@@ -235,8 +235,7 @@ int op_rename(const char *source, const char *dest)
 
 	/* Special case: if moving dir across different parents 
 		 fix counters and '..' */
-  if (LINUX_S_ISDIR(src_inode->i_mode) && d_src_ino != d_dest_ino)
-	{
+	if (LINUX_S_ISDIR(src_inode->i_mode) && d_src_ino != d_dest_ino) {
 		d_dest_inode.i_links_count++;
 		if (d_src_inode.i_links_count > 1)
 			d_src_inode.i_links_count--;
@@ -281,13 +280,13 @@ int op_rename(const char *source, const char *dest)
 	free_split(p_src, r_src);
 	free_split(p_dest, r_dest);
 	return 0;
-
 out:
-	if (destrt==0)
-	vnode_put(dest_vnode,0);
+	if (destrt == 0)
+		vnode_put(dest_vnode,0);
 out_vsrc:
 	vnode_put(src_vnode,0);
 out_free:
+	free_split(p_src, r_src);
 	free_split(p_dest, r_dest);
 out_free_src:
 	free_split(p_src, r_src);
