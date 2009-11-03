@@ -310,10 +310,13 @@ function Probe ()
     LogDebug "[Probe] Executing \"${PFX}${FUSE_EXT2_PROBE}\" \"${DEVICE}\" 2>&1"
     PROBE_OUTPUT=`"${PFX}${FUSE_EXT2_PROBE}" "--readonly" "${DEVICE}" 2>&1`
     PROBE_RETVAL=$?
+    PROBE_VOLNAME=`${PFX}${FUSE_EXT2_E2LABEL} "${DEVICE}"`
     LogDebug "[Probe]   Return value: ${PROBE_RETVAL}"
+    LogDebug "[Probe]   Volname     : ${PROBE_VOLNAME}"
     LogDebug "[Probe]   Output (PROBE_OUTPUT): \"${PROBE_OUTPUT}\""
     
-    if (    [[ ${PROBE_RETVAL} -eq 0 ]] ); then
+    if ( [[ ${PROBE_RETVAL} -eq 0 ]] ); then
+    	echo "${PROBE_VOLNAME}"
 	return ${FSUR_RECOGNIZED}			 # FSUR_RECOGNIZED, defined in loadable_fs.h
     else
 	LogDebug "[Probe] PROBE_RETVAL indicated that we can not mount this volume."

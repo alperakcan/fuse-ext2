@@ -129,5 +129,7 @@ int main (int argc, char *argv[])
 
 err_out:
 	free(opts.device);
+	free(opts.volname);
+	free(opts.options);
 	return err;
 }
