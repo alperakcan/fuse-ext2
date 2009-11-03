@@ -1,3 +1,8 @@
+Tue 03 Nov 2009 04:02:06 AM EEST
+	- get device volume name in probe stage. now diskutil shows volume name
+	  on device bar, as a result device mount point is created as
+	  '/Volumes/${volume_name}'.
+	- supports mac osx 10.6 in compatibility mode.
 
 Fri 09 Oct 2009 12:53:02 AM EEST
 	- fixed big file support (write > 4G)
@@ -9,7 +14,7 @@ Tue 29 Sep 2009 05:25:08 AM EEST
 	- added windows_fat_(16/32) partition type to probe types
 	- added 0.0.6 md5sum to release.xml
 	- added release-beta.xml, just like macfuse
-	- linux fs type probe decreasd from 50 to 3500
+	- linux fs type probe decreased from 50 to 3500
 	- disabled apple double files
 
 Wed 23 Sep 2009 00:15:10 AM EEST

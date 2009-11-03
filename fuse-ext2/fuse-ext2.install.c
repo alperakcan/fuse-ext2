@@ -329,14 +329,14 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 		goto out;
 	}
 	[self runTaskForPath:@"/usr/bin/hdiutil" withArguments:[NSArray arrayWithObjects:@"detach", kmountPath, nil] output:nil];
-	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath] output:nil];
+	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath, nil] output:nil];
 	[md5sum release];
 	[version release];
 	[location release];
 	return 0;
 out:
 	[self runTaskForPath:@"/usr/bin/hdiutil" withArguments:[NSArray arrayWithObjects:@"detach", kmountPath, nil] output:nil];
-	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath] output:nil];
+	[self runTaskForPath:@"/bin/rm" withArguments:[NSArray arrayWithObjects:@"-rf", ktempPath, nil] output:nil];
 	[md5sum release];
 	[version release];
 	[location release];
@@ -354,8 +354,8 @@ static void print_help (const char *pname)
 	printf("  url / u       : available version file url\n");
 	printf("  help / h      : this text\n");
 	printf(" example;\n");
-	printf("  %s -i\n");
-	printf("  %s -a -u url\n");
+	printf("  %s -i\n", pname);
+	printf("  %s -a -u url\n", pname);
 }
 
 int main (int argc, char *argv[])

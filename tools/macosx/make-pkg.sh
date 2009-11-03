@@ -97,10 +97,10 @@ ${PKGMANAGER} -build -p ${FUSEEXT2_NAME}.pkg \
 			  -d ${MKPKG_FOLDER}/Description.plist
 ${CHOWN_R} root:admin ${FUSEEXT2_NAME}.pkg
 
-sudo hdiutil create -layout NONE -megabytes 1 -fs HFS+ -volname "${FUSEEXT2_NAME}" "${TMP_FOLDER}/${FUSEEXT2_NAME}.dmg"
-sudo hdiutil attach -private -nobrowse "${TMP_FOLDER}/${FUSEEXT2_NAME}.dmg"
+sudo hdiutil create -layout NONE -megabytes 1 -fs HFS+ -volname "${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}" "${TMP_FOLDER}/${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}.dmg"
+sudo hdiutil attach -private -nobrowse "${TMP_FOLDER}/${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}.dmg"
 
-VOLUME_PATH="/Volumes/${FUSEEXT2_NAME}"
+VOLUME_PATH="/Volumes/${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}"
 sudo cp -pRX ${FUSEEXT2_NAME}.pkg "$VOLUME_PATH"
 
 # Set the custom icon.
@@ -117,7 +117,7 @@ sudo cp "${MKPKG_FOLDER}/Install_resources/License.rtf" "$VOLUME_PATH"/License.r
 hdiutil detach "$VOLUME_PATH"
 
 # Convert to a read-only compressed dmg.
-hdiutil convert -imagekey zlib-level=9 -format UDZO "${TMP_FOLDER}/${FUSEEXT2_NAME}.dmg" -o "${FUSEEXT2_NAME}.dmg"
+hdiutil convert -imagekey zlib-level=9 -format UDZO "${TMP_FOLDER}/${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}.dmg" -o "${FUSEEXT2_NAME}-${FUSEEXT2_VERSION}.dmg"
 
 ${RM_RF} ${TMP_FOLDER} ${FUSEEXT2_NAME}.pkg
 

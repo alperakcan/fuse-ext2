@@ -34,6 +34,7 @@
 }
 
 static int verbose = 0;
+static int uninstall = 0;
 
 static char *files[] = {
 	"/Library/Receipts/fuse-ext2.pkg",
@@ -129,15 +130,20 @@ static int rm_path (const char *path)
 static void print_help (const char *pname)
 {
 	printf("%s usage;\n", pname);
-	printf("  verbose / v : just print, do not remove\n");
-	printf("  help / h    : this text\n");
+	printf("  uninstall / u : do uninstall [ just for safety ]\n");
+	printf("  verbose / v   : just print, do not remove\n");
+	printf("  help / h      : this text\n");
+	printf(" example;\n");
+	printf("  %s -u\n", pname);
+	printf("  %s -u -v\n", pname);
 }
 
 int main (int argc, char *argv[])
 {
 	int c;
-	static const char *sopt = "vh";
+	static const char *sopt = "uvh";
 	static const struct option lopt[] = {
+		{ "uninstall", no_argument, NULL, 'u'},
 		{ "verbose", no_argument, NULL, 'v' },
 		{ "help", no_argument, NULL, 'h' },
 		{ NULL, 0, NULL,  0  }
@@ -147,6 +153,9 @@ int main (int argc, char *argv[])
 
 	while ((c = getopt_long(argc, argv, sopt, lopt, NULL)) != -1) {
 		switch (c) {
+			case 'u':
+				uninstall = 1;
+				break;
 			case 'v':
 				verbose = 1;
 				break;
@@ -154,6 +163,11 @@ int main (int argc, char *argv[])
 				print_help(argv[0]);
 				return 0;
 		}
+	}
+
+	if (uninstall == 0) {
+		print_help(argv[0]);
+		return -1;
 	}
 
 	printf("uninstalling fuse-ext2\n");
