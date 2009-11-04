@@ -194,7 +194,7 @@ static const NSTimeInterval kNetworkTimeOutInterval = 60.00;
 	}
 	[updateLabel setStringValue:@"Removing fuse-ext2..."];
 	NSLog(@"fuse-ext2.PrefPane: remove button clicked\n");
-	ret = [self runTaskForPath:kuninstallPath withArguments:[NSArray arrayWithObjects:nil] authorized:YES output:&output];
+	ret = [self runTaskForPath:kuninstallPath withArguments:[NSArray arrayWithObjects:@"-u", nil] authorized:YES output:&output];
 	NSLog(@"fuse-ext2.PrefPane: runtaskforpath returned:%d\n", ret);
 	if (output) {
 		NSString *string = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
