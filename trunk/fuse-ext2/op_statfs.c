@@ -61,7 +61,7 @@ static int ext2_bg_num_gdb (ext2_filsys e2fs, int group)
 #define EXT2_RBLOCKS_COUNT(s) ((s)->s_r_blocks_count | ((__u64) (s)->s_r_blocks_count_hi << 32))
 #define EXT2_FBLOCKS_COUNT(s) ((s)->s_free_blocks_count | ((__u64) (s)->s_free_blocks_hi << 32))
 
-int op_statfs(const char *path, struct statvfs *buf)
+int op_statfs (const char *path, struct statvfs *buf)
 {
 	unsigned long long i;
 	unsigned long long s_gdb_count = 0;
