@@ -1,3 +1,6 @@
+Thu 24 Dec 2009 14:40:10 EET
+	- version 0.0.7
+
 Tue 03 Nov 2009 04:02:06 AM EEST
 	- get device volume name in probe stage. now diskutil shows volume name
 	  on device bar, as a result device mount point is created as
