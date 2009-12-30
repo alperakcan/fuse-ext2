@@ -23,9 +23,11 @@
 static const char *HOME = "http://sourceforge.net/projects/fuse-ext2/";
 
 #if __FreeBSD__ == 10
-static char def_opts[] = "allow_other,local,noappledouble,";
+static char def_opts[] = "allow_other,local,";
+static char def_opts_rd[] = "noappledouble,";
 #else
 static char def_opts[] = "";
+static char def_opts_rd[] = "";
 #endif
 
 static const char *usage_msg =
@@ -170,7 +172,7 @@ static char * parse_mount_options (const char *orig_opts, struct extfs_data *opt
 {
 	char *options, *s, *opt, *val, *ret;
 
-	ret = malloc(strlen(def_opts) + strlen(orig_opts) + 256 + PATH_MAX);
+	ret = malloc(strlen(def_opts) + strlen(def_opts_rd) + strlen(orig_opts) + 256 + PATH_MAX);
 	if (!ret) {
 		return NULL;
 	}
@@ -246,6 +248,7 @@ static char * parse_mount_options (const char *orig_opts, struct extfs_data *opt
 
 	strcat(ret, def_opts);
 	if (opts->readonly == 1) {
+		strcat(ret, def_opts_rd);
 		strcat(ret, "ro,");
 	}
 	strcat(ret, "fsname=");
