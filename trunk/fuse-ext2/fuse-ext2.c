@@ -34,7 +34,7 @@ static const char *usage_msg =
 "\n"
 "%s %s %d - FUSE EXT2FS Driver\n"
 "\n"
-"Copyright (C) 2008-2009 Alper Akcan <alper.akcan@gmail.com>\n"
+"Copyright (C) 2008-2010 Alper Akcan <alper.akcan@gmail.com>\n"
 "Copyright (C) 2009 Renzo Davoli <renzo@cs.unibo.it>\n"
 "\n"
 "Usage:    %s <device|image_file> <mount_point> [-o option[,...]]\n"
