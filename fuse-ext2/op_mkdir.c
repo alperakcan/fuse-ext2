@@ -76,6 +76,7 @@ int op_mkdir (const char *path, mode_t mode)
 	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &inode); failed", path);
+		free_split(p_path, r_path);
 		return -EIO;
 	}
 	tm = e2fs->now ? e2fs->now : time(NULL);

@@ -89,6 +89,7 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 	rc = ext2fs_new_inode(e2fs, ino, mode, 0, &n_ino);
 	if (rc) {
 		debugf("ext2fs_new_inode(ep.fs, ino, mode, 0, &n_ino); failed");
+		free_split(p_path, r_path);
 		return -ENOMEM;
 	}
 
