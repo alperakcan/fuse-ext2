@@ -99,6 +99,7 @@ int op_link (const char *source, const char *dest)
 		free_split(p_path, r_path);
 		return -EIO;
 	}
+	free_split(p_path, r_path);
 	debugf("done");
 
 	return 0;
