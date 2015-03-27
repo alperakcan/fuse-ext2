@@ -20,15 +20,20 @@
 
 #include "fuse-ext2.h"
 
-static int test_root (int a, int b)
+static int test_root (unsigned int a, unsigned int b)
 {
-	int num = b;
-
-	while (a < num) {
-		num *= b;
+	while (1) {
+		if (a < b) {
+			return 0;
+		}
+		if (a == b) {
+			return 1;
+		}
+		if (a % b) {
+			return 0;
+		}
+		a = a / b;
 	}
-
-	return num == a;
 }
 
 static int ext2_group_spare (int group)
