@@ -184,6 +184,7 @@ AC_CONFIG_FILES([
 	fuse-ext2/Makefile
 	tools/Makefile
 	tools/macosx/Makefile
+	test/Makefile
 	test/pjdfstest/Makefile
 ])
 

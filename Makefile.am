@@ -2,6 +2,7 @@
 SUBDIRS  =
 SUBDIRS += fuse-ext2
 SUBDIRS += tools
+SUBDIRS += test
 SUBDIRS += test/pjdfstest
 
 EXTRA_DIST = \
