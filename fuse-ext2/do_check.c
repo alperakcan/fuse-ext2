@@ -36,10 +36,10 @@ int do_check (const char *path)
 	return 0;
 }
 
-int do_check_split (const char *path,char **dirname,char **basename)
+int do_check_split (const char *path, char **dirname, char **basename)
 {
-	char *cpath=strdup(path);
 	char *tmp;
+	char *cpath = strdup(path);
 	tmp = strrchr(cpath, '/');
 	if (tmp == NULL) {
 		debugf("this should not happen %s", path);
