@@ -9,6 +9,7 @@ AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_INSTALL
+AM_PROG_AR
 AC_PROG_LIBTOOL
 AC_PATH_PROG(CHMOD, chmod, :)
 
@@ -152,7 +153,7 @@ fuse_version_yes
 
 # Check extra parameters
 AC_ARG_ENABLE([debug],
-[  --disable-debug    	  disable noisy debug],
+[  --enable-debug    	  enable noisy debug],
 if test "$enableval" = "no"
 then
 	DEBUG_CMT=#
@@ -164,8 +165,8 @@ else
 fi
 ,
 DEBUG_CMT=
-echo "Enabling debug support by default"
-	AC_DEFINE(ENABLE_DEBUG, 1, [Define to 1 if you want 'debug' support.])
+echo "Disabling debug support by default"
+	AC_DEFINE(ENABLE_DEBUG, 0, [Define to 1 if you want 'debug' support.])
 )
 
 AC_ARG_ENABLE([swapfs],
@@ -197,13 +198,6 @@ AM_CONDITIONAL(DARWIN, test "$arch" = darwin)
 AC_CONFIG_FILES([
 	fuse-ext2.pc
 	Makefile
-	e2fsprogs-1.41.9/Makefile
-	e2fsprogs-1.41.9/uuid/Makefile
-	e2fsprogs-1.41.9/blkid/Makefile
-	e2fsprogs-1.41.9/et/Makefile
-	e2fsprogs-1.41.9/e2p/Makefile
-	e2fsprogs-1.41.9/misc/Makefile
-	e2fsprogs-1.41.9/ext2fs/Makefile
 	fuse-ext2/Makefile
 	tools/Makefile
 	tools/macosx/Makefile

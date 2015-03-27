@@ -15,20 +15,6 @@ fuse_ext2_probe_SOURCES = \
 	fuse-ext2.probe.c \
 	do_probe.c
 
-if DARWIN
-fuse_ext2_probe_CFLAGS = \
-	-Wall \
-	-DHAVE_CONFIG_H \
-	-I$(top_srcdir)/e2fsprogs-1.41.9 \
-	-I/usr/local/include
-
-fuse_ext2_probe_LDADD =	\
-	../e2fsprogs-1.41.9/ext2fs/libext2fs.a \
-	../e2fsprogs-1.41.9/et/libcom_err.a \
-	-L/usr/local/lib \
-	-lfuse
-endif
-if LINUX
 fuse_ext2_probe_CFLAGS = \
 	-Wall \
 	-DHAVE_CONFIG_H \
@@ -38,7 +24,6 @@ fuse_ext2_probe_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
 	-lext2fs
-endif
 
 fuse_ext2_SOURCES =	\
 	fuse-ext2.h \
@@ -77,7 +62,6 @@ fuse_ext2_SOURCES =	\
 	op_link.c \
 	op_rename.c
 
-if LINUX
 umfuseext2_la_SOURCES = \
 	fuse-ext2.h \
 	fuse-ext2.c \
@@ -128,12 +112,10 @@ umfuseext2_la_LDFLAGS = \
 	-avoid-version \
 	-export-dynamic \
 	-lext2fs
-endif
 
 fuse_ext2_CFLAGS = \
 	-Wall \
 	-DHAVE_CONFIG_H \
-	-I$(top_srcdir)/e2fsprogs-1.41.9 \
 	-I/usr/local/include
 
 if DARWIN
@@ -169,20 +151,12 @@ fuse_ext2_probe_CFLAGS += \
 
 fuse_ext2_CFLAGS +=	\
 	-D__FreeBSD__=10
-
-fuse_ext2_LDADD = \
-	../e2fsprogs-1.41.9/ext2fs/libext2fs.a	\
-	../e2fsprogs-1.41.9/et/libcom_err.a	\
-	-L/usr/local/lib \
-	-lfuse
 endif
 
-if LINUX
 fuse_ext2_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
 	-lext2fs
-endif
 
 install-data-hook:
 	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
