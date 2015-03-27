@@ -123,12 +123,13 @@ static inline void debug_main_printf (const char *function, char *file, int line
 
 struct ext2_vnode;
 
-struct ext2_vnode *vnode_get(ext2_filsys e2fs, ext2_ino_t ino);
+struct ext2_vnode * vnode_get (ext2_filsys e2fs, ext2_ino_t ino);
 
-int vnode_put(struct ext2_vnode *vnode,int dirty);
+int vnode_put (struct ext2_vnode *vnode, int dirty);
 
-static inline struct ext2_inode *vnode2inode(struct ext2_vnode *vnode) {
-	return (struct ext2_inode *)vnode;
+static inline struct ext2_inode * vnode2inode (struct ext2_vnode *vnode)
+{
+	return (struct ext2_inode *) vnode;
 }
 
 void * op_init (struct fuse_conn_info *conn);

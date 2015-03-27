@@ -20,12 +20,12 @@
 
 #include "fuse-ext2.h"
 
-static inline dev_t old_decode_dev(__u16 val)
+static inline dev_t old_decode_dev (__u16 val)
 {
 	return makedev((val >> 8) & 255, val & 255);
 }
 
-static inline dev_t new_decode_dev(__u32 dev)
+static inline dev_t new_decode_dev (__u32 dev)
 {
 	unsigned major = (dev & 0xfff00) >> 8;
 	unsigned minor = (dev & 0xff) | ((dev >> 12) & 0xfff00);
