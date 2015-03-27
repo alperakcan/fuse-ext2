@@ -34,6 +34,7 @@ fuse_ext2_SOURCES =	\
 	do_check.c \
 	do_fillstatbuf.c \
 	do_readinode.c \
+	do_writeinode.c \
 	do_killfilebyinode.c \
 	op_init.c \
 	op_destroy.c \
