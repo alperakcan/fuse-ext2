@@ -30,6 +30,50 @@ Build
 	package for your distribution.
 
 - Mac OS:
+	Dependecies:
+	
+	$ export PATH=/opt/gnu/bin:$PATH
+	
+	$ mkdir gnu
+	$ cd gnu
+	
+	# m4
+	$ curl -O http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz
+	$ tar -zxvf m4-1.4.17.tar.gz 
+	$ cd m4-1.4.17
+	$ ./configure --prefix=/opt/gnu
+	$ make -j 16
+	$ sudo make install
+	$ cd ../
+	
+	# autoconf
+	$ curl -O http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+  	$ tar -zxvf autoconf-2.69.tar.gz 
+	$ cd autoconf-2.69
+	$ ./configure --prefix=/opt/gnu
+	$ make
+	$ sudo make install
+	$ cd ../
+	
+	# automake
+	$ curl -O http://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz
+	$ tar -zxvf automake-1.15.tar.gz 
+	$ cd automake-1.15
+	$ ./configure --prefix=/opt/gnu
+	$ ./configure --prefix=/opt/gnu
+	$ make
+	$ sudo make install
+	$ cd ../
+	
+	# libtool
+	$ curl -O http://ftp.mku.edu.tr/gnu/libtool/libtool-2.4.6.tar.gz
+	$ tar -zxvf libtool-2.4.6.tar.gz 
+	$ cd libtool-2.4.6
+	$ ./configure --prefix=/opt/gnu
+	$ make
+	$ sudo make install
+	$ cd ../
+
 	Standart build:
 	$ ./autogen.sh
 	$ ./configure
@@ -39,16 +83,6 @@ Build
 	Universal build:
 	$ ./autogen.sh
 	$ CFLAGS="-arch i386 -arch ppc" ./configure --disable-dependency-tracking
-	$ make
-	$ sudo make install
-	
-	Tiger (Universal) build:
-	$ export MACOSX_DEPLOYMENT_TARGET="10.4"
-	$ export OSX_SDK="/Developer/SDKs/MacOSX10.4u.sdk"
-	$ export OSX_CFLAGS="-isysroot $OSX_SDK -arch ppc -arch i386"
-	$ export OSX_LDFLAGS="-Wl,-syslibroot,$OSX_SDK -arch ppc -arch i386"
-	$ ./autogen.sh
-	$ CFLAGS="$OSX_CFLAGS" CXXFLAGS="$OSX_CFLAGS" LDFLAGS="$OSX_LDFLAGS" ./configure --disable-dependency-tracking
 	$ make
 	$ sudo make install
 	
