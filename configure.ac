@@ -169,23 +169,6 @@ echo "Disabling debug support by default"
 	AC_DEFINE(ENABLE_DEBUG, 0, [Define to 1 if you want 'debug' support.])
 )
 
-AC_ARG_ENABLE([swapfs],
-[  --disable-swapfs    	  disable support of legacy byte-swapped filesystems],
-if test "$enableval" = "no"
-then
-	SWAPFS_CMT=#
-	echo "Disabling swapfs support"
-else
-	SWAPFS_CMT=
-	AC_DEFINE(ENABLE_SWAPFS, 1, [Define to 1 if you want 'swapfs' support.])
-	echo "Enabling swapfs support"
-fi
-,
-SWAPFS_CMT=
-echo "Enabling swapfs support by default"
-	AC_DEFINE(ENABLE_SWAPFS, 1, [Define to 1 if you want 'swapfs' support.])
-)
-
 AC_ARG_WITH(pkgconfigdir,
             [  --with-pkgconfigdir=DIR pkgconfig file in DIR @<:@LIBDIR/pkgconfig@:>@],
             [pkgconfigdir=$withval],
