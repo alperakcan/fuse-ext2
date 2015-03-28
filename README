@@ -110,6 +110,8 @@ Example:  fuse-ext2 /dev/sda1 /mnt/sda1
 Bugs
 ----
 
+multithread support is broken for now, so forcing fuse to work single thread.
+
 there are no known bugs for read-only mode, read only mode should be ok for every one.
 
 altough, write support is available (and it is pretty stable) please do not mount your
