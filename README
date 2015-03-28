@@ -86,9 +86,10 @@ Build
 	
 	# osxfuse
 	https://osxfuse.github.io
-	install with macfuse compatibility
+	no need to install with macfuse compatibility
 	
 	Build:
+	$ export PATH=/opt/gnu/bin:$PATH
 	$ ./autogen.sh
 	$ CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local/lib" ./configure
 	$ make

@@ -20,12 +20,6 @@ fuse_ext2_probe_CFLAGS = \
 	-DHAVE_CONFIG_H \
 	-I/usr/local/include
 
-fuse_ext2_probe_LDADD = \
-	-L/usr/local/lib \
-	-lfuse \
-	-lcom_err \
-	-lext2fs
-
 fuse_ext2_SOURCES =	\
 	fuse-ext2.h \
 	fuse-ext2.c \
@@ -153,12 +147,6 @@ fuse_ext2_probe_CFLAGS += \
 fuse_ext2_CFLAGS +=	\
 	-D__FreeBSD__=10
 endif
-
-fuse_ext2_LDADD = \
-	-L/usr/local/lib \
-	-lfuse \
-	-lcom_err \
-	-lext2fs
 
 install-data-hook:
 	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
