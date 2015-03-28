@@ -94,12 +94,6 @@ Build
 	$ make
 	$ sudo make install
 
-	Universal build:
-	$ ./autogen.sh
-	$ CFLAGS="-arch i386 -arch ppc" ./configure --disable-dependency-tracking
-	$ make
-	$ sudo make install
-	
 	Generating package:
 	$ make package
 
