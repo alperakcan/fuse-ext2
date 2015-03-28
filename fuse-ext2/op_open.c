@@ -46,6 +46,7 @@ ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 		return NULL;
 	}
 
+	debugf("efile: %p", efile);
 	debugf("leave");
 	return efile;
 }
@@ -63,7 +64,7 @@ int op_open (const char *path, struct fuse_file_info *fi)
 		debugf("do_open(%s); failed", path);
 		return -ENOENT;
 	}
-	fi->fh = (unsigned long) efile;
+	fi->fh = (uint64_t) efile;
 
 	debugf("leave");
 	return 0;

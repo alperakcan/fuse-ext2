@@ -324,7 +324,7 @@ int main (int argc, char *argv[])
 	struct fuse_args fargs = FUSE_ARGS_INIT(0, NULL);
 	struct extfs_data opts;
 
-	debugf("version:'%s', fuse_version:'%d'", VERSION, fuse_version());
+	debugf_main("version:'%s', fuse_version:'%d / %d / %d'", VERSION, FUSE_USE_VERSION,  FUSE_VERSION, fuse_version());
 
 	memset(&opts, 0, sizeof(opts));
 
