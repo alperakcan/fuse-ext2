@@ -707,9 +707,11 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_MKFIFO:
 		rval = mkfifo(STR(0), (mode_t)NUM(1));
 		break;
+#if HAS_MKFIFOAT
 	case ACTION_MKFIFOAT:
 		rval = mkfifoat(NUM(0), STR(1), (mode_t)NUM(2));
 		break;
+#endif
 	case ACTION_MKNOD:
 	case ACTION_MKNODAT:
 	    {
@@ -747,9 +749,11 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		case ACTION_MKNOD:
 			rval = mknod(STR(0), ntype | NUM(2), dev);
 			break;
+#if HAS_MKNODAT
 		case ACTION_MKNODAT:
 			rval = mknodat(NUM(0), STR(1), ntype | NUM(3), dev);
 			break;
+#endif
 		default:
 			abort();
 		}
