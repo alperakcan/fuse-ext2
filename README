@@ -97,6 +97,13 @@ Build
 	Generating package:
 	$ make package
 
+Test
+----
+
+	$ dd if=/dev/zero of=test/fs.ext2 bs=1024 count=102400
+	$ mkfs.ext4 test/fs.ext2
+	$ fuse-ext2 test/fs.ext2 /mnt/fs.ext2 -o debug,rw+
+
 Usage
 -----
 
