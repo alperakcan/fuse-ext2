@@ -23,6 +23,7 @@ fuse_ext2_probe_CFLAGS = \
 fuse_ext2_probe_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
+	-lcom_err \
 	-lext2fs
 
 fuse_ext2_SOURCES =	\
@@ -156,6 +157,7 @@ endif
 fuse_ext2_LDADD = \
 	-L/usr/local/lib \
 	-lfuse \
+	-lcom_err \
 	-lext2fs
 
 install-data-hook:

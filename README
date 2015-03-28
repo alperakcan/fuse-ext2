@@ -74,9 +74,23 @@ Build
 	$ sudo make install
 	$ cd ../
 
+	# e2fsprogs
+	$ curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.42.12.tar.gz
+	$ tar -zxvf e2fsprogs-1.42.12.tar.gz
+	$ cd e2fsprogs-1.42.12
+	$ ./configure --prefix=/opt/gnu
+	$ make
+	$ sudo make install
+	$ sudo make install-libs
+	$ cd ../
+	
+	# osxfuse
+	https://osxfuse.github.io
+	install with macfuse compatibility
+	
 	Standart build:
 	$ ./autogen.sh
-	$ ./configure
+	$ CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local/lib" ./configure
 	$ make
 	$ sudo make install
 
