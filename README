@@ -8,13 +8,13 @@ Dependencies
 ------------
 
   Fuse-ext2 requires at least Fuse version 2.6.0 for linux, for max os latest
-version of macfuse would be fine (2.0.3).
+version of osxfuse with macfuse compatibility support would be fine (2.7.5).
 
 - Linux:
 	Fuse from http://fuse.sourceforge.net/
 
 - Mac OS:
-	Mac Fuse from http://code.google.com/p/macfuse/
+	OSXFuse from https://osxfuse.github.io
 
 
 Build
