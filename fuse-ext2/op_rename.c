@@ -160,43 +160,19 @@ int op_rename (const char *source, const char *dest)
 		}
 
 		/* Step 1: if destination exists: delete it */
-		rc = ext2fs_unlink(e2fs, d_dest_ino, r_dest, dest_ino, 0);
+		if (LINUX_S_ISDIR(dest_inode.i_mode)) {
+			rc = op_rmdir(dest);
+		} else {
+			rc = op_unlink(dest);
+		}
 		if (rc) {
-			debugf("ext2fs_unlink(e2fs, %d, %s, %d, 0); failed", d_dest_ino, r_dest, dest_ino);
-			rt = -EIO;
+			debugf("do_writeinode(e2fs, ino, inode); failed");
 			goto out;
 		}
-
-		if (LINUX_S_ISDIR(dest_inode.i_mode)) {
-			rt = do_killfilebyinode(e2fs, dest_ino, &dest_inode);
-			if (rt) {
-				debugf("do_killfilebyinode(r_ino, &r_inode); failed");
-				goto out;
-			}
-			rt = do_readinode(e2fs, p_dest, &d_dest_ino, &d_dest_inode);
-			if (rt) {
-				debugf("do_readinode(p_dest, &d_dest_ino, &d_dest_inode); failed");
-				goto out;
-			}
-			if (d_dest_inode.i_links_count > 1) {
-				d_dest_inode.i_links_count--;
-			}
-			d_dest_inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
-			d_dest_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
-			rc = do_writeinode(e2fs, d_dest_ino, &d_dest_inode);
-			if (rc) {
-				debugf("do_writeinode(e2fs, ino, inode); failed");
-				goto out;
-			}
-		} else {
-			if (dest_inode.i_links_count > 0) {
-				dest_inode.i_links_count -= 1;
-			}
-			rc = do_writeinode(e2fs, dest_ino, &dest_inode);
-			if (rc) {
-				debugf("do_writeinode(e2fs, ino, inode); failed");
-				goto out;
-			}
+		rt = do_readinode(e2fs, p_dest, &d_dest_ino, &d_dest_inode);
+		if (rt != 0) {
+			debugf("do_readinode(%s, &d_dest_ino, &d_dest_inode); failed", p_dest);
+			goto out;
 		}
 	}
   	

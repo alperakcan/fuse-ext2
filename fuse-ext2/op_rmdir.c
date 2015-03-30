@@ -86,7 +86,7 @@ int op_rmdir (const char *path)
 	debugf("enter");
 	debugf("path = %s", path);
 
-	rt=do_check_split(path, &p_path, &r_path);
+	rt = do_check_split(path, &p_path, &r_path);
 	if (rt != 0) {
 		debugf("do_check_split: failed");
 		return rt;
