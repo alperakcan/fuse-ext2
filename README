@@ -135,8 +135,8 @@ multithread support is broken for now, so forcing fuse to work single thread.
 
 there are no known bugs for read-only mode, read only mode should be ok for every one.
 
-altough, write support is available (and it is pretty stable) please do not mount your
-filesystems with write support unless you do not have anything to loose.
+altough, write support is available please do not mount your filesystems with write
+support unless you do not have anything to loose.
 
 please send output the output of below command while reporting bugs.
 
