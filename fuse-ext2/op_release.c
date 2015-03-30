@@ -20,12 +20,6 @@
 
 #include "fuse-ext2.h"
 
-static void release_callback (struct ext2_inode *inode, int flags)
-{
-	struct ext2_vnode *vnode = (struct ext2_vnode *) inode;
-	vnode_put(vnode, (flags & EXT2_FILE_WRITE) != 0);
-}
-
 int do_release (ext2_file_t efile)
 {
 	errcode_t rc;
@@ -36,7 +30,7 @@ int do_release (ext2_file_t efile)
 	if (efile == NULL) {
 		return -ENOENT;
 	}
-	rc = ext2fs_file_close2(efile, release_callback);
+	rc = ext2fs_file_close(efile);
 	if (rc) {
 		return -EIO;
 	}
@@ -48,7 +42,7 @@ int do_release (ext2_file_t efile)
 int op_release (const char *path, struct fuse_file_info *fi)
 {
 	int rt;
-	ext2_file_t efile = (void *) (unsigned long) fi->fh;
+	ext2_file_t efile = (ext2_file_t) (unsigned long) fi->fh;
 
 	debugf("enter");
 	debugf("path = %s (%p)", path, efile);

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -122,7 +123,7 @@ static void create_file(const char *dir, int loop, int child, int fnum)
 			exit(1);
 		}
 		for (size=0; size<file_size; size += block_size) {
-			gen_buffer(p+size, loop, child, fnum, size);
+			gen_buffer((uchar *) p + size, loop, child, fnum, size);
 		}
 		munmap(p, file_size);
 	}

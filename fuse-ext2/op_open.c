@@ -22,31 +22,37 @@
 
 ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 {
+	int rt;
 	errcode_t rc;
 	ext2_ino_t ino;
 	ext2_file_t efile;
-	struct ext2_vnode *vnode;
-	int rt;
+	struct ext2_inode inode;
 
 	debugf("enter");
 	debugf("path = %s", path);
 
-	rt = do_readvnode(e2fs, path, &ino, &vnode);
-	if (rt) {
-		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
 		return NULL;
 	}
 
-	rc = ext2fs_file_open2(e2fs, ino, vnode2inode(vnode),
+	rt = do_readinode(e2fs, path, &ino, &inode);
+	if (rt) {
+		debugf("do_readinode(%s, &ino, &vnode); failed", path);
+		return NULL;
+	}
+
+	rc = ext2fs_file_open2(
+			e2fs,
+			ino,
+			&inode,
 			(((flags & O_ACCMODE) != 0) ? EXT2_FILE_WRITE : 0) | EXT2_FILE_SHARED_INODE, 
 			&efile);
-
 	if (rc) {
-		vnode_put(vnode,0);
 		return NULL;
 	}
 
-	debugf("efile: %p", efile);
 	debugf("leave");
 	return efile;
 }

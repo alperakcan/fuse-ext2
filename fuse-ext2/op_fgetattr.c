@@ -24,19 +24,24 @@ int op_fgetattr (const char *path, struct stat *stbuf, struct fuse_file_info *fi
 {
 	int rt;
 	ext2_ino_t ino;
-	struct ext2_vnode *vnode;
+	struct ext2_inode inode;
 	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s", path);
 	
-	rt = do_readvnode(e2fs, path, &ino, &vnode);
-	if (rt) {
-		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
 		return rt;
 	}
-	do_fillstatbuf(e2fs, ino, vnode2inode(vnode), stbuf);
-	vnode_put(vnode,0);
+
+	rt = do_readinode(e2fs, path, &ino, &inode);
+	if (rt) {
+		debugf("do_readinode(%s, &ino, &vnode); failed", path);
+		return rt;
+	}
+	do_fillstatbuf(e2fs, ino, &inode, stbuf);
 
 	debugf("leave");
 	return 0;

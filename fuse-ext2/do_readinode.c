@@ -35,19 +35,3 @@ int do_readinode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ex
 	}
 	return 0;
 }
-
-int do_readvnode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ext2_vnode **vnode)
-{
-	errcode_t rc;
-	rc = ext2fs_namei(e2fs, EXT2_ROOT_INO, EXT2_ROOT_INO, path, ino);
-	if (rc) {
-		debugf("ext2fs_namei(e2fs, EXT2_ROOT_INO, EXT2_ROOT_INO, %s, ino); failed", path);
-		return -ENOENT;
-	}
-	*vnode = vnode_get(e2fs, *ino);
-	if (*vnode==NULL) {
-		debugf("vnode_get(e2fs, *ino); failed");
-		return -EIO;
-	}
-	return 0;
-}

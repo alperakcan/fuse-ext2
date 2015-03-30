@@ -38,7 +38,7 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 		return rt;
 	}
 	if (offset + size > fsize) {
-		rt = ext2fs_file_set_lsize(efile, offset + size);
+		rt = ext2fs_file_set_size2(efile, offset + size);
 		if (rt) {
 			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
 			return rt;

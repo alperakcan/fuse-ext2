@@ -29,32 +29,36 @@ struct dir_walk_data {
 #ifdef _USE_DIR_ITERATE2
 static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent, int offset, int blocksize, char *buf, void *vpsid)
 {
-	if (dirent->name_len > 0) {
-		int res;
-		unsigned char type;
-		int len;
-		struct dir_walk_data *psid=(struct dir_walk_data *)vpsid;
-		struct stat st;
-		memset(&st, 0, sizeof(st));
+	int res;
+	int len;
+	struct stat st;
+	unsigned char type;
+	if (dirent->name_len <= 0) {
+		return 0;
+	}
+	struct dir_walk_data *psid=(struct dir_walk_data *)vpsid;
+	memset(&st, 0, sizeof(st));
 
-		len=dirent->name_len & 0xff;
-		dirent->name[len]=0; // bug wraparound
+	len = dirent->name_len & 0xff;
+	dirent->name[len] = 0; // bug wraparound
 
-		switch  (dirent->name_len >> 8) {
-			case EXT2_FT_UNKNOWN: type=DT_UNKNOWN;break;
-			case EXT2_FT_REG_FILE:  type=DT_REG;break;
-			case EXT2_FT_DIR: type=DT_DIR;break;
-			case EXT2_FT_CHRDEV:  type=DT_CHR;break;
-			case EXT2_FT_BLKDEV:  type=DT_BLK;break;
-			case EXT2_FT_FIFO:  type=DT_FIFO;break;
-			case EXT2_FT_SOCK:  type=DT_SOCK;break;
-			case EXT2_FT_SYMLINK: type=DT_LNK;break;
-			default:    type=DT_UNKNOWN;break;
-		}
-		st.st_ino=dirent->inode;
-		st.st_mode=type<<12;
-		debugf("%s %d %d %d",dirent->name,dirent->name_len &0xff, dirent->name_len >> 8,type);
-		res = psid->filler(psid->buf, dirent->name, &st, 0);
+	switch  (dirent->name_len >> 8) {
+		case EXT2_FT_UNKNOWN: 	type = DT_UNKNOWN;	break;
+		case EXT2_FT_REG_FILE:	type = DT_REG;		break;
+		case EXT2_FT_DIR:	type = DT_DIR;		break;
+		case EXT2_FT_CHRDEV:	type = DT_CHR;		break;
+		case EXT2_FT_BLKDEV:	type = DT_BLK;		break;
+		case EXT2_FT_FIFO:	type = DT_FIFO;		break;
+		case EXT2_FT_SOCK:	type = DT_SOCK;		break;
+		case EXT2_FT_SYMLINK:	type = DT_LNK;		break;
+		default:		type = DT_UNKNOWN;	break;
+	}
+	st.st_ino = dirent->inode;
+	st.st_mode = type << 12;
+	debugf("%s %d %d %d",dirent->name,dirent->name_len &0xff, dirent->name_len >> 8,type);
+	res = psid->filler(psid->buf, dirent->name, &st, 0);
+	if (res != 0) {
+		return BLOCK_ABORT;
 	}
 	return 0;
 }

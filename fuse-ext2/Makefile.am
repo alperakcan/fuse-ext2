@@ -23,8 +23,6 @@ fuse_ext2_probe_CFLAGS = \
 fuse_ext2_SOURCES =	\
 	fuse-ext2.h \
 	fuse-ext2.c \
-	ext2-fileio.c \
-	vnode_hash.c \
 	do_probe.c \
 	do_check.c \
 	do_fillstatbuf.c \
@@ -61,8 +59,6 @@ fuse_ext2_SOURCES =	\
 umfuseext2_la_SOURCES = \
 	fuse-ext2.h \
 	fuse-ext2.c \
-	ext2-fileio.c \
-	vnode_hash.c \
 	do_probe.c \
 	do_check.c \
 	do_fillstatbuf.c \
