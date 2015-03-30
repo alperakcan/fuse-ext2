@@ -1,8 +1,5 @@
 
-Fuse-ext2 is a EXT2 Filesystem support for FUSE.
-
-This software is based on both ntfs-3g, and ext2fuse packages.
-
+Fuse-ext2 is a EXT2/EXT3/EXT4 Filesystem support for FUSE.
 
 Dependencies
 ------------
