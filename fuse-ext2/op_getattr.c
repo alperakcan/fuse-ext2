@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@ int op_getattr (const char *path, struct stat *stbuf)
 {
 	int rt;
 	ext2_ino_t ino;
-	struct ext2_vnode *vnode;
+	struct ext2_inode inode;
 	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
@@ -36,13 +36,12 @@ int op_getattr (const char *path, struct stat *stbuf)
 		return rt;
 	}
 
-	rt = do_readvnode(e2fs, path, &ino, &vnode);
+	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
-		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
+		debugf("do_readinode(%s, &ino, &vnode); failed", path);
 		return rt;
 	}
-	do_fillstatbuf(e2fs, ino, vnode2inode(vnode), stbuf);
-	vnode_put(vnode,0);
+	do_fillstatbuf(e2fs, ino, &inode, stbuf);
 
 	debugf("leave");
 	return 0;

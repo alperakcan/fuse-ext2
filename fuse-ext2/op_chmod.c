@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,10 +25,8 @@ int op_chmod (const char *path, mode_t mode)
 	int rt;
 	int mask;
 	time_t tm;
-	errcode_t rc;
 	ext2_ino_t ino;
-	struct ext2_vnode *vnode;
-	struct ext2_inode *inode;
+	struct ext2_inode inode;
 	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
@@ -40,21 +38,20 @@ int op_chmod (const char *path, mode_t mode)
 		return rt;
 	}
 
-	rt = do_readvnode(e2fs, path, &ino, &vnode);
+	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
-		debugf("do_readvnode(%s, &ino, &vnode); failed", path);
+		debugf("do_readinode(%s, &ino, &vnode); failed", path);
 		return rt;
 	}
-	inode = vnode2inode(vnode);
 
 	tm = e2fs->now ? e2fs->now : time(NULL);
 	mask = S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID | S_ISVTX;
-	inode->i_mode = (inode->i_mode & ~mask) | (mode & mask);
-	inode->i_ctime = tm;
+	inode.i_mode = (inode.i_mode & ~mask) | (mode & mask);
+	inode.i_ctime = tm;
 
-	rc=vnode_put(vnode,1);
-	if (rc) {
-		debugf("vnode_put(vnode,1); failed");
+	rt = do_writeinode(e2fs, ino, &inode);
+	if (rt) {
+		debugf("do_writeinode(e2fs, ino, &inode); failed");
 		return -EIO;
 	}
 

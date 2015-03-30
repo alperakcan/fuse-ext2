@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,13 +22,20 @@
 
 int op_access (const char *path, int mask)
 {
+	int rt;
 	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s, mask = 0%o", path, mask);
 	
+	rt = do_check(path);
+	if (rt != 0) {
+		debugf("do_check(%s); failed", path);
+		return rt;
+	}
+
 	if ((mask & W_OK) && !(e2fs->flags & EXT2_FLAG_RW)) {
-		return -1;
+		return -EACCES;
 	}
 	
 	debugf("leave");

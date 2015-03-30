@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -53,8 +53,8 @@ int do_check_split (const char *path, char **dirname, char **basename)
 		free(cpath);
 		return -ENAMETOOLONG;
 	}
-	*dirname=cpath;
-	*basename=tmp;
+	*dirname = cpath;
+	*basename = tmp;
 	return 0;
 }
 

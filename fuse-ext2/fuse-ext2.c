@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,10 +23,10 @@
 static const char *HOME = "http://sourceforge.net/projects/fuse-ext2/";
 
 #if __FreeBSD__ == 10
-static char def_opts[] = "allow_other,local,";
+static char def_opts[] = "allow_other,default_permissions,local,";
 static char def_opts_rd[] = "noappledouble,";
 #else
-static char def_opts[] = "";
+static char def_opts[] = "allow_other,default_permissions,";
 static char def_opts_rd[] = "";
 #endif
 

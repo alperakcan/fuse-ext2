@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,17 +121,6 @@ static inline void debug_main_printf (const char *function, char *file, int line
 
 #endif /* ENABLE_DEBUG */
 
-struct ext2_vnode;
-
-struct ext2_vnode * vnode_get (ext2_filsys e2fs, ext2_ino_t ino);
-
-int vnode_put (struct ext2_vnode *vnode, int dirty);
-
-static inline struct ext2_inode * vnode2inode (struct ext2_vnode *vnode)
-{
-	return (struct ext2_inode *) vnode;
-}
-
 void * op_init (struct fuse_conn_info *conn);
 
 void op_destroy (void *userdata);
@@ -152,7 +141,7 @@ void do_fillstatbuf (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode,
 
 int do_readinode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ext2_inode *inode);
 
-int do_readvnode (ext2_filsys e2fs, const char *path, ext2_ino_t *ino, struct ext2_vnode **vnode);
+int do_writeinode (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode);
 
 int do_killfilebyinode (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode);
 

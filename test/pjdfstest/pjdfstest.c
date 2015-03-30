@@ -316,10 +316,12 @@ static struct flag linkat_flags[] = {
 	{ 0, NULL }
 };
 
+#ifdef HAS_CHFLAGSAT
 static struct flag chflagsat_flags[] = {
 	{ AT_SYMLINK_NOFOLLOW, "AT_SYMLINK_NOFOLLOW" },
 	{ 0, NULL }
 };
+#endif
 
 static struct flag fchmodat_flags[] = {
 	{ AT_SYMLINK_NOFOLLOW, "AT_SYMLINK_NOFOLLOW" },

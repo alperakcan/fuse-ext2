@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -86,7 +86,7 @@ int op_rmdir (const char *path)
 	debugf("enter");
 	debugf("path = %s", path);
 
-	rt=do_check_split(path, &p_path, &r_path);
+	rt = do_check_split(path, &p_path, &r_path);
 	if (rt != 0) {
 		debugf("do_check_split: failed");
 		return rt;
@@ -148,9 +148,11 @@ int op_rmdir (const char *path)
 	if (p_inode.i_links_count > 1) {
 		p_inode.i_links_count--;
 	}
-	rc = ext2fs_write_inode(e2fs, p_ino, &p_inode);
+	p_inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
+	p_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
+	rc = do_writeinode(e2fs, p_ino, &p_inode);
 	if (rc) {
-		debugf("ext2fs_write_inode(e2fs, ino, inode); failed");
+		debugf("do_writeinode(e2fs, ino, inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}

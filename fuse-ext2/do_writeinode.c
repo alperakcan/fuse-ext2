@@ -20,41 +20,22 @@
 
 #include "fuse-ext2.h"
 
-int op_chown (const char *path, uid_t uid, gid_t gid)
+int do_writeinode (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode)
 {
 	int rt;
-	ext2_ino_t ino;
-	struct ext2_inode inode;
-	ext2_filsys e2fs = current_ext2fs();
-
-	debugf("enter");
-	debugf("path = %s", path);
-	
-	rt = do_check(path);
-	if (rt != 0) {
-		debugf("do_check(%s); failed", path);
-		return rt;
+	errcode_t rc;
+	if (inode->i_links_count < 1) {
+		rt = do_killfilebyinode(e2fs, ino, inode);
+		if (rt) {
+			debugf("do_killfilebyinode(e2fs, ino, inode); failed");
+			return rt;
+		}
+	} else {
+		rc = ext2fs_write_inode(e2fs, ino, inode);
+		if (rc) {
+			debugf("ext2fs_read_inode(e2fs, *ino, inode); failed");
+			return -EIO;
+		}
 	}
-
-	rt = do_readinode(e2fs, path, &ino, &inode);
-	if (rt) {
-		debugf("do_readinode(%s, &ino, &vnode); failed", path);
-		return rt;
-	}
-	
-	if (uid != -1) {
-		inode.i_gid = gid;
-	}
-	if (gid != -1) {
-		inode.i_uid = uid;
-	}
-
-	rt = do_writeinode(e2fs, ino, &inode);
-	if (rt) {
-		debugf("do_writeinode(e2fs, ino, &inode); failed");
-		return -EIO;
-	}
-
-	debugf("leave");
 	return 0;
 }

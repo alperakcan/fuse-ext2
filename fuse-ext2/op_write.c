@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010 Alper Akcan <alper.akcan@gmail.com>
+ * Copyright (c) 2008-2015 Alper Akcan <alper.akcan@gmail.com>
  * Copyright (c) 2009 Renzo Davoli <renzo@cs.unibo.it>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 		return rt;
 	}
 	if (offset + size > fsize) {
-		rt = ext2fs_file_set_lsize(efile, offset + size);
+		rt = ext2fs_file_set_size2(efile, offset + size);
 		if (rt) {
 			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
 			return rt;
