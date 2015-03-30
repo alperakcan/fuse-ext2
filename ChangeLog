@@ -1,3 +1,13 @@
+Mon Mar 30 19:17:44 EEST 2015
+	- version 0.0.9 - nuwa, repairment
+	- fix write tests for pjdfstest 
+
+Mon Mar 28 10:21:43 EEST 2015
+	- version 0.0.8 - lazarus, raised from dead
+	- use e2fsprogs from system (mac, linux)
+	- fix build routines for new systems (mac, linux)
+	- switch to osxfuse (mac)
+
 Wed 30 Dec 2009 04:17:02 EET
 	- enable noappledouble only for readonly mode by default
 
