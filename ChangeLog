@@ -1,5 +1,7 @@
 Mon Mar 30 19:17:44 EEST 2015
-	- fix write tests for pjdfstest 
+	- version 0.0.9
+	- fix write tests for pjdfstest
+	- fix ext2fs_file_*, need to open/release in every file operation
 
 Mon Mar 28 10:21:43 EEST 2015
 	- version 0.0.8 - lazarus, raised from dead

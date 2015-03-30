@@ -72,11 +72,14 @@ int op_write (const char *path, const char *buf, size_t size, off_t offset, stru
 {
 	size_t rt;
 	ext2_file_t efile = EXT2FS_FILE(fi->fh);
+	ext2_filsys e2fs = current_ext2fs();
 
 	debugf("enter");
 	debugf("path = %s", path);
 
+	efile = do_open(e2fs, path, O_WRONLY);
 	rt = do_write(efile, buf, size, offset);
+	do_release(efile);
 
 	debugf("leave");
 	return rt;

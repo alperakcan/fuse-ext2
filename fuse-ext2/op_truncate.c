@@ -56,12 +56,14 @@ int op_truncate (const char *path, off_t length)
 	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
 		debugf("do_readinode(%s, &ino, &vnode); failed", path);
+		do_release(efile);
 		return rt;
 	}
 	inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
 	rt = do_writeinode(e2fs, ino, &inode);
 	if (rt) {
 		debugf("do_writeinode(e2fs, ino, &inode); failed");
+		do_release(efile);
 		return -EIO;
 	}
 
@@ -77,49 +79,6 @@ int op_truncate (const char *path, off_t length)
 
 int op_ftruncate (const char *path, off_t length, struct fuse_file_info *fi)
 {
-	int rt;
-	errcode_t rc;
-	ext2_ino_t ino;
-	struct ext2_inode inode;
-	ext2_filsys e2fs = current_ext2fs();
-	ext2_file_t efile = EXT2FS_FILE(fi->fh);
-
-	debugf("enter");
-	debugf("path = %s", path);
-
-	rt = do_check(path);
-	if (rt != 0) {
-		debugf("do_check(%s); failed", path);
-		return rt;
-	}
-
-	rt = do_readinode(e2fs, path, &ino, &inode);
-	if (rt) {
-		debugf("do_readinode(%s, &ino, &vnode); failed", path);
-		return rt;
-	}
-
-	rc = ext2fs_file_set_size2(efile, length);
-	if (rc) {
-		debugf("ext2fs_file_set_size(efile, %lld); failed: rc: %d", length, rc);
-		if (rc == EXT2_ET_FILE_TOO_BIG) {
-			return -EFBIG;
-		}
-		return -EIO;
-	}
-
-	rt = do_readinode(e2fs, path, &ino, &inode);
-	if (rt) {
-		debugf("do_readinode(%s, &ino, &vnode); failed", path);
-		return rt;
-	}
-	inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
-	rt = do_writeinode(e2fs, ino, &inode);
-	if (rt) {
-		debugf("do_writeinode(e2fs, ino, &inode); failed");
-		return -EIO;
-	}
-
-	debugf("leave");
-	return 0;
+	(void) fi;
+	return op_truncate(path, length);
 }
