@@ -4,5 +4,5 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: fuse-ext2
-Description: EXT2 File System support for FUSE
+Description: EXT2/EXT3/EXT4 File System support for FUSE
 Version: @VERSION@
