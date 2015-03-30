@@ -39,7 +39,7 @@ ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 
 	rt = do_readinode(e2fs, path, &ino, &inode);
 	if (rt) {
-		debugf("do_readinode(%s, &ino, &vnode); failed", path);
+		debugf("do_readinode(%s, &ino, &inode); failed", path);
 		return NULL;
 	}
 
@@ -50,6 +50,13 @@ ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 			(((flags & O_ACCMODE) != 0) ? EXT2_FILE_WRITE : 0) | EXT2_FILE_SHARED_INODE, 
 			&efile);
 	if (rc) {
+		return NULL;
+	}
+
+	inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
+	rt = do_writeinode(e2fs, ino, &inode);
+	if (rt) {
+		debugf("do_writeinode(%s, &ino, &inode); failed", path);
 		return NULL;
 	}
 

@@ -53,8 +53,8 @@ int do_check_split (const char *path, char **dirname, char **basename)
 		free(cpath);
 		return -ENAMETOOLONG;
 	}
-	*dirname=cpath;
-	*basename=tmp;
+	*dirname = cpath;
+	*basename = tmp;
 	return 0;
 }
 

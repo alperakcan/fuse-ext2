@@ -50,7 +50,7 @@ int op_unlink (const char *path)
 		return rt;
 	}
 
-	debugf("parent: %s, child: %s", p_path, p_ino);
+	debugf("parent: %s, child: %s", p_path, r_path);
 
 	rt = do_readinode(e2fs, p_path, &p_ino, &p_inode);
 	if (rt) {
@@ -81,7 +81,7 @@ int op_unlink (const char *path)
 	p_inode.i_ctime = p_inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
 	rt = do_writeinode(e2fs, p_ino, &p_inode);
 	if (rt) {
-		debugf("ext2fs_write_inode(e2fs, p_ino, &p_inode); failed");
+		debugf("do_writeinode(e2fs, p_ino, &p_inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}

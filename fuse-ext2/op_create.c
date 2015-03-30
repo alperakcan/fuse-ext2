@@ -156,9 +156,9 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 		return -EIO;
 	}
 	inode.i_ctime = inode.i_mtime = tm;
-	rc = ext2fs_write_inode(e2fs, ino, &inode);
+	rc = do_writeinode(e2fs, ino, &inode);
 	if (rc) {
-		debugf("ext2fs_write_inode(e2fs, ino, &inode); failed");
+		debugf("do_writeinode(e2fs, ino, &inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}

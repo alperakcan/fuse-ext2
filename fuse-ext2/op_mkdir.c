@@ -39,7 +39,7 @@ int op_mkdir (const char *path, mode_t mode)
 	debugf("enter");
 	debugf("path = %s, mode: 0%o, dir:0%o", path, mode, LINUX_S_IFDIR);
 
-	rt=do_check_split(path, &p_path ,&r_path);
+	rt = do_check_split(path, &p_path ,&r_path);
 	if (rt != 0) {
 		debugf("do_check(%s); failed", path);
 		return rt;
@@ -87,9 +87,9 @@ int op_mkdir (const char *path, mode_t mode)
 		inode.i_uid = ctx->uid;
 		inode.i_gid = ctx->gid;
 	}
-	rc = ext2fs_write_inode(e2fs, ino, &inode);
+	rc = do_writeinode(e2fs, ino, &inode);
 	if (rc) {
-		debugf("ext2fs_write_inode(e2fs, ino, &inode); failed");
+		debugf("do_writeinode(e2fs, ino, &inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}
@@ -102,9 +102,9 @@ int op_mkdir (const char *path, mode_t mode)
 		return -EIO;
 	}
 	inode.i_ctime = inode.i_mtime = tm;
-	rc = ext2fs_write_inode(e2fs, ino, &inode);
+	rc = do_writeinode(e2fs, ino, &inode);
 	if (rc) {
-		debugf("ext2fs_write_inode(e2fs, ino, &inode); failed");
+		debugf("do_writeinode(e2fs, ino, &inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}

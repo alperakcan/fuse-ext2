@@ -108,13 +108,13 @@ int op_rename (const char *source, const char *dest)
 		goto out;
 	}
 
-	rt = do_readinode(e2fs, p_dest, &src_ino, &src_inode);
+	rt = do_readinode(e2fs, source, &src_ino, &src_inode);
 	if (rt != 0) {
 		debugf("do_readinode(%s, &src_ino, &src_inode); failed", p_dest);
 		goto out;
 	}
 
-	rt = do_readinode(e2fs, p_dest, &dest_ino, &dest_inode);
+	rt = do_readinode(e2fs, dest, &dest_ino, &dest_inode);
 	if (rt != 0 && rt != -ENOENT) {
 		debugf("do_readinode(%s, &dest_ino, &dest_inode); failed", dest);
 		goto out;
@@ -181,6 +181,8 @@ int op_rename (const char *source, const char *dest)
 			if (d_dest_inode.i_links_count > 1) {
 				d_dest_inode.i_links_count--;
 			}
+			d_dest_inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
+			d_dest_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
 			rc = do_writeinode(e2fs, d_dest_ino, &d_dest_inode);
 			if (rc) {
 				debugf("do_writeinode(e2fs, ino, inode); failed");
@@ -190,7 +192,7 @@ int op_rename (const char *source, const char *dest)
 			if (dest_inode.i_links_count > 0) {
 				dest_inode.i_links_count -= 1;
 			}
-			rc = do_writeinode(e2fs, d_dest_ino, &d_dest_inode);
+			rc = do_writeinode(e2fs, dest_ino, &dest_inode);
 			if (rc) {
 				debugf("do_writeinode(e2fs, ino, inode); failed");
 				goto out;
@@ -244,11 +246,6 @@ int op_rename (const char *source, const char *dest)
 
 	/* utimes and inodes update */
 	d_dest_inode.i_mtime = d_dest_inode.i_ctime = src_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
-	rt = do_writeinode(e2fs, d_dest_ino, &d_dest_inode);
-	if (rt != 0) {
-		debugf("do_writeinode(e2fs, d_dest_ino, &d_dest_inode); failed");
-		goto out;
-	}
 	rt = do_writeinode(e2fs, d_dest_ino, &d_dest_inode);
 	if (rt != 0) {
 		debugf("do_writeinode(e2fs, d_dest_ino, &d_dest_inode); failed");

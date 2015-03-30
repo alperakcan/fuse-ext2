@@ -55,7 +55,7 @@ static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent
 	}
 	st.st_ino = dirent->inode;
 	st.st_mode = type << 12;
-	debugf("%s %d %d %d",dirent->name,dirent->name_len &0xff, dirent->name_len >> 8,type);
+	debugf("%s %d %d %d", dirent->name, dirent->name_len & 0xff, dirent->name_len >> 8, type);
 	res = psid->filler(psid->buf, dirent->name, &st, 0);
 	if (res != 0) {
 		return BLOCK_ABORT;

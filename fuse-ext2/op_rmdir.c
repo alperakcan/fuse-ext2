@@ -148,9 +148,11 @@ int op_rmdir (const char *path)
 	if (p_inode.i_links_count > 1) {
 		p_inode.i_links_count--;
 	}
-	rc = ext2fs_write_inode(e2fs, p_ino, &p_inode);
+	p_inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
+	p_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
+	rc = do_writeinode(e2fs, p_ino, &p_inode);
 	if (rc) {
-		debugf("ext2fs_write_inode(e2fs, ino, inode); failed");
+		debugf("do_writeinode(e2fs, ino, inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}

@@ -55,7 +55,6 @@ int op_link (const char *source, const char *dest)
 		return rc;
 	}
 
-
 	rc = do_readinode(e2fs, source, &s_ino, &s_inode);
 	if (rc) {
 		debugf("do_readinode(%s, &s_ino, &s_inode); failed", p_path);
@@ -83,18 +82,21 @@ int op_link (const char *source, const char *dest)
 
 	d_inode.i_mtime = d_inode.i_ctime = s_inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
 	s_inode.i_links_count += 1;
+
 	rc = do_writeinode(e2fs, s_ino, &s_inode);
 	if (rc) {
 		debugf("do_writeinode(e2fs, s_ino, &s_inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}
+
 	rc = do_writeinode(e2fs, d_ino, &d_inode);
 	if (rc) {
 		debugf("do_writeinode(e2fs, d_ino, &d_inode); failed");
 		free_split(p_path, r_path);
 		return -EIO;
 	}
+
 	free_split(p_path, r_path);
 	debugf("done");
 

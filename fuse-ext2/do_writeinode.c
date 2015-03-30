@@ -20,24 +20,22 @@
 
 #include "fuse-ext2.h"
 
-int op_access (const char *path, int mask)
+int do_writeinode (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode)
 {
 	int rt;
-	ext2_filsys e2fs = current_ext2fs();
-
-	debugf("enter");
-	debugf("path = %s, mask = 0%o", path, mask);
-	
-	rt = do_check(path);
-	if (rt != 0) {
-		debugf("do_check(%s); failed", path);
-		return rt;
+	errcode_t rc;
+	if (inode->i_links_count < 1) {
+		rt = do_killfilebyinode(e2fs, ino, inode);
+		if (rt) {
+			debugf("do_killfilebyinode(e2fs, ino, inode); failed");
+			return rt;
+		}
+	} else {
+		rc = ext2fs_write_inode(e2fs, ino, inode);
+		if (rc) {
+			debugf("ext2fs_read_inode(e2fs, *ino, inode); failed");
+			return -EIO;
+		}
 	}
-
-	if ((mask & W_OK) && !(e2fs->flags & EXT2_FLAG_RW)) {
-		return -EACCES;
-	}
-	
-	debugf("leave");
 	return 0;
 }

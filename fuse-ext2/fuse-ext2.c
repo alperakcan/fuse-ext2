@@ -23,10 +23,10 @@
 static const char *HOME = "http://sourceforge.net/projects/fuse-ext2/";
 
 #if __FreeBSD__ == 10
-static char def_opts[] = "allow_other,local,";
+static char def_opts[] = "allow_other,default_permissions,local,";
 static char def_opts_rd[] = "noappledouble,";
 #else
-static char def_opts[] = "";
+static char def_opts[] = "allow_other,default_permissions,";
 static char def_opts_rd[] = "";
 #endif
 
