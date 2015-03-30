@@ -20,7 +20,7 @@
 
 #include "fuse-ext2.h"
 
-static const char *HOME = "http://sourceforge.net/projects/fuse-ext2/";
+static const char *HOME = "http://github.com/alperakcan/fuse-ext2/";
 
 #if __FreeBSD__ == 10
 static char def_opts[] = "allow_other,default_permissions,local,";
