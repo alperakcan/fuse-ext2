@@ -20,8 +20,6 @@
 
 #include "fuse-ext2.h"
 
-errcode_t ext2fs_file_set_lsize (ext2_file_t file, __u64 size);
-
 size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 {
 	int rt;
@@ -52,8 +50,8 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 	}
 
 	for (rt = 0, wr = 0, tmp = buf; size > 0 && rt == 0; size -= wr, tmp += wr) {
-		debugf("size: %u, written: %u", size, wr);
 		rt = ext2fs_file_write(efile, tmp, size, &wr);
+		debugf("rt: %d, size: %u, written: %u", rt, size, wr);
 	}
 	if (rt) {
 		debugf("ext2fs_file_write(edile, tmp, size, &wr); failed");

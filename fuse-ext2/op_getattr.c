@@ -43,6 +43,7 @@ int op_getattr (const char *path, struct stat *stbuf)
 	}
 	do_fillstatbuf(e2fs, ino, &inode, stbuf);
 
+	debugf("path: %s, size: %d", path, stbuf->st_size);
 	debugf("leave");
 	return 0;
 }
