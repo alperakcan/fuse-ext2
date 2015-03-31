@@ -26,7 +26,7 @@ static const char *usage_msg =
 "\n"
 "%s %s %d - Probe EXT2FS volume mountability\n"
 "\n"
-"Copyright (C) 2008-2010 Alper Akcan <alper.akcan@gmail.com>\n"
+"Copyright (C) 2008-2015 Alper Akcan <alper.akcan@gmail.com>\n"
 "\n"
 "Usage:    %s <--readonly|--readwrite> <device|image_file>\n"
 "\n"

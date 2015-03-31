@@ -117,7 +117,7 @@ bin_PROGRAMS += \
 	fuse-ext2.uninstall
 
 fuse_ext2_wait_SOURCES = \
-	fuse-ext2.wait.c
+	fuse-ext2.wait.m
 
 fuse_ext2_wait_CFLAGS = \
 	-Wall \
@@ -127,7 +127,7 @@ fuse_ext2_wait_LDFLAGS = \
 	-framework CoreFoundation
 
 fuse_ext2_install_SOURCES = \
-	fuse-ext2.install.c
+	fuse-ext2.install.m
 
 fuse_ext2_install_CFLAGS = \
 	-ObjC
@@ -136,7 +136,7 @@ fuse_ext2_install_LDFLAGS = \
 	-framework Foundation
 
 fuse_ext2_uninstall_SOURCES = \
-	fuse-ext2.uninstall.c
+	fuse-ext2.uninstall.m
 
 fuse_ext2_probe_CFLAGS += \
 	-D__FreeBSD__=10
