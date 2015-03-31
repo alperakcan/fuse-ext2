@@ -77,7 +77,6 @@ Build
 	$ tar -zxvf automake-1.15.tar.gz 
 	$ cd automake-1.15
 	$ ./configure --prefix=/opt/gnu
-	$ ./configure --prefix=/opt/gnu
 	$ make
 	$ sudo make install
 	$ cd ../
