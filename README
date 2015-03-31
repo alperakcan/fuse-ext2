@@ -108,9 +108,6 @@ Build
 	$ make
 	$ sudo make install
 
-	Generating package:
-	$ make package
-
 Test
 ----
 
