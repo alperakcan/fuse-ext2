@@ -26,26 +26,8 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 	const char *tmp;
 	unsigned int wr;
 	unsigned long long npos;
-#if 0
-	unsigned long long fsize;
-#endif
 
 	debugf("enter");
-
-#if 0
-	rt = ext2fs_file_get_lsize(efile, &fsize);
-	if (rt != 0) {
-		debugf("ext2fs_file_get_lsize(efile, &fsize); failed");
-		return rt;
-	}
-	if (offset + size > fsize) {
-		rt = ext2fs_file_set_size2(efile, offset + size);
-		if (rt) {
-			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
-			return rt;
-		}
-	}
-#endif
 
 	rt = ext2fs_file_llseek(efile, offset, SEEK_SET, &npos);
 	if (rt) {
