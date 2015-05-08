@@ -26,10 +26,13 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 	const char *tmp;
 	unsigned int wr;
 	unsigned long long npos;
+#if 0
 	unsigned long long fsize;
+#endif
 
 	debugf("enter");
 
+#if 0
 	rt = ext2fs_file_get_lsize(efile, &fsize);
 	if (rt != 0) {
 		debugf("ext2fs_file_get_lsize(efile, &fsize); failed");
@@ -42,6 +45,7 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 			return rt;
 		}
 	}
+#endif
 
 	rt = ext2fs_file_llseek(efile, offset, SEEK_SET, &npos);
 	if (rt) {
@@ -58,12 +62,6 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 		return rt;
 	}
 
-	rt = ext2fs_file_flush(efile);
-	if (rt) {
-		debugf("ext2_file_flush(efile); failed");
-		return rt;
-	}
-
 	debugf("leave");
 	return wr;
 }
@@ -77,9 +75,7 @@ int op_write (const char *path, const char *buf, size_t size, off_t offset, stru
 	debugf("enter");
 	debugf("path = %s", path);
 
-	efile = do_open(e2fs, path, O_WRONLY);
 	rt = do_write(efile, buf, size, offset);
-	do_release(efile);
 
 	debugf("leave");
 	return rt;
