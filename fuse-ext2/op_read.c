@@ -31,15 +31,19 @@ int op_read (const char *path, char *buf, size_t size, off_t offset, struct fuse
 	debugf("enter");
 	debugf("path = %s", path);
 
+	efile = do_open(e2fs, path, O_RDONLY);
 	rc = ext2fs_file_llseek(efile, offset, SEEK_SET, &pos);
 	if (rc) {
+		do_release(efile);
 		return -EINVAL;
 	}
 
 	rc = ext2fs_file_read(efile, buf, size, &bytes);
 	if (rc) {
+		do_release(efile);
 		return -EIO;
 	}
+	do_release(efile);
 
 	debugf("leave");
 	return bytes;
