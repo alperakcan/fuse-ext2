@@ -1,4 +1,3 @@
-moddir = $(libdir)/umview/modules
 
 DEVELFLAGS =
 
@@ -7,6 +6,7 @@ bin_PROGRAMS = \
 	fuse-ext2.probe
 
 if LINUX
+moddir = $(libdir)/umview/modules
 mod_LTLIBRARIES = umfuseext2.la
 endif
 
@@ -145,15 +145,15 @@ fuse_ext2_CFLAGS +=	\
 	-D__FreeBSD__=10
 endif
 
-install-data-hook:
-	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
-
 if DARWIN
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/sbin"
 	$(LN_S) -f "../System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/sbin/mount_fuse-ext2"
 endif
 if LINUX
+install-data-hook:
+	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
+
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
 	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
