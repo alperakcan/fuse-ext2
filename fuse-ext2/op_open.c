@@ -27,6 +27,8 @@ ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 	ext2_ino_t ino;
 	ext2_file_t efile;
 	struct ext2_inode inode;
+	struct fuse_context *cntx = fuse_get_context();
+	struct extfs_data *e2data = cntx->private_data;
 
 	debugf("enter");
 	debugf("path = %s", path);
@@ -53,11 +55,13 @@ ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags)
 		return NULL;
 	}
 
-	inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
-	rt = do_writeinode(e2fs, ino, &inode);
-	if (rt) {
-		debugf("do_writeinode(%s, &ino, &inode); failed", path);
-		return NULL;
+	if (e2data->readonly == 0) {
+		inode.i_atime = e2fs->now ? e2fs->now : time(NULL);
+		rt = do_writeinode(e2fs, ino, &inode);
+		if (rt) {
+			debugf("do_writeinode(%s, &ino, &inode); failed", path);
+			return NULL;
+		}
 	}
 
 	debugf("leave");
