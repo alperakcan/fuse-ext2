@@ -9,6 +9,11 @@ prefpane:
 	  xcodebuild; \
 	)
 
+clean-local:
+	( cd $(top_srcdir)/tools/macosx/prefpane; \
+	  xcodebuild clean; \
+	)
+
 install-exec-local:
 	$(INSTALL) -d $(DESTDIR)/System/Library/Filesystems/fuse-ext2.fs
 	$(INSTALL) -d $(DESTDIR)/System/Library/Filesystems/fuse-ext2.fs/Support
