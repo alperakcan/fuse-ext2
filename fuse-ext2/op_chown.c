@@ -43,10 +43,10 @@ int op_chown (const char *path, uid_t uid, gid_t gid)
 	}
 	
 	if (uid != -1) {
-		inode.i_gid = gid;
+		inode.i_uid = uid;
 	}
 	if (gid != -1) {
-		inode.i_uid = uid;
+		inode.i_gid = gid;
 	}
 
 	rt = do_writeinode(e2fs, ino, &inode);
