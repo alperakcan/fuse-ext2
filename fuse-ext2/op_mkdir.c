@@ -84,8 +84,8 @@ int op_mkdir (const char *path, mode_t mode)
 	inode.i_ctime = inode.i_atime = inode.i_mtime = tm;
 	ctx = fuse_get_context();
 	if (ctx) {
-		inode.i_uid = ctx->uid;
-		inode.i_gid = ctx->gid;
+		ext2_write_uid(&inode, ctx->uid);
+		ext2_write_gid(&inode, ctx->gid);
 	}
 	rc = do_writeinode(e2fs, ino, &inode);
 	if (rc) {

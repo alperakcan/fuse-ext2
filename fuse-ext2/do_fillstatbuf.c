@@ -42,8 +42,8 @@ void do_fillstatbuf (ext2_filsys e2fs, ext2_ino_t ino, struct ext2_inode *inode,
 	st->st_ino = ino;
 	st->st_mode = inode->i_mode;
 	st->st_nlink = inode->i_links_count;
-	st->st_uid = inode->i_uid;	/* add in uid_high */
-	st->st_gid = inode->i_gid;	/* add in gid_high */
+	st->st_uid = ext2_read_uid(inode);
+	st->st_gid = ext2_read_gid(inode);
 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
 		if (inode->i_block[0]) {
 			st->st_rdev = old_decode_dev(ext2fs_le32_to_cpu(inode->i_block[0]));

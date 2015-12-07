@@ -124,8 +124,8 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 	inode.i_size = 0;
 	ctx = fuse_get_context();
 	if (ctx) {
-		inode.i_uid = ctx->uid;
-		inode.i_gid = ctx->gid;
+		ext2_write_uid(&inode, ctx->uid);
+		ext2_write_gid(&inode, ctx->gid);
 	}
 	if (e2fs->super->s_feature_incompat &
 	    EXT3_FEATURE_INCOMPAT_EXTENTS) {

@@ -79,6 +79,28 @@ static inline ext2_filsys current_ext2fs(void)
 	return (ext2_filsys) e2data->e2fs;
 }
 
+static inline uid_t ext2_read_uid(struct ext2_inode *inode)
+{
+	return ((uid_t)inode->osd2.linux2.l_i_uid_high << 16) | inode->i_uid;
+}
+
+static inline void ext2_write_uid(struct ext2_inode *inode, uid_t uid)
+{
+	inode->i_uid = uid & 0xffff;
+	inode->osd2.linux2.l_i_uid_high = (uid >> 16) & 0xffff;
+}
+
+static inline gid_t ext2_read_gid(struct ext2_inode *inode)
+{
+	return ((gid_t)inode->osd2.linux2.l_i_gid_high << 16) | inode->i_gid;
+}
+
+static inline void ext2_write_gid(struct ext2_inode *inode, gid_t gid)
+{
+	inode->i_gid = gid & 0xffff;
+	inode->osd2.linux2.l_i_gid_high = (gid >> 16) & 0xffff;
+}
+
 #if ENABLE_DEBUG
 
 static inline void debug_printf (const char *function, char *file, int line, const char *fmt, ...)
