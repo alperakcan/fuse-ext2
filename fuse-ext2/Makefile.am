@@ -156,5 +156,5 @@ install-data-hook:
 
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-	$(LN_S) -f "$(DESTDIR)/$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
+	$(LN_S) -f "../bin/fuse-ext2" "$(DESTDIR)/usr/sbin/mount.fuse-ext2"
 endif
