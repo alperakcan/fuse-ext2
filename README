@@ -82,7 +82,7 @@ Build
 	$ cd ../
 	
 	# libtool
-	$ curl -O http://ftp.mku.edu.tr/gnu/libtool/libtool-2.4.6.tar.gz
+	$ curl -O http://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz
 	$ tar -zxvf libtool-2.4.6.tar.gz 
 	$ cd libtool-2.4.6
 	$ ./configure --prefix=/opt/gnu
