@@ -1,3 +1,6 @@
 .cproject
 .project
 fs.ext2
+
+# IDE: PhpStorm
+.idea
