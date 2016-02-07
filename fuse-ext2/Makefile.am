@@ -34,6 +34,7 @@ fuse_ext2_SOURCES =	\
 	op_access.c \
 	op_fgetattr.c \
 	op_getattr.c \
+	op_getxattr.c \
 	op_open.c \
 	op_read.c \
 	op_readdir.c \
@@ -69,6 +70,7 @@ umfuseext2_la_SOURCES = \
 	op_access.c \
 	op_fgetattr.c \
 	op_getattr.c \
+	op_getxattr.c \
 	op_open.c \
 	op_read.c \
 	op_readdir.c \
