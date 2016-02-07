@@ -43,18 +43,45 @@ int op_getxattr(const char *path, const char *name, char *value, size_t size) {
 	return rt;
 }
 
+/**
+ * Name is of format namespace:attribute. This function return namespace as @p name_index
+ * and attribute as @p attr_name
+ *
+ * TODO support trusted, system and security attributes
+ */
+static int parse_name(const char *name, int *name_index, char **attr_name) {
+	char namespace[16];
+	char *attr_name_str;
+
+	memcpy(namespace, name, sizeof namespace);
+
+	attr_name_str = strchr(namespace, '.');
+	if (!attr_name) {
+		return -ENOTSUP;
+	} else {
+		*attr_name_str = 0;
+		*attr_name = ++attr_name_str;
+	}
+
+	if (!strcmp(namespace, "user")) {
+		*name_index = 1;
+		return 0;
+	}
+
+	return -ENOTSUP;
+}
+
 static int do_getxattr(ext2_filsys e2fs, struct ext2_inode *node, const char *name,
 		char *value, size_t size) {
 	char *buf, *attr_start;
 	struct ext2_ext_attr_entry *entry;
 	char *entry_name, *value_name;
-	int res = -ENODATA;
+	int name_index;
+	int res;
 
-	value_name = strchr(name, '.');
-	if (!value_name) {
-		return -ENOTSUP;
-	} else {
-		value_name++;
+	res = parse_name(name, &name_index, &value_name);
+	if (res < 0) {
+		return res;
 	}
 
 	buf = malloc(e2fs->blocksize);
@@ -65,11 +92,13 @@ static int do_getxattr(ext2_filsys e2fs, struct ext2_inode *node, const char *na
 
 	attr_start = buf + sizeof(struct ext2_ext_attr_header);
 	entry = (struct ext2_ext_attr_entry *) attr_start;
+	res = -ENODATA;
 
 	while (!EXT2_EXT_IS_LAST_ENTRY(entry)) {
 		entry_name = (char *)entry + sizeof(struct ext2_ext_attr_entry);
 
-		if (entry->e_name_len == strlen(value_name)) {
+		if (name_index == entry->e_name_index &&
+				entry->e_name_len == strlen(value_name)) {
 			if (!strncmp(entry_name, value_name, entry->e_name_len)) {
 				if (size > 0) {
 					memcpy(value, buf + entry->e_value_offs, entry->e_value_size);
