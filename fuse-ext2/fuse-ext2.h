@@ -175,6 +175,8 @@ int op_fgetattr (const char *path, struct stat *stbuf, struct fuse_file_info *fi
 
 int op_getattr (const char *path, struct stat *stbuf);
 
+int op_getxattr(const char *path, const char *name, char *value, size_t size);
+
 ext2_file_t do_open (ext2_filsys e2fs, const char *path, int flags);
 
 int op_open (const char *path, struct fuse_file_info *fi);
