@@ -53,10 +53,13 @@ Dependecies:
 The easiest way is using [Homebrew](http://brew.sh/):
 
 ```shell
-brew install e2fsprogs m4 automake autoconf libtool
-CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" LDFLAGS="-L$(brew --prefix e2fsprogs)/lib" ./configure
-make 
-sudo make install
+$ brew install e2fsprogs m4 automake autoconf libtool
+$ git clone https://github.com/alperakcan/fuse-ext2.git
+$ cd fuse-ext2
+$ ./autogen.sh
+$ CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" LDFLAGS="-L$(brew --prefix e2fsprogs)/lib" ./configure
+$ make 
+$ sudo make install
 ```
 
 Build:
