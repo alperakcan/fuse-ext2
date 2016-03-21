@@ -9,7 +9,7 @@ AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_INSTALL
-AM_PROG_AR
+m4_ifdef([AC_PROG_LIB],[AC_PROG_LIB],[m4_warn(portability,[Missing AC_PROJ_LIB])])
 AC_PROG_OBJC
 AC_PROG_LIBTOOL
 AC_PATH_PROG(CHMOD, chmod, :)
@@ -181,6 +181,8 @@ AC_SUBST(pkgconfigdir)
 
 AM_CONDITIONAL(LINUX, test "$arch" = linux)
 AM_CONDITIONAL(DARWIN, test "$arch" = darwin)
+
+PKG_CHECK_MODULES([e2fs],[ext2fs >= 1.41.13])
 
 AC_CONFIG_FILES([
 	fuse-ext2.pc
