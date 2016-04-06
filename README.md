@@ -49,12 +49,12 @@ package for your distribution.
 **Note for Mac OS X 10.11.x "El Capitan" and later**: in order to successfully run the command `sudo make install`, you have
 to disable System Integrity Protection (SIP) as follow (instructions from http://lifehacker.com/how-to-fix-os-x-el-capitans-annoyances-1733836821):
 
- 1. Reboot your Mac into Recovery Mode by restarting your computer and holding down _Command+R_ until the Apple logo appears on your screen.
- 2. Click _Utilities > Terminal_.
- 3. In the Terminal window, type in `csrutil disable` and press Enter.
- 4. Restart your Mac.
- 
-SIP is now disabled. You can reenable it at any by following the above instructions and substituting `csrutil enable` in for the Terminal command.
+> 1. Reboot your Mac into Recovery Mode by restarting your computer and holding down _Command+R_ until the Apple logo appears on your screen.
+> 2. Click _Utilities > Terminal_.
+> 3. In the Terminal window, type in `csrutil disable` and press Enter.
+> 4. Restart your Mac.
+> 
+>SIP is now disabled. You can reenable it at any by following the above instructions and substituting `csrutil enable` in for the Terminal command.
 
 Dependecies:
 
