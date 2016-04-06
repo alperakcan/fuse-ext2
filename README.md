@@ -68,7 +68,10 @@ $ brew install e2fsprogs m4 automake autoconf libtool
 $ git clone https://github.com/alperakcan/fuse-ext2.git
 $ cd fuse-ext2
 $ ./autogen.sh
-$ PKG_CONFIG_PATH="$(brew --prefix e2fsprogs)/lib/pkgconfig" CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" LDFLAGS="-L$(brew --prefix e2fsprogs)/lib" ./configure
+$ ./configure \
+    PKG_CONFIG_PATH="$(brew --prefix e2fsprogs)/lib/pkgconfig" \
+    CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" \
+    LDFLAGS="-L$(brew --prefix e2fsprogs)/lib"
 $ make 
 $ sudo make install
 ```
