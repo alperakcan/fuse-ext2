@@ -150,7 +150,7 @@ endif
 if DARWIN
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/usr/local/sbin"
-	$(LN_S) -f "$(DESTDIR)/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/usr/local/sbin/mount_fuse-ext2"
+	$(LN_S) -f "$(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2" "$(DESTDIR)/usr/local/sbin/mount_fuse-ext2"
 endif
 if LINUX
 install-data-hook:
