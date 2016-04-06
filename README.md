@@ -47,7 +47,7 @@ package for your distribution.
 ### Mac OS:
 
 **Note for Mac OS X 10.11.x "El Capitan" and later**: in order to successfully run the command `sudo make install`, you have
-to disable System Integrity Protection (SIP) as follow (instructions from http://lifehacker.com/how-to-fix-os-x-el-capitans-annoyances-1733836821):
+to disable System Integrity Protection (SIP) as the following (instructions from [Lifehacker](http://lifehacker.com/how-to-fix-os-x-el-capitans-annoyances-1733836821)):
 
 > 1. Reboot your Mac into Recovery Mode by restarting your computer and holding down _Command+R_ until the Apple logo appears on your screen.
 > 2. Click _Utilities > Terminal_.
