@@ -43,7 +43,7 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 FUSE_EXT2=/bin/fuse-ext2
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
 FUSE_EXT2_MKE2FS=/bin/fuse-ext2.mke2fs
-FUSE_EXT2_E2LABEL=/bin/fuse-ext2.e2label
+FUSE_EXT2_E2LABEL=/bin/e2label
 FUSE_EXT2_WAIT=/bin/fuse-ext2.wait
 FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 
@@ -385,7 +385,7 @@ LogDebug "Invoking user: ${INVOKING_USER}"
 # Get: the actual executed name, the real script file, the bundle folder, and the local bin
 EXEC=`GetAbsoluteFile "$0"`
 BUNDLE=`GetBundle "${EXEC}"`
-ROOT=`GetDirName "${BUNDLE}" 4`
+ROOT=`GetDirName "${BUNDLE}" 3`
 PFX="${ROOT}/usr/local"
 SELF=`basename "${EXEC}"`
 INVOKEBASENAME=`basename "$0"`
