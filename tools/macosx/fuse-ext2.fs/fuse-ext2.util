@@ -201,10 +201,9 @@ function Repair () {
 function Mount ()
 {
     LogDebug "[Mount] Entering function Mount..."
-    # Setting both defer_auth and defer_permissions. The option was renamed
-    # starting with MacFUSE 1.0.0, and there seems to be no backward
-    # compatibility on the options.
-    OPTIONS="auto_xattr,defer_permissions"
+    # Setting only auto_xattr to automatically mount ext2/ext3/ext4 volumes
+    # at the insertion of devices
+    OPTIONS="auto_xattr"
 	
     # The local option is only enabled on Leopard. It causes strange
     # behavior for Disk Utility in Tiger.
