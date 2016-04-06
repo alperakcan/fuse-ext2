@@ -21,8 +21,8 @@ install-exec-local:
 	$(INSTALL) -d $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/Resources
 	$(INSTALL) -d $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/Resources/English.lproj
 	$(INSTALL) -m 755 $(top_srcdir)/tools/macosx/fuse-ext2.fs/fuse-ext2.util $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/fuse-ext2.util
-	sed "s/FUSEEXT2_DESTDIR_LITERAL/$(DESTDIR)/g" <"$(top_srcdir)/tools/macosx/fuse-ext2.fs/mount_fuse-ext2.in" >"$(top_srcdir)/tools/macosx/fuse-ext2.fs/mount_fuse-ext2"
-	$(INSTALL) -m 755 $(top_srcdir)/tools/macosx/fuse-ext2.fs/mount_fuse-ext2 $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2
+	sed "s/FUSEEXT2_DESTDIR_LITERAL/$(DESTDIR)/g" <"$(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2.in" >"$(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2"
+	$(INSTALL) -m 755 $(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2 $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2
 	sed "s/FUSEEXT2_VERSION_LITERAL/$(VERSION)/g" < $(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Info.plist.in > $(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Info.plist
 	$(INSTALL) -m 644 $(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/Info.plist $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/Info.plist
 	$(INSTALL) -m 644 $(top_srcdir)/tools/macosx/fuse-ext2.fs/Contents/PkgInfo $(DESTDIR)/Library/Filesystems/fuse-ext2.fs/Contents/PkgInfo
