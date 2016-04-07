@@ -151,7 +151,8 @@ if DARWIN
 install-exec-local:
 	$(INSTALL) -d "$(DESTDIR)/$(sbindir)"
 	$(LN_S) -f "/Library/Filesystems/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2" "$(DESTDIR)/$(sbindir)/mount_fuse-ext2"
-	$(LN_S) -f "$$(brew --prefix e2fsprogs)/sbin/e2label" "$(DESTDIR)/$(bindir)/e2label"
+	$(LN_S) -f "/usr/local/opt/e2fsprogs/sbin/e2label" "$(DESTDIR)/$(sbindir)/e2label"
+	$(LN_S) -f "/usr/local/opt/e2fsprogs/sbin/mke2fs" "$(DESTDIR)/$(sbindir)/mke2fs"
 endif
 if LINUX
 install-data-hook:

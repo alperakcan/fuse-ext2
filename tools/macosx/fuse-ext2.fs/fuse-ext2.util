@@ -42,8 +42,8 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 # Set paths to bundled executables here (omit /usr/local):
 FUSE_EXT2=/bin/fuse-ext2
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
-FUSE_EXT2_MKE2FS=/bin/fuse-ext2.mke2fs
-FUSE_EXT2_E2LABEL=/bin/e2label
+FUSE_EXT2_MKE2FS=/sbin/mke2fs
+FUSE_EXT2_E2LABEL=/sbin/e2label
 FUSE_EXT2_WAIT=/bin/fuse-ext2.wait
 FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 

@@ -15,7 +15,7 @@ man1_MANS = fuse-ext2.1
 
 if DARWIN
 package:
-	$(SHELL) $(top_srcdir)/tools/macosx/make-pkg.sh "$(VERSION)" "$(top_srcdir)" "$(top_builddir)" "$(top_srcdir)/tools/macosx/"
+	$(SHELL) $(top_srcdir)/tools/macosx/make-pkg.sh "$(VERSION)" "$(top_builddir)" "$(top_srcdir)/tools/macosx/"
 endif
 if LINUX
 package:
