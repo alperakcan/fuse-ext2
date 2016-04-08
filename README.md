@@ -61,8 +61,10 @@ $ ./configure \
     PKG_CONFIG_PATH="$(brew --prefix e2fsprogs)/lib/pkgconfig" \
     CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" \
     LDFLAGS="-L$(brew --prefix e2fsprogs)/lib"
-$ make 
-$ sudo make install
+$ make
+$ sudo make install         #<-- To install on the current system
+     or
+$ make package              #<-- To create an install package in the current directory 
 ```
 
 Build:
