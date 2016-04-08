@@ -212,7 +212,7 @@ function Mount ()
     OPTIONS="local"
 
     # Assign this volume to currently logged user in the OS X GUI, in order
-    # to write on the volume whitout having to be root (sudo), or whitout
+    # to write on the volume without having to be root (sudo), or without
     # having to insert the password in Finder.
     # Useful when write support is enabled with option 'rw+' or 'force'.
     GUI_UID=$(stat -f '%u' /dev/console)
