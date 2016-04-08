@@ -201,21 +201,23 @@ function Repair () {
 function Mount ()
 {
     LogDebug "[Mount] Entering function Mount..."
-    # Setting only auto_xattr to automatically mount ext2/ext3/ext4 volumes
-    # at the insertion of devices
-    OPTIONS="auto_xattr"
 	
-    # The local option is only enabled on Leopard. It causes strange
-    # behavior for Disk Utility in Tiger.
-    #ISLEOPARD=`uname -r | grep ^9[.][0-9][0-9]*[.][0-9][0-9]*$`
-    #LogDebug "[Mount] ISLEOPARD='${ISLEOPARD}'"
-    # 2008-05-04: Enabled the local option for both Tiger and Leopard after
-    #             new tests with latest MacFUSE didn't reveal any Tiger-
-    #             related issues. Earlier issues included unresponsive
-    #             DiskArbitration, leading to system-wide lockups.
-    #if ( [[ -n "${ISLEOPARD}" ]] ); then
-    OPTIONS="${OPTIONS},local"
-    #fi
+    # auto_xattr commented out because many ext2/3/4 volumes out there
+    # have extended attributes enabled.
+    #
+    # Mark this volume as local. Please, read
+    # https://github.com/osxfuse/osxfuse/wiki/Mount-options#local
+    # for possible implications.
+    #OPTIONS="auto_xattr,local"
+    OPTIONS="local"
+
+    # Assign this volume to currently logged user in the OS X GUI, in order
+    # to write on the volume whitout having to be root (sudo), or whitout
+    # having to insert the password in Finder.
+    # Useful when write support is enabled with option 'rw+' or 'force'.
+    GUI_UID=$(stat -f '%u' /dev/console)
+    GUI_GID=$(stat -f '%g' /dev/console)
+    OPTIONS="${OPTIONS},uid=${GUI_UID},gid=${GUI_GID}"
     
     # Ignore DiskArb's mount options and possibly copy them
     while [[ "$1" = "-o" ]]
