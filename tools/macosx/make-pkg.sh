@@ -30,19 +30,19 @@ MKPKG_FOLDER="$3"
 
 if [ x"$FUSEEXT2_VERSION" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
   exit 1
 fi
 
 if [ x"$BUILD_FOLDER" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
   exit 1
 fi
 
 if [ x"$MKPKG_FOLDER" = x"" ]
 then
-  echo "Usage: make-pkg.sh <version> <srcdir> <builddir> <mkpkgdir>"
+  echo "Usage: make-pkg.sh <version> <builddir> <mkpkgdir>"
   exit 1
 fi
 
