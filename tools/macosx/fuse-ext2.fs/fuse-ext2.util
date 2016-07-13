@@ -42,8 +42,8 @@ FSUR_INITRECOGNIZED=-8 # response to FSUC_PROBE or FSUC_PROBEFORINIT, implies th
 # Set paths to bundled executables here (omit /usr/local):
 FUSE_EXT2=/bin/fuse-ext2
 FUSE_EXT2_PROBE=/bin/fuse-ext2.probe
-FUSE_EXT2_MKE2FS=/bin/fuse-ext2.mke2fs
-FUSE_EXT2_E2LABEL=/bin/fuse-ext2.e2label
+FUSE_EXT2_MKE2FS=/sbin/mke2fs
+FUSE_EXT2_E2LABEL=/sbin/e2label
 FUSE_EXT2_WAIT=/bin/fuse-ext2.wait
 FUSE_EXT2_DAEMON=/bin/fuse-ext2.daemon
 
@@ -201,22 +201,23 @@ function Repair () {
 function Mount ()
 {
     LogDebug "[Mount] Entering function Mount..."
-    # Setting both defer_auth and defer_permissions. The option was renamed
-    # starting with MacFUSE 1.0.0, and there seems to be no backward
-    # compatibility on the options.
-    OPTIONS="auto_xattr,defer_permissions"
 	
-    # The local option is only enabled on Leopard. It causes strange
-    # behavior for Disk Utility in Tiger.
-    #ISLEOPARD=`uname -r | grep ^9[.][0-9][0-9]*[.][0-9][0-9]*$`
-    #LogDebug "[Mount] ISLEOPARD='${ISLEOPARD}'"
-    # 2008-05-04: Enabled the local option for both Tiger and Leopard after
-    #             new tests with latest MacFUSE didn't reveal any Tiger-
-    #             related issues. Earlier issues included unresponsive
-    #             DiskArbitration, leading to system-wide lockups.
-    #if ( [[ -n "${ISLEOPARD}" ]] ); then
-    OPTIONS="${OPTIONS},local"
-    #fi
+    # auto_xattr commented out because many ext2/3/4 volumes out there
+    # have extended attributes enabled.
+    #
+    # Mark this volume as local. Please, read
+    # https://github.com/osxfuse/osxfuse/wiki/Mount-options#local
+    # for possible implications.
+    #OPTIONS="auto_xattr,local"
+    OPTIONS="local"
+
+    # Assign this volume to currently logged user in the OS X GUI, in order
+    # to write on the volume without having to be root (sudo), or without
+    # having to insert the password in Finder.
+    # Useful when write support is enabled with option 'rw+' or 'force'.
+    GUI_UID=$(stat -f '%u' /dev/console)
+    GUI_GID=$(stat -f '%g' /dev/console)
+    OPTIONS="${OPTIONS},uid=${GUI_UID},gid=${GUI_GID}"
     
     # Ignore DiskArb's mount options and possibly copy them
     while [[ "$1" = "-o" ]]
@@ -386,7 +387,7 @@ LogDebug "Invoking user: ${INVOKING_USER}"
 # Get: the actual executed name, the real script file, the bundle folder, and the local bin
 EXEC=`GetAbsoluteFile "$0"`
 BUNDLE=`GetBundle "${EXEC}"`
-ROOT=`GetDirName "${BUNDLE}" 4`
+ROOT=`GetDirName "${BUNDLE}" 3`
 PFX="${ROOT}/usr/local"
 SELF=`basename "${EXEC}"`
 INVOKEBASENAME=`basename "$0"`

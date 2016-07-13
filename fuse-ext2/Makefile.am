@@ -149,14 +149,16 @@ endif
 
 if DARWIN
 install-exec-local:
-	$(INSTALL) -d "$(DESTDIR)/sbin"
-	$(LN_S) -f "../System/Library/Filesystems/fuse-ext2.fs/mount_fuse-ext2" "$(DESTDIR)/sbin/mount_fuse-ext2"
+	$(INSTALL) -d "$(DESTDIR)/$(sbindir)"
+	$(LN_S) -f "/Library/Filesystems/fuse-ext2.fs/Contents/Resources/mount_fuse-ext2" "$(DESTDIR)/$(sbindir)/mount_fuse-ext2"
+	$(LN_S) -f "/usr/local/opt/e2fsprogs/sbin/e2label" "$(DESTDIR)/$(sbindir)/e2label"
+	$(LN_S) -f "/usr/local/opt/e2fsprogs/sbin/mke2fs" "$(DESTDIR)/$(sbindir)/mke2fs"
 endif
 if LINUX
 install-data-hook:
 	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
 
 install-exec-local:
-	$(INSTALL) -d "$(DESTDIR)/usr/sbin"
-	$(LN_S) -f "../bin/fuse-ext2" "$(DESTDIR)/usr/sbin/mount.fuse-ext2"
+	$(INSTALL) -d "$(DESTDIR)/sbin"
+	$(LN_S) -f "$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
 endif
