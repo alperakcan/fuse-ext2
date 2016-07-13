@@ -53,7 +53,7 @@ Dependecies:
 The easiest way is using [Homebrew](http://brew.sh/):
 
 ```shell
-$ brew install e2fsprogs m4 automake autoconf libtool
+$ brew install e2fsprogs m4 automake autoconf libtool pkg-config
 $ git clone https://github.com/alperakcan/fuse-ext2.git
 $ cd fuse-ext2
 $ ./autogen.sh
