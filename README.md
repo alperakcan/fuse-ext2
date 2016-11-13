@@ -3,9 +3,8 @@
 > Fuse-ext2 is a EXT2/EXT3/EXT4 Filesystem support for _FUSE_.
 this fork is a build tested under XCode 8.1, OS X 10.11.
 changed to a version of e2fsprogs that builds cleanly following these instructions, and removed offending line from configure.ac that breaks original build.
-write support has been tested and seems to work. using this i'm able to read and write ext3 nemesis (http://mrn.sixbit.org) volumes on OS X, providing a common filesystem for the OS X, Linux and FreeBSD versions.
-i'll try to provide a binary package for 10.11, but this build works now as -is. 
-
+write support has been tested and seems to work. using this i'm able to read and write ext3 nemesis (http://mrn.sixbit.org) volumes on OS X, providing a common filesystem for the OS X, Linux and FreeBSD versions.<br>
+<b>BINARY PACKAGE for OS X 10.11 HERE: <b>http://mrn.sixbit.org/files/fuse-ext2-0.0.9-e2fsprogs-1.43-3.dmg</b>
 ## Dependencies
 
 Fuse-ext2 requires at least Fuse version 2.6.0 for Linux.
