@@ -105,7 +105,6 @@ sudo make install
 cd ../
 
 # e2fsprogs
-export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.43.3.tar.gz
 tar -zxvf e2fsprogs-1.43.3.tar.gz
 cd e2fsprogs-1.43.3
@@ -142,7 +141,7 @@ See [Man page](http://man.cx/fuseext2(1)) for options.
 ```
 Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
 
-Options:  ro, force, allow_others
+Options:  ro, rw+, force, allow_others
           Please see details in the manual.
 
 Example:  fuse-ext2 /dev/sda1 /mnt/sda1
