@@ -63,6 +63,7 @@ Build **from source** depends on:
 
 ```shell
 export PATH=/opt/gnu/bin:$PATH
+export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 mkdir gnu
 cd gnu
@@ -104,6 +105,7 @@ sudo make install
 cd ../
 
 # e2fsprogs
+export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.43.3.tar.gz
 tar -zxvf e2fsprogs-1.43.3.tar.gz
 cd e2fsprogs-1.43.3
@@ -111,10 +113,13 @@ cd e2fsprogs-1.43.3
 make
 sudo make install
 sudo make install-libs
+sudo cp /opt/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
 cd ../
 	
 # fuse-ext2
 export PATH=/opt/gnu/bin:$PATH
+export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+
 ./autogen.sh
 CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local/lib" ./configure
 make
