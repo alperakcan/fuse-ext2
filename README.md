@@ -52,8 +52,7 @@ package for your distribution.
 
 Dependencies:
 
-[OSXfuse](https://osxfuse.github.io) io no need to install with MacFuse compatibility.
-	
+[OSXfuse](https://osxfuse.github.io)
 Build **from source** depends on:
 
 * m4
