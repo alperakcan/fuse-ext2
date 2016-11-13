@@ -4,7 +4,11 @@
 this fork is a build tested under XCode 8.1, OS X 10.11.
 changed to a version of e2fsprogs that builds cleanly following these instructions, and removed offending line from configure.ac that breaks original build.
 write support has been tested and seems to work. using this i'm able to read and write ext3 nemesis (http://mrn.sixbit.org) volumes on OS X, providing a common filesystem for the OS X, Linux and FreeBSD versions.<br>
-<b>BINARY PACKAGE for OS X 10.11 HERE: <b>http://mrn.sixbit.org/files/fuse-ext2-0.0.9-e2fsprogs-1.43-3.dmg</b>
+<b>BINARY PACKAGE for OS X 10.11 HERE: <b>http://mrn.sixbit.org/files/fuse-ext2-0.0.9-e2fsprogs-1.43-3.dmg</b><br>
+this distribution includes binary e2fsprogs package 1.43.3 that installs in /opt/gnu as well. if you're going to use this with nemesis, don't change anything from the defaults, and install both packages.<br>
+in order to comply with the license the e2fsprogs source is included in "extras" which makes for a larger download.<br>
+
+
 ## Dependencies
 
 Fuse-ext2 requires at least Fuse version 2.6.0 for Linux.
