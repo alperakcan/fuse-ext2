@@ -39,7 +39,7 @@ static const char *usage_msg =
 "\n"
 "Usage:    %s <device|image_file> <mount_point> [-o option[,...]]\n"
 "\n"
-"Options:  ro, force, allow_others\n"
+"Options:  ro, force, allow_other\n"
 "          Please see details in the manual.\n"
 "\n"
 "Example:  fuse-ext2 /dev/sda1 /mnt/sda1\n"
