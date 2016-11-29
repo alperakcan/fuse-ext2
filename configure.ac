@@ -183,8 +183,6 @@ AC_SUBST(pkgconfigdir)
 AM_CONDITIONAL(LINUX, test "$arch" = linux)
 AM_CONDITIONAL(DARWIN, test "$arch" = darwin)
 
-PKG_CHECK_MODULES([e2fs],[ext2fs >= 1.41.13])
-
 AC_CONFIG_FILES([
 	fuse-ext2.pc
 	Makefile

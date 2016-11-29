@@ -1,6 +1,14 @@
 # Fuse Ext2
 
 > Fuse-ext2 is a EXT2/EXT3/EXT4 Filesystem support for _FUSE_.
+this fork is a build tested under XCode 8.1, OS X 10.11.
+changed to a version of e2fsprogs that builds cleanly following these instructions, and removed offending line from configure.ac that breaks original build.<br>
+this has also had the /Library/Filesystems/fuse-ext2.fs/fuse-ext2.util script adjusted to mount read/write by default, but respect diskutil's rdonly flag.<br>
+write support has been tested and seems to work. using this i'm able to read and write ext3 (no journal) nemesis (http://mrn.sixbit.org) volumes on OS X, providing a common, writable filesystem for the OS X, Linux and FreeBSD versions.<br>
+<b>BINARY PACKAGE for OS X HERE (built on 10.11 with XCode 8.1): http://mrn.sixbit.org/files/fuse-ext2-0.0.9-e2fsprogs-1.43-3.dmg</b><br>
+this distribution includes binary e2fsprogs package 1.43.3, that installs in /opt/gnu by default, as well.<br>
+in order to comply with the license the e2fsprogs source is included in "extras" which makes for a larger download.<br>
+
 
 ## Dependencies
 
@@ -46,29 +54,9 @@ package for your distribution.
 
 ### Mac OS:
 
-Dependecies:
+Dependencies:
 
-[OSXfuse](https://osxfuse.github.io) io no need to install with MacFuse compatibility.
-
-The easiest way is using [Homebrew](http://brew.sh/):
-
-```shell
-$ brew install e2fsprogs m4 automake autoconf libtool pkg-config
-$ git clone https://github.com/alperakcan/fuse-ext2.git
-$ cd fuse-ext2
-$ ./autogen.sh
-$ ./configure \
-    PKG_CONFIG_PATH="$(brew --prefix e2fsprogs)/lib/pkgconfig" \
-    CFLAGS="-idirafter/$(brew --prefix e2fsprogs)/include -idirafter/usr/local/include/osxfuse" \
-    LDFLAGS="-L$(brew --prefix e2fsprogs)/lib"
-$ make
-$ sudo make install         #<-- To install on the current system
-     or
-$ make package              #<-- To create an install package in the current directory 
-```
-
-Build:
-	
+[OSXfuse](https://osxfuse.github.io)
 Build **from source** depends on:
 
 * m4
@@ -79,6 +67,7 @@ Build **from source** depends on:
 
 ```shell
 export PATH=/opt/gnu/bin:$PATH
+export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 mkdir gnu
 cd gnu
@@ -120,17 +109,20 @@ sudo make install
 cd ../
 
 # e2fsprogs
-curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.42.12.tar.gz
-tar -zxvf e2fsprogs-1.42.12.tar.gz
-cd e2fsprogs-1.42.12
-./configure --prefix=/opt/gnu
+curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.43.3.tar.gz
+tar -zxvf e2fsprogs-1.43.3.tar.gz
+cd e2fsprogs-1.43.3
+./configure --prefix=/opt/gnu --disable-nls
 make
 sudo make install
 sudo make install-libs
+sudo cp /opt/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
 cd ../
 	
 # fuse-ext2
 export PATH=/opt/gnu/bin:$PATH
+export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+
 ./autogen.sh
 CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local/lib" ./configure
 make
@@ -138,10 +130,11 @@ sudo make install
 ```
 
 # Test
+the e2fsprogs live in /opt/gnu/bin and /opt/gnu/sbin, fuse-ext2 is in /usr/local/bin
 
 ```shell
 dd if=/dev/zero of=test/fs.ext2 bs=1024 count=102400
-mkfs.ext4 test/fs.ext2
+/opt/gnu/sbin/mkfs.ext4 test/fs.ext2
 fuse-ext2 test/fs.ext2 /mnt/fs.ext2 -o debug,rw+
 ```
 
@@ -152,7 +145,7 @@ See [Man page](http://man.cx/fuseext2(1)) for options.
 ```
 Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
 
-Options:  ro, force, allow_other
+Options:  ro, rw+, force, allow_other
           Please see details in the manual.
 
 Example:  fuse-ext2 /dev/sda1 /mnt/sda1
