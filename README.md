@@ -152,7 +152,7 @@ See [Man page](http://man.cx/fuseext2(1)) for options.
 ```
 Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
 
-Options:  ro, force, allow_others
+Options:  ro, force, allow_other
           Please see details in the manual.
 
 Example:  fuse-ext2 /dev/sda1 /mnt/sda1
