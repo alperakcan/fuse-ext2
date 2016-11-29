@@ -9,7 +9,7 @@
 FSNAME=fuse-ext2
 
 # For debugging purposes:
-LOG_ENABLED=1 # 1 = function Log writes to $LOGFILE
+LOG_ENABLED=0 # 1 = function Log writes to $LOGFILE
               # 0 = function Log does nothing
 LOGFILE=/var/log/fuse-ext2_util.log
 # Everybody should be able to write to this file.
@@ -209,7 +209,9 @@ function Mount ()
     # https://github.com/osxfuse/osxfuse/wiki/Mount-options#local
     # for possible implications.
     #OPTIONS="auto_xattr,local"
-    OPTIONS="local"
+    OPTIONS="local,allow_other"
+    OPTIONS_ACCESS="rw,force,"
+#,rw,force"
 
     # Assign this volume to currently logged user in the OS X GUI, in order
     # to write on the volume without having to be root (sudo), or without
@@ -220,11 +222,19 @@ function Mount ()
     OPTIONS="${OPTIONS},uid=${GUI_UID},gid=${GUI_GID}"
     
     # Ignore DiskArb's mount options and possibly copy them
+    # listen to diskutil
     while [[ "$1" = "-o" ]]
     do
-	# OPTIONS="${OPTIONS}${2}," # Copy options?
+	echo {OPTIONS}${2} >>/tmp/loggg
+	if ( [[ "$2" = "rdonly" ]] ) ; then
+		echo readonly >>/tmp/loggg
+		OPTIONS_ACCESS="ro,"
+	fi
+	#OPTIONS="${OPTIONS}${2}," # Copy options?
 	shift 2		# Forget the -o [option]
     done
+
+    OPTIONS="${OPTIONS_ACCESS},${OPTIONS}"
 
     # $# is the argument count, which is decremented when we "shift"
     while ( [[ $# -ne 0 ]] ); do
@@ -312,9 +322,9 @@ function Probe ()
     PROBE_OUTPUT=`"${PFX}${FUSE_EXT2_PROBE}" "--readonly" "${DEVICE}" 2>&1`
     PROBE_RETVAL=$?
     PROBE_VOLNAME=`${PFX}${FUSE_EXT2_E2LABEL} "${DEVICE}"`
-    LogDebug "[Probe]   Return value: ${PROBE_RETVAL}"
-    LogDebug "[Probe]   Volname     : ${PROBE_VOLNAME}"
-    LogDebug "[Probe]   Output (PROBE_OUTPUT): \"${PROBE_OUTPUT}\""
+    echo ${PROBE_RETVAL} >>/tmp/logg
+    echo ${DEVICE} >>/tmp/logg
+    echo ${PROBE_OUTPUT} >>/tmp/logg
     
     if ( [[ ${PROBE_RETVAL} -eq 0 ]] ); then
     	echo "${PROBE_VOLNAME}"
