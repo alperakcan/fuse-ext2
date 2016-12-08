@@ -142,8 +142,8 @@ AC_CHECK_FUNCS([	\
 # Checks for libraries
 AC_SEARCH_LIBS([sem_post], [pthread], [], [AC_MSG_ERROR([Can't find pthreads, please install it])])
 AC_SEARCH_LIBS([fuse_main], [osxfuse fuse], [], [AC_MSG_ERROR([Can't find libfuse, please install it])])
-AC_SEARCH_LIBS([com_err], [com_err], [], [AC_MSG_ERROR([Can't find e2progs, please install it])])
-AC_SEARCH_LIBS([ext2fs_open], [ext2fs], [], [AC_MSG_ERROR([Can't find e2progs, please install it])])
+AC_SEARCH_LIBS([com_err], [com_err], [], [AC_MSG_ERROR([Can't find comerr, please install it])])
+AC_SEARCH_LIBS([ext2fs_open], [ext2fs], [], [AC_MSG_ERROR([Can't find e2fslibs, please install it])])
 
 AC_MSG_CHECKING([if FUSE on this system is too new for us])
 AC_EGREP_CPP([fuse_version_yes], [

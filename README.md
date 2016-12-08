@@ -28,12 +28,14 @@ Build from source depends on:
 * autoconf
 * automake
 * libtool
-* fuse-dev
-* e2fsprogs-dev
+* libfuse-dev
+* e2fsprogs
+* comerr-dev
+* e2fslibs-dev
 
 ```shell
 $ apt-get install m4 autoconf automake libtool
-$ apt-get install libfuse-dev e2fslibs-dev
+$ apt-get install libfuse-dev e2fsprogs comerr-dev e2fslibs-dev
 	
 $ ./autogen.sh
 $ ./configure
