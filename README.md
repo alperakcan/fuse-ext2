@@ -15,13 +15,6 @@ For Mac OS X latest version of OSXFuse 2.7.5.
 
 ### Linux:
 
-Dependencies:
-
-```shell
-# fuse
-$ apt-get install libfuse
-```
-
 Build from source depends on:
 
 * m4
