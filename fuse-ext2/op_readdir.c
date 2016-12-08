@@ -25,8 +25,8 @@ struct dir_walk_data {
 	fuse_fill_dir_t filler;
 };
 
-#define _USE_DIR_ITERATE2
-#ifdef _USE_DIR_ITERATE2
+#define _USE_DIR_ITERATE2 1
+#if defined(_USE_DIR_ITERATE2) && (_USE_DIR_ITERATE2 == 1)
 static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent, int offset, int blocksize, char *buf, void *vpsid)
 {
 	int res;
@@ -36,7 +36,7 @@ static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent
 	if (dirent->name_len <= 0) {
 		return 0;
 	}
-	struct dir_walk_data *psid=(struct dir_walk_data *)vpsid;
+	struct dir_walk_data *psid = (struct dir_walk_data *) vpsid;
 	memset(&st, 0, sizeof(st));
 
 	len = dirent->name_len & 0xff;
@@ -52,6 +52,19 @@ static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent
 		case EXT2_FT_SOCK:	type = DT_SOCK;		break;
 		case EXT2_FT_SYMLINK:	type = DT_LNK;		break;
 		default:		type = DT_UNKNOWN;	break;
+	}
+	if (type == DT_UNKNOWN) {
+		return 0;
+	}
+	{
+		int rc;
+		struct ext2_inode inode;
+		ext2_filsys e2fs = current_ext2fs();
+		rc = ext2fs_read_inode(e2fs, dirent->inode, &inode);
+		if (rc) {
+			debugf("ext2fs_read_inode(%d, &inode); failed", dirent->inode);
+			return 0;
+		}
 	}
 	st.st_ino = dirent->inode;
 	st.st_mode = type << 12;
@@ -108,7 +121,7 @@ int op_readdir (const char *path, void *buf, fuse_fill_dir_t filler, off_t offse
 		return rt;
 	}
 
-#ifdef _USE_DIR_ITERATE2
+#if defined(_USE_DIR_ITERATE2) && (_USE_DIR_ITERATE2 == 1)
 	rc = ext2fs_dir_iterate2(e2fs,ino, DIRENT_FLAG_INCLUDE_EMPTY, NULL, walk_dir2, &dwd);
 #else
 	rc = ext2fs_dir_iterate(e2fs, ino, 0, NULL, walk_dir, &dwd);
