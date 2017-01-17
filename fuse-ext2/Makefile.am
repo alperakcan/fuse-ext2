@@ -159,6 +159,6 @@ install-data-hook:
 	cd "$(DESTDIR)/$(moddir)" && rm -f $(mod_LTLIBRARIES)
 
 install-exec-local:
-	$(INSTALL) -d "$(DESTDIR)/sbin"
-	$(LN_S) -f "$(bindir)/fuse-ext2" "$(DESTDIR)/sbin/mount.fuse-ext2"
+	$(INSTALL) -d "$(DESTDIR)/$(sbindir)"
+	$(LN_S) -f "$(bindir)/fuse-ext2" "$(DESTDIR)/$(sbindir)/mount.fuse-ext2"
 endif
