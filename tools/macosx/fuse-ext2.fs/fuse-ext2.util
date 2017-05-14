@@ -83,10 +83,10 @@ EOF
 }
 
 # Get numeric value corresponding to FUSE version
-# Edit: Seems like this function doesn't work with recent MacFUSE versions.
+# function being adjusted to work with recent MacFUSE versions - osxfuse.fs one.
 function GetFuseVersion ()
 {
-	VERS=`"${ROOT}/System/Library/Filesystems/fusefs.fs/Contents/Resources/mount_fusefs" --help 2>&1 | head -n 1 | awk '{ print $3 }'`
+        VERS=`"${ROOT}/System/Library/Filesystems/osxfuse.fs/Contents/Resources/mount_osxfuse --help 2>&1 | head -n 1 | awk '{ print $4 }'`
 
 	perl - "$VERS" <<-"EOF"
 		$total = 0;
