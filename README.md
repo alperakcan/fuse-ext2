@@ -96,9 +96,9 @@ sudo make install
 cd ../
 
 # e2fsprogs
-curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.43.3/e2fsprogs-1.43.3.tar.gz
-tar -zxvf e2fsprogs-1.43.3.tar.gz
-cd e2fsprogs-1.43.3
+curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.43.4/e2fsprogs-1.43.4.tar.gz
+tar -zxvf e2fsprogs-1.43.4.tar.gz
+cd e2fsprogs-1.43.4
 ./configure --prefix=/opt/gnu --disable-nls
 make
 sudo make install
