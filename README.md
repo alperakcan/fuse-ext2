@@ -110,6 +110,7 @@ cd ../
 export PATH=/opt/gnu/bin:$PATH
 export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
+cd fuse-ext
 ./autogen.sh
 CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local/lib" ./configure
 make
