@@ -25,7 +25,7 @@ struct dir_walk_data {
 	fuse_fill_dir_t filler;
 };
 
-#define _USE_DIR_ITERATE2 1
+//#define _USE_DIR_ITERATE2 1
 #if defined(_USE_DIR_ITERATE2) && (_USE_DIR_ITERATE2 == 1)
 static int walk_dir2 (ext2_ino_t dir, int   entry, struct ext2_dir_entry *dirent, int offset, int blocksize, char *buf, void *vpsid)
 {
