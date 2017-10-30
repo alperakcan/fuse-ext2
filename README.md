@@ -39,6 +39,21 @@ $ sudo make install
 You can use `checkinstall` or some other equivalent tool to generate install 
 package for your distribution.
 
+### FreeBSD:
+
+Install via pkg:
+
+```shell
+$ pkg install sysutils/fusefs-ext2
+```
+
+Build via ports:
+
+```shell
+$ cd /usr/ports/sysutils/fusefs-ext2
+$ make install clean
+```
+
 ### Mac OS:
 
 Dependencies:
