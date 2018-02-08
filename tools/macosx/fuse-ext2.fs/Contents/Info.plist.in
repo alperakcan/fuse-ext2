@@ -148,6 +148,22 @@
 			<key>FSProbeOrder</key>
 			<integer>4900</integer>
 		</dict>
+		<key>GPT_Linux_filesystem</key>
+		<dict>
+			<key>FSMediaProperties</key>
+			<dict>
+				<key>Content Hint</key>
+				<string>0FC63DAF-8483-4772-8E79-3D69D8477DE4</string>
+				<key>Leaf</key>
+				<true/>
+			</dict>
+			<key>FSProbeArguments</key>
+			<string>-p</string>
+			<key>FSProbeExecutable</key>
+			<string>../../fuse-ext2.util</string>
+			<key>FSProbeOrder</key>
+			<integer>3500</integer>
+		</dict>
 	</dict>
 	<key>FSPersonalities</key>
 	<dict>
