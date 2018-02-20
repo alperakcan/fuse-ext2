@@ -8,6 +8,10 @@
 
 #include "fuse-ext2.h"
 
+#if !defined(ENOATTR)
+#define ENOATTR ENODATA
+#endif
+
 static int do_getxattr(ext2_filsys e2fs, struct ext2_inode *node, const char *name,
 		char *value, size_t size);
 
@@ -92,7 +96,7 @@ static int do_getxattr(ext2_filsys e2fs, struct ext2_inode *node, const char *na
 
 	attr_start = buf + sizeof(struct ext2_ext_attr_header);
 	entry = (struct ext2_ext_attr_entry *) attr_start;
-	res = -ENODATA;
+	res = -ENOATTR;
 
 	while (!EXT2_EXT_IS_LAST_ENTRY(entry)) {
 		entry_name = (char *)entry + sizeof(struct ext2_ext_attr_entry);
