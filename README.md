@@ -66,6 +66,7 @@ Build **from source** depends on:
 * automake
 * libtool
 * e2fsprogs
+* xcode-select
 
 Copy and paste this into a file such as `/tmp/ext4/script.sh`.  Remember to `chmod +x script.sh`.  Run it 
 from that directory - `./script.sh`
