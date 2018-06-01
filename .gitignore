@@ -5,12 +5,15 @@ fs.ext2
 # IDE: PhpStorm
 .idea
 
-# Ignore build artifacts when running `autogen.sh`
+# Ignore the below build artifacts from running...
+# `autogen.sh`
+# in the project root
 Makefile.in
 aclocal.m4
 ar-lib
 autom4te.cache/
 compile
+config.log
 config.guess
 config.h.in
 config.sub
@@ -22,3 +25,19 @@ ltmain.sh
 missing
 tools/Makefile.in
 tools/macosx/Makefile.in
+
+# Ingore artifacts created by running...
+#
+# env CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local//lib" ./configure
+##
+Makefile
+config.h
+config.status
+fuse-ext2.pc
+fuse-ext2/.deps/
+fuse-ext2/Makefile
+libtool
+stamp-h1
+tools/Makefile
+tools/macosx/Makefile
+
