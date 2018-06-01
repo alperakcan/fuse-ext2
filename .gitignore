@@ -41,3 +41,9 @@ stamp-h1
 tools/Makefile
 tools/macosx/Makefile
 
+# Ignore build artifacts when running `make` with the project root
+##
+# NOTE: all object files, ie. `.o`'s are placed within `fuse-ext2/fuse-ext2` dir
+##
+**/fuse-ext2
+tools/macosx/prefpane/build
