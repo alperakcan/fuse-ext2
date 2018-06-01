@@ -4,3 +4,21 @@ fs.ext2
 
 # IDE: PhpStorm
 .idea
+
+# Ignore build artifacts when running `autogen.sh`
+Makefile.in
+aclocal.m4
+ar-lib
+autom4te.cache/
+compile
+config.guess
+config.h.in
+config.sub
+configure
+depcomp
+fuse-ext2/Makefine.in
+install-sh
+ltmain.sh
+missing
+tools/Makefile.in
+tools/macosx/Makefile.in
