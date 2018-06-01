@@ -1,15 +1,38 @@
 # Fuse Ext2
 
-Fuse-ext2 is a EXT2/EXT3/EXT4 Filesystem support for _FUSE_.
+**Fuse-ext2** is a EXT2/EXT3/EXT4 filesystem support for  [**fuse**](https://github.com/osxfuse/fuse) and is built to work with [**osxfuse**](https://github.com/osxfuse/osxfuse).
 
 ## Dependencies
 
-Fuse-ext2 requires at least Fuse version 2.6.0 for Linux.
-For Mac OS X latest version of OSXFuse 2.7.5.
+**Fuse-ext2** requires at least Fuse version 2.6.0 for Linux.<br />
+**Fuse-ext2** requires at least **Fuse for macOS** version 2.7.5 or greater.
 
-1. Linux: [Fuse](http://fuse.sourceforge.net/)
-1. Mac OS: [OSXFuse](https://osxfuse.github.io)
+- Linux: [Fuse](http://fuse.sourceforge.net/)
+- macOS: [Fuse for macOS](https://osxfuse.github.io)
 
+### Alternate Install method of _Fuse for macOS_
+
+**Fuse for macOS** can be installed via [homebrew](http://brew.sh) if [Homebrew-Cask](https://caskroom.github.io/) has been tapped.
+
+To tap **Homebrew-Cask**
+
+```bash
+brew tap homebrew/cask
+```
+
+To verify the the above tap is apart of `brew`
+
+```bash
+brew taps
+```
+
+Look for **`homebrew/cask`** in the output.
+
+To install **Fuse for macOS** using brew
+
+```bash
+brew cask install osxfuse
+```
 
 ## Build
 
@@ -54,7 +77,7 @@ $ cd /usr/ports/sysutils/fusefs-ext2
 $ make install clean
 ```
 
-### Mac OS:
+### macOS:
 
 Dependencies:
 
