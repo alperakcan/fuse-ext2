@@ -27,20 +27,14 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 	unsigned int wr;
 	unsigned long long npos;
 	unsigned long long fsize;
+	unsigned long long wsize;
 
 	debugf("enter");
 
 	rt = ext2fs_file_get_lsize(efile, &fsize);
 	if (rt != 0) {
 		debugf("ext2fs_file_get_lsize(efile, &fsize); failed");
-		return rt;
-	}
-	if (offset + size > fsize) {
-		rt = ext2fs_file_set_size2(efile, offset + size);
-		if (rt) {
-			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
-			return rt;
-		}
+		return -EIO;
 	}
 
 	rt = ext2fs_file_llseek(efile, offset, SEEK_SET, &npos);
@@ -49,23 +43,31 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 		return rt;
 	}
 
-	for (rt = 0, wr = 0, tmp = buf; size > 0 && rt == 0; size -= wr, tmp += wr) {
+	for (rt = 0, wr = 0, tmp = buf, wsize = 0; size > 0 && rt == 0; size -= wr, wsize += wr, tmp += wr) {
 		rt = ext2fs_file_write(efile, tmp, size, &wr);
 		debugf("rt: %d, size: %u, written: %u", rt, size, wr);
 	}
-	if (rt) {
+	if (rt != 0 && rt != EXT2_ET_BLOCK_ALLOC_FAIL) {
 		debugf("ext2fs_file_write(edile, tmp, size, &wr); failed");
-		return rt;
+		return -EIO;
+	}
+
+	if (offset + wsize > fsize) {
+		rt = ext2fs_file_set_size2(efile, offset + wsize);
+		if (rt) {
+			debugf("extfs_file_set_size(efile, %lld); failed", offset + size);
+			return -EIO;
+		}
 	}
 
 	rt = ext2fs_file_flush(efile);
-	if (rt) {
+	if (rt != 0 && rt != EXT2_ET_BLOCK_ALLOC_FAIL) {
 		debugf("ext2_file_flush(efile); failed");
-		return rt;
+		return -EIO;
 	}
 
 	debugf("leave");
-	return wr;
+	return wsize;
 }
 
 int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
