@@ -174,12 +174,27 @@ sudo make install
 ```
 
 # Test
-the e2fsprogs live in /opt/gnu/bin and /opt/gnu/sbin, fuse-ext2 is in /usr/local/bin
+
+The e2fsprogs live in /opt/gnu/bin and /opt/gnu/sbin, fuse-ext2 is in /usr/local/bin
 
 ```shell
-dd if=/dev/zero of=test/fs.ext2 bs=1024 count=102400
-/opt/gnu/sbin/mkfs.ext4 test/fs.ext2
-fuse-ext2 test/fs.ext2 /mnt/fs.ext2 -o debug,rw+
+cd
+dd if=/dev/zero of=/tmp/test-fs.ext4 bs=1024 count=102400  
+/opt/gnu/sbin/mkfs.ext4 /tmp/test-fs.ext4
+mkdir -p ~/mnt/fuse-ext2.test-fs.ext4
+fuse-ext2  /tmp/fuse-ext2.test-fs.ext4 -o rw+,allow_other,uid=501,gid=20
+```
+
+To verify **UID** and **GID** of the user mounting the file system
+
+```shell
+id
+```
+
+To verify the file system has mounted properly
+
+```shell
+mount
 ```
 
 # Usage
