@@ -23,7 +23,7 @@ brew tap homebrew/cask
 To verify the the above tap is apart of `brew`
 
 ```bash
-brew taps
+brew tap
 ```
 
 Look for **`homebrew/cask`** in the output.
