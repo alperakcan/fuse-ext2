@@ -1,3 +1,9 @@
+# Project based .gitignore for fuse-ext2
+# Ref: https://github.com/alperakcan/fuse-ext2
+
+# macOS related files
+**/.DS_Store
+
 .cproject
 .project
 fs.ext2
@@ -6,44 +12,45 @@ fs.ext2
 .idea
 
 # Ignore the below build artifacts from running...
-# `autogen.sh`
-# in the project root
-Makefile.in
-aclocal.m4
+# `autogen.sh` from the project root
+**/*.cache/*
+**/*.guess
+**/*.in
+**/*.log
+**/*.m4
+**/*.o
+**/M4/*
+**/.scan
+**/*.sub
+**/.deps/*
 ar-lib
-autom4te.cache/
 compile
-config.log
-config.guess
-config.h.in
-config.sub
 configure
 depcomp
-fuse-ext2/Makefine.in
 install-sh
+libtool
 ltmain.sh
 missing
-tools/Makefile.in
-tools/macosx/Makefile.in
+stamp-h1
 
-# Ingore artifacts created by running...
-#
-# env CFLAGS="-idirafter/opt/gnu/include -idirafter/usr/local/include/osxfuse/" LDFLAGS="-L/opt/gnu/lib -L/usr/local//lib" ./configure
-##
-Makefile
+**/Makefile
 config.h
+config.h.in~
 config.status
 fuse-ext2.pc
-fuse-ext2/.deps/
-fuse-ext2/Makefile
-libtool
-stamp-h1
-tools/Makefile
-tools/macosx/Makefile
 
-# Ignore build artifacts when running `make` with the project root
-##
-# NOTE: all object files, ie. `.o`'s are placed within `fuse-ext2/fuse-ext2` dir
-##
-**/fuse-ext2
-tools/macosx/prefpane/build
+# macOS build artifacts
+fuse-ext2/fuse-ext2
+fuse-ext2/fuse-ext2.install
+fuse-ext2/fuse-ext2.probe
+fuse-ext2/fuse-ext2.uninstall
+fuse-ext2/fuse-ext2.wait
+
+# Xcode build & project artifacts
+# Ref: https://github.com/github/gitignore/blob/master/Global/Xcode.gitignore
+#
+# Ignore Xcode user related project files
+**/xcuserdata/*
+**/build/*
+**/DerivedData/*
+!**/.gitkeep

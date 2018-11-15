@@ -3,6 +3,8 @@ SUBDIRS  =
 SUBDIRS += fuse-ext2
 SUBDIRS += tools
 
+ACLOCAL_AMFLAGS = -I m4
+
 EXTRA_DIST = \
 	fuse-ext2.pc.in
 

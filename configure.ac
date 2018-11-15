@@ -1,8 +1,9 @@
 
-AC_INIT([fuse-ext2], [0.0.9], [alper.akcan@gmail.com])
+AC_INIT([fuse-ext2], [0.0.10], [alper.akcan@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIRS([m4])
 
 # Checks for programs.
 AC_PROG_CXX
