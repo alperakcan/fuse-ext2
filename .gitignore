@@ -54,3 +54,6 @@ fuse-ext2/fuse-ext2.wait
 **/build/*
 **/DerivedData/*
 !**/.gitkeep
+
+# Build from scratch
+!/build/macos-build-fuse-ext2-v0.0.10.sh
