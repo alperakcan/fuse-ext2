@@ -19,16 +19,12 @@ cd fuse-ext2.build
 build_root=$(pwd)
 echo "$build_root"
 
-# if [ ! -d fuse-ext2 ]; then
-#   git clone https://github.com/alperakcan/fuse-ext2.git
-# fi
-
 # m4
-if [ ! -f m4-1.4.17.targ.gz ]; then
-  curl -O -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz
+if [ ! -f m4-1.4.18.tar.xz ]; then
+  curl -O -L https://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.xz
 fi
-tar xvzf m4-1.4.17.tar.gz
-cd m4-1.4.17
+tar xvzf m4-1.4.18.tar.xz
+cd m4-1.4.18
 ./configure --prefix="$build_root/gnu"
 make
 make install
@@ -49,15 +45,14 @@ echo "====================================================="
 
 echo "$PATH"
 
-
 echo "====================================================="
 
 # automake
-if [ ! -f automake-1.15.tar.gz ]; then
-    curl -O -L http://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz
+if [ ! -f automake-1.16.1.tar.xz ]; then
+  curl -O -L https://ftp.gnu.org/gnu/automake/automake-1.16.1.tar.xz
 fi
-tar zxvf automake-1.15.tar.gz 
-cd automake-1.15
+tar xzvf automake-1.16.1.tar.xz
+cd automake-1.16.1
 
 echo "====================================================="
 
@@ -90,9 +85,9 @@ echo "====================================================="
 
 # libtool
 if [ ! -f libtool-2.4.6.tar.gz ]; then
-    curl -O -L http://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz
+    curl -O -L https://ftp.wayne.edu/gnu/libtool/libtool-2.4.6.tar.xz
 fi
-tar zxvf libtool-2.4.6.tar.gz 
+tar zxvf libtool-2.4.6.tar.xz 
 cd libtool-2.4.6
 ./configure --prefix="$build_root/gnu"
 make
@@ -100,16 +95,16 @@ make install
 cd ../
 
 # e2fsprogs
-if [ ! -f e2fsprogs-1.43.4.tar.gz ]; then
-    curl -O -L https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.43.4/e2fsprogs-1.43.4.tar.gz
+if [ ! -f e2fsprogs-1.44.3.tar.xz ]; then
+  curl -O -L https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.44.3/e2fsprogs-1.44.3.tar.xz
 fi
-tar zxvf e2fsprogs-1.43.4.tar.gz
-cd e2fsprogs-1.43.4
+tar xvzf e2fsprogs-1.44.3.tar.xz
+cd e2fsprogs-1.44.3
 ./configure --prefix="$build_root/gnu" --disable-nls
 make
 make install
 make install-libs
-# sudo cp /opt/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
+cp "$build_root"/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
 cd ../
 
 echo "$PATH"
@@ -144,3 +139,8 @@ echo "====================================================="
 ./configure
 make
 
+########
+# uncomment the below line to install
+###
+
+# sudo make install
