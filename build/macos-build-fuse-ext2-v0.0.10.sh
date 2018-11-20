@@ -32,7 +32,7 @@ cd ../
 
 # autoconf
 if [ ! -f autoconf-2.69.tar.gz ]; then
-    curl -O -L http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+  curl -O -L http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
 fi
 tar zxvf autoconf-2.69.tar.gz 
 cd autoconf-2.69
@@ -85,9 +85,9 @@ echo "====================================================="
 
 # libtool
 if [ ! -f libtool-2.4.6.tar.gz ]; then
-    curl -O -L https://ftp.wayne.edu/gnu/libtool/libtool-2.4.6.tar.xz
+  curl -O -L https://ftp.wayne.edu/gnu/libtool/libtool-2.4.6.tar.xz
 fi
-tar zxvf libtool-2.4.6.tar.xz 
+tar xvzf libtool-2.4.6.tar.xz 
 cd libtool-2.4.6
 ./configure --prefix="$build_root/gnu"
 make
@@ -107,6 +107,19 @@ make install-libs
 cp "$build_root"/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
 cd ../
 
+# e2fsprogs | v1.44.4
+# if [ ! -f e2fsprogs-1.44.4.tar.xz ]; then
+#   curl -O -L https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.44.4/e2fsprogs-1.44.4.tar.xz
+# fi
+# tar xvzf e2fsprogs-1.44.4.tar.xz
+# cd e2fsprogs-1.44.4
+# ./configure --prefix="$build_root/gnu" --disable-nls
+# make
+# make install
+# make install-libs
+# cp "$build_root"/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
+# cd ../
+
 echo "$PATH"
 
 echo "====================================================="
@@ -115,7 +128,7 @@ pwd
 
 echo "====================================================="
 
-cd ../..
+cd ../../
 
 echo "====================================================="
 
