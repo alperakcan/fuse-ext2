@@ -53,6 +53,8 @@ fuse-ext2/fuse-ext2.wait
 **/xcuserdata/*
 **/build/*
 **/DerivedData/*
+**/.mode1v3
+**/.pbxuser
 !**/.gitkeep
 
 # Build from scratch
