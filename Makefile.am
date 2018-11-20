@@ -23,3 +23,10 @@ if LINUX
 package:
 	echo "You can use checkinstall or some other equivalent tool to generate install package for your distribution."
 endif
+
+binaries=fuse-ext2/fuse-ext2 fuse-ext2.install fuse-ext2.probe fuse-ext2.uninstall fuse-ext2.wait
+
+.PHONY: clean-local
+
+clean-local:
+	rm -f $(binaries) *.o
