@@ -36,7 +36,7 @@ brew cask install osxfuse
 
 ## Build
 
-### Linux:
+### Debian/Ubuntu:
 
 Build from source depends on:
 
@@ -50,9 +50,19 @@ Build from source depends on:
 * e2fslibs-dev
 
 ```shell
-$ apt-get install m4 autoconf automake libtool
-$ apt-get install libfuse-dev e2fsprogs comerr-dev e2fslibs-dev
+$ sudo apt-get install m4 autoconf automake libtool
+$ sudo apt-get install libfuse-dev e2fsprogs comerr-dev e2fslibs-dev
 	
+$ ./autogen.sh
+$ ./configure
+$ make
+$ sudo make install
+```
+
+### Fedora 
+```bash 
+$ sudo dnf install @development-tools m4 autoconf automake libtool e2fsprogs libcom_err-devel fuse-libs e2fsprogs-devel
+# build part 
 $ ./autogen.sh
 $ ./configure
 $ make
