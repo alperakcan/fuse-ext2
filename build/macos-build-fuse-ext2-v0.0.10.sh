@@ -107,6 +107,9 @@ make install-libs
 cp "$build_root"/gnu/lib/pkgconfig/* /usr/local/lib/pkgconfig
 cd ../
 
+#############################
+# NOTE e2fsprogs > 1.44.3 does not work
+##
 # e2fsprogs | v1.44.4
 # if [ ! -f e2fsprogs-1.44.4.tar.xz ]; then
 #   curl -O -L https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.44.4/e2fsprogs-1.44.4.tar.xz
