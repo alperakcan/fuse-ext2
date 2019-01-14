@@ -160,3 +160,8 @@ make
 ###
 
 # sudo make install
+
+echo "-----------------------------------------"
+echo "To install fuse-ext2"
+echo "cd .."
+echo "sudo make install"
