@@ -52,9 +52,9 @@ static inline __u16 old_encode_dev(dev_t dev)
 
 static inline __u32 new_encode_dev(dev_t dev)
 {
-	unsigned major = major(dev);
-	unsigned minor = minor(dev);
-	return (minor & 0xff) | (major << 8) | ((minor & ~0xff) << 12);
+	unsigned major_v = major(dev);
+	unsigned minor_v = minor(dev);
+	return (minor_v & 0xff) | (major_v << 8) | ((minor_v & ~0xff) << 12);
 }
 
 int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const char *fastsymlink)
