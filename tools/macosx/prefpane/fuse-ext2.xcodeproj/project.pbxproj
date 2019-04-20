@@ -252,6 +252,7 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "fuse-ext2";
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = prefPane;
 				ZERO_LINK = YES;
 			};
@@ -270,6 +271,7 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "fuse-ext2";
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = prefPane;
 			};
 			name = Release;
