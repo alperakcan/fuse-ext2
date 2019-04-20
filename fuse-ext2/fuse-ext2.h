@@ -30,6 +30,9 @@
 #include <assert.h>
 #include <dirent.h>
 #include <errno.h>
+#ifdef MAJOR_IN_SYSMACROS
+#    include <sys/sysmacros.h>
+#endif
 
 #include <fuse.h>
 #include <sys/sysmacros.h>
