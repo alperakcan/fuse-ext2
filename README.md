@@ -1,10 +1,10 @@
 # Fuse Ext2
 
-**Fuse-ext2** is a EXT2/EXT3/EXT4 filesystem support for  [**fuse**](https://github.com/osxfuse/fuse) and is built to work with [**osxfuse**](https://github.com/osxfuse/osxfuse).
+**Fuse-ext2** is an EXT2/EXT3/EXT4 filesystem for  [**FUSE**](https://github.com/osxfuse/fuse), and is built to work with [**osxfuse**](https://github.com/osxfuse/osxfuse).
 
 ## Dependencies
 
-**Fuse-ext2** requires at least Fuse version 2.6.0 for Linux.<br />
+**Fuse-ext2** requires at least Fuse version 2.6.0 for Linux.  
 **Fuse-ext2** requires at least **Fuse for macOS** version 2.7.5 or greater.
 
 - Linux: [Fuse](http://fuse.sourceforge.net/)
@@ -14,13 +14,13 @@
 
 **Fuse for macOS** can be installed via [homebrew](http://brew.sh) if [Homebrew-Cask](https://caskroom.github.io/) has been tapped.
 
-To tap **Homebrew-Cask**
+To tap **Homebrew-Cask**:
 
 ```bash
 brew tap homebrew/cask
 ```
 
-To verify the the above tap is apart of `brew`
+To verify that the the above tap is a part of `brew`:
 
 ```bash
 brew tap
@@ -28,17 +28,17 @@ brew tap
 
 Look for **`homebrew/cask`** in the output.
 
-To install **Fuse for macOS** using brew
+To install **Fuse for macOS** using brew:
 
 ```bash
 brew cask install osxfuse
 ```
 
-## Build
+## Building
 
 ### Linux:
 
-Build from source depends on:
+Building from source depends on the following:
 
 * m4
 * autoconf
@@ -50,8 +50,8 @@ Build from source depends on:
 * e2fslibs-dev
 
 ```shell
-$ apt-get install m4 autoconf automake libtool
-$ apt-get install libfuse-dev e2fsprogs comerr-dev e2fslibs-dev
+$ sudo apt-get install m4 autoconf automake libtool
+$ sudo apt-get install libfuse-dev e2fsprogs comerr-dev e2fslibs-dev
 	
 $ ./autogen.sh
 $ ./configure
@@ -59,7 +59,7 @@ $ make
 $ sudo make install
 ```
 
-You can use `checkinstall` or some other equivalent tool to generate install 
+You can use `checkinstall` or some other equivalent tool to generate an install 
 package for your distribution.
 
 ### FreeBSD:
@@ -70,7 +70,7 @@ Install via pkg:
 $ pkg install sysutils/fusefs-ext2
 ```
 
-Build via ports:
+Building via ports:
 
 ```shell
 $ cd /usr/ports/sysutils/fusefs-ext2
@@ -82,7 +82,7 @@ $ make install clean
 Dependencies:
 
 [OSXfuse](https://osxfuse.github.io)
-Build **from source** depends on:
+Building **from source** depends on the following:
 
 * m4
 * autoconf
@@ -95,6 +95,7 @@ Copy and paste this into a file such as `/tmp/ext4/script.sh`.  Remember to `chm
 from that directory - `./script.sh`
 
 ```shell
+#!/bin/sh
 export PATH=/opt/gnu/bin:$PATH
 export PKG_CONFIG_PATH=/opt/gnu/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
@@ -175,7 +176,7 @@ sudo make install
 
 # Test
 
-The e2fsprogs live in /opt/gnu/bin and /opt/gnu/sbin, fuse-ext2 is in /usr/local/bin
+The e2fsprogs live in /opt/gnu/bin and /opt/gnu/sbin. fuse-ext2 is in /usr/local/bin.
 
 ```shell
 cd
@@ -185,13 +186,13 @@ mkdir -p ~/mnt/fuse-ext2.test-fs.ext4
 fuse-ext2  /tmp/fuse-ext2.test-fs.ext4 -o rw+,allow_other,uid=501,gid=20
 ```
 
-To verify **UID** and **GID** of the user mounting the file system
+To verify the **UID** and **GID** of the user mounting the file system:
 
 ```shell
 id
 ```
 
-To verify the file system has mounted properly
+To verify the file system has mounted properly:
 
 ```shell
 mount
@@ -199,7 +200,7 @@ mount
 
 # Usage
 
-See [Man page](http://man.cx/fuseext2(1)) for options.
+See the [Man page](http://man.cx/fuseext2(1)) for options.
 
 ```
 Usage:    fuse-ext2 <device|image_file> <mount_point> [-o option[,...]]
@@ -212,11 +213,11 @@ Example:  fuse-ext2 /dev/sda1 /mnt/sda1
 
 # Bugs
 
-* Multithread support is broken for now, so forcing fuse to work single thread.
-* there are no known bugs for read-only mode, read only mode should be ok for every one.
-* although, write support is available please do not mount your filesystems with write support unless you do not have anything to loose.
+* Multithread support is broken for now, so fuse operates in a single thread.
+* There are no known bugs for read-only mode, read only mode should be ok for everyone.
+* Even though write support is available, _please do not mount your filesystems with write support unless you have nothing to lose._
 
-Please send output the output of below command while reporting bugs as [GitHub Issue](https://github.com/alperakcan/fuse-ext2/issues/new).
+Please send the output of the command below when reporting bugs as a [GitHub Issue](https://github.com/alperakcan/fuse-ext2/issues/new).
 Before submitting a bug report, please look at the [existing issues](https://github.com/alperakcan/fuse-ext2/issues?utf8=%E2%9C%93&q=is%3Aissue) first.
 
 ```shell
@@ -225,7 +226,7 @@ $ /usr/local/bin/fuse-ext2 -v /dev/path /mnt/point -o debug
 
 # Important: Partition Labels
 
-Please **do not** use comma `,` in partition labels.
+Please **do not** use commas `,` in partition labels.
 
 **Wrong:** `e2label /dev/disk0s3 "linux,ext3"`
 
