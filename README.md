@@ -92,6 +92,7 @@ $ make install clean
 Dependencies:
 
 [OSXfuse](https://osxfuse.github.io)
+
 Building **from source** depends on the following:
 
 * m4
