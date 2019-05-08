@@ -314,6 +314,7 @@ static const struct fuse_operations ext2fs_ops = {
 	.lock           = NULL,
 	.utimens        = op_utimens,
 	.bmap           = NULL,
+	.flag_utime_omit_ok = 1,
 };
 
 int main (int argc, char *argv[])
