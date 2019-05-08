@@ -19,6 +19,7 @@
  */
 
 #include "fuse-ext2.h"
+#include <unistd.h>
 
 int op_access (const char *path, int mask)
 {
