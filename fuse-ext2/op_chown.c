@@ -49,6 +49,8 @@ int op_chown (const char *path, uid_t uid, gid_t gid)
 		ext2_write_gid(&inode, gid);
 	}
 
+	inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
+
 	rt = do_writeinode(e2fs, ino, &inode);
 	if (rt) {
 		debugf("do_writeinode(e2fs, ino, &inode); failed");

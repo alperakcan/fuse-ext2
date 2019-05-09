@@ -42,8 +42,10 @@ int op_utimens (const char *path, const struct timespec tv[2])
 		return rt;
 	}
 	
-	inode.i_atime = tv[0].tv_sec;
-	inode.i_mtime = tv[0].tv_sec;
+	if (tv[0].tv_nsec != UTIME_OMIT)
+		inode.i_atime = tv[0].tv_sec;
+	if (tv[1].tv_nsec != UTIME_OMIT)
+		inode.i_mtime = tv[1].tv_sec;
 
 	rt = do_writeinode(e2fs, ino, &inode);
 	if (rt) {

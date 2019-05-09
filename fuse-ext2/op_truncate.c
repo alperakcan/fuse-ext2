@@ -60,6 +60,7 @@ int op_truncate (const char *path, off_t length)
 		return rt;
 	}
 	inode.i_ctime = e2fs->now ? e2fs->now : time(NULL);
+	inode.i_mtime = e2fs->now ? e2fs->now : time(NULL);
 	rt = do_writeinode(e2fs, ino, &inode);
 	if (rt) {
 		debugf("do_writeinode(e2fs, ino, &inode); failed");
