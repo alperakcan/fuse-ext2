@@ -314,7 +314,9 @@ static const struct fuse_operations ext2fs_ops = {
 	.lock           = NULL,
 	.utimens        = op_utimens,
 	.bmap           = NULL,
+#if ( (FUSE_VERSION) == 29 )
 	.flag_utime_omit_ok = 1,
+#endif
 };
 
 int main (int argc, char *argv[])
