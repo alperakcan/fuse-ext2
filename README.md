@@ -194,7 +194,7 @@ cd
 dd if=/dev/zero of=/tmp/test-fs.ext4 bs=1024 count=102400  
 /opt/gnu/sbin/mkfs.ext4 /tmp/test-fs.ext4
 mkdir -p ~/mnt/fuse-ext2.test-fs.ext4
-fuse-ext2  /tmp/fuse-ext2.test-fs.ext4 -o rw+,allow_other,uid=501,gid=20
+fuse-ext2 /tmp/fuse-ext2.test-fs.ext4 ~/mnt/fuse-ext2.test-fs.ext4 -o rw+,allow_other,uid=501,gid=20
 ```
 
 To verify the **UID** and **GID** of the user mounting the file system:
