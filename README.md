@@ -31,7 +31,7 @@ Look for **`homebrew/cask`** in the output.
 To install **Fuse for macOS** using brew:
 
 ```bash
-brew cask install osxfuse
+brew install --cask osxfuse
 ```
 
 ## Building
