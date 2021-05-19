@@ -61,7 +61,7 @@ $ sudo make install
 
 ### Fedora 
 ```bash 
-$ sudo dnf install @development-tools m4 autoconf automake libtool e2fsprogs libcom_err-devel fuse-libs e2fsprogs-devel
+$ sudo dnf install @development-tools m4 autoconf automake libtool e2fsprogs libcom_err-devel fuse-libs e2fsprogs-devel fuse-devel
 # build part 
 $ ./autogen.sh
 $ ./configure
