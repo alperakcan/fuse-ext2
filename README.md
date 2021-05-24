@@ -14,24 +14,14 @@
 
 **Fuse for macOS** can be installed via [homebrew](http://brew.sh) if [Homebrew-Cask](https://caskroom.github.io/) has been tapped.
 
-To tap **Homebrew-Cask**:
-
-```bash
-brew tap homebrew/cask
-```
-
-To verify that the the above tap is a part of `brew`:
-
-```bash
-brew tap
-```
-
 Look for **`homebrew/cask`** in the output.
 
 To install **Fuse for macOS** using brew:
 
+You will be interactively prompted for sudo access during the install.
+
 ```bash
-brew cask install osxfuse
+brew install --cask osxfuse
 ```
 
 ## Building
