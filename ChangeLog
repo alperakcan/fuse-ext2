@@ -1,3 +1,8 @@
+Mon 15 Jan 2024 02:02:58 AM +03
+	- version 0.0.11
+	- default mount options is always ro
+	- reverted some missed pull request commits
+
 Mon Mar 30 19:17:44 EEST 2015
 	- version 0.0.9
 	- fix write tests for pjdfstest
