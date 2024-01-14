@@ -209,7 +209,7 @@ function Mount ()
     # https://github.com/osxfuse/osxfuse/wiki/Mount-options#local
     # for possible implications.
     #OPTIONS="auto_xattr,local"
-    OPTIONS="local,allow_other,rw,force"
+    OPTIONS="local"
 
     # Assign this volume to currently logged user in the OS X GUI, in order
     # to write on the volume without having to be root (sudo), or without
@@ -219,10 +219,10 @@ function Mount ()
     GUI_GID=$(stat -f '%g' /dev/console)
     OPTIONS="${OPTIONS},uid=${GUI_UID},gid=${GUI_GID}"
     
-    # ignore DiskArb's mount options and copy them
+    # Don't ignore DiskArb's mount options and copy them
     while [[ "$1" = "-o" ]]
     do
-	#OPTIONS="${OPTIONS}${2}," # Copy options?
+	OPTIONS="${OPTIONS}${2}," # Copy options?
 	shift 2		# Forget the -o [option]
     done
 
