@@ -9,7 +9,7 @@
 FSNAME=fuse-ext2
 
 # For debugging purposes:
-LOG_ENABLED=0 # 1 = function Log writes to $LOGFILE
+LOG_ENABLED=1 # 1 = function Log writes to $LOGFILE
               # 0 = function Log does nothing
 LOGFILE=/var/log/fuse-ext2_util.log
 # Everybody should be able to write to this file.
@@ -219,10 +219,10 @@ function Mount ()
     GUI_GID=$(stat -f '%g' /dev/console)
     OPTIONS="${OPTIONS},uid=${GUI_UID},gid=${GUI_GID}"
     
-    # Don't ignore DiskArb's mount options and copy them
+    # Ignore DiskArb's mount options and possibly copy them
     while [[ "$1" = "-o" ]]
     do
-	OPTIONS="${OPTIONS}${2}," # Copy options?
+	# OPTIONS="${OPTIONS}${2}," # Copy options?
 	shift 2		# Forget the -o [option]
     done
 
