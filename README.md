@@ -24,6 +24,12 @@ You will be interactively prompted for sudo access during the install.
 brew install --cask osxfuse
 ```
 
+For Fuse version 4.0.0 and higher use macfuse
+
+```bash
+brew install --cask macfuse
+```
+
 ## Building
 
 ### Debian/Ubuntu:
