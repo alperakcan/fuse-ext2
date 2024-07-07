@@ -377,7 +377,7 @@ int main (int argc, char *argv[])
 		debugf_main("mounting read-only");
 	}
 
-	fuse_main(fargs.argc, fargs.argv, &ext2fs_ops, &opts);
+	err = fuse_main(fargs.argc, fargs.argv, &ext2fs_ops, &opts);
 
 err_out:
 	fuse_opt_free_args(&fargs);
