@@ -141,7 +141,31 @@ AC_CHECK_FUNCS([	\
 
 # Checks for libraries
 AC_SEARCH_LIBS([sem_post], [pthread], [], [AC_MSG_ERROR([Can't find pthreads, please install it])])
-AC_SEARCH_LIBS([fuse_main], [osxfuse fuse], [], [AC_MSG_ERROR([Can't find libfuse, please install it])])
+case "${target_os}" in
+	cygwin)
+		if test -z "$PKG_CONFIG"; then
+			AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+		fi
+		test "x${PKG_CONFIG}" = "xno" && AC_MSG_ERROR([pkg-config wasn't found! Please install from your vendor, or see http://pkg-config.freedesktop.org/wiki/])
+		# Libraries often install their metadata .pc files in directories
+		# not searched by pkg-config. Let's workaround this. 
+		export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/gnome/lib/pkgconfig:/usr/share/pkgconfig:/usr/local/lib/pkgconfig:$prefix/lib/pkgconfig:/opt/gnome/share/pkgconfig:/usr/local/share/pkgconfig
+		PKG_CHECK_MODULES(
+			[FUSE_MODULE],
+			[fuse >= 2.6.0],
+			,
+			[
+				AC_MSG_ERROR([FUSE >= 2.6.0 was not found. Either older FUSE is still present, or FUSE is not fully installed (e.g. fuse, libfuse, libfuse2, libfuse-dev, etc packages). Source code: http://fuse.sf.net])
+			]
+		)
+		export CFLAGS="$CFLAGS $FUSE_MODULE_CFLAGS"
+		export LDFLAGS="$LDFLAGS $FUSE_MODULE_LDFLAGS"
+		export LIBS="$LIBS $FUSE_MODULE_LIBS"
+	;;
+	*)
+	AC_SEARCH_LIBS([fuse_main], [osxfuse fuse], [], [AC_MSG_ERROR([Can't find libfuse, please install it])])
+	;;
+esac
 AC_SEARCH_LIBS([com_err], [com_err], [], [AC_MSG_ERROR([Can't find comerr, please install it])])
 AC_SEARCH_LIBS([ext2fs_open], [ext2fs], [], [AC_MSG_ERROR([Can't find e2fslibs, please install it])])
 
