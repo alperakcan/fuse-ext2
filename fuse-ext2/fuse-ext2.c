@@ -277,6 +277,19 @@ err_exit:
 	goto exit;
 }
 
+#ifdef __APPLE__
+/* macOS FUSE (macFUSE / FUSE-T) declares getxattr with an extra trailing
+ * `position` argument, for the Darwin resource-fork xattr convention. ext2 has
+ * no such concept, so this shim drops `position` and defers to the shared
+ * Linux-style op_getxattr. Without it the build fails with an incompatible
+ * function-pointer-type error assigning op_getxattr to .getxattr. */
+static int op_getxattr_darwin(const char *path, const char *name, char *value,
+		size_t size, uint32_t position) {
+	(void) position;
+	return op_getxattr(path, name, value, size);
+}
+#endif
+
 static const struct fuse_operations ext2fs_ops = {
 	.getattr        = op_getattr,
 	.readlink       = op_readlink,
@@ -298,7 +311,11 @@ static const struct fuse_operations ext2fs_ops = {
 	.release	= op_release,
 	.fsync          = op_fsync,
 	.setxattr       = NULL,
+#ifdef __APPLE__
+	.getxattr       = op_getxattr_darwin,
+#else
 	.getxattr       = op_getxattr,
+#endif
 	.listxattr      = NULL,
 	.removexattr    = NULL,
 	.opendir        = op_open,
