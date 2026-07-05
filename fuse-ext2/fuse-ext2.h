@@ -62,6 +62,7 @@ struct extfs_data {
 	unsigned char silent;
 	unsigned char force;
 	unsigned char readonly;
+	unsigned char no_default_permissions;
 	time_t last_flush;
 	char *mnt_point;
 	char *options;

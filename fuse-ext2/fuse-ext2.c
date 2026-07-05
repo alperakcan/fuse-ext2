@@ -22,11 +22,17 @@
 
 static const char *HOME = "http://github.com/alperakcan/fuse-ext2/";
 
+/* `default_permissions` is intentionally NOT in def_opts here; it is appended
+ * separately in parse_mount_options() UNLESS the `no_default_permissions` mount
+ * option is given. That option asks the kernel to skip its own mode-bit checks so
+ * a file owned by a uid that doesn't exist on this system (e.g. data recovered
+ * from another machine) can still be read by the mounting user. Useful for
+ * read-only data recovery; opt-in, off by default. */
 #if __FreeBSD__ == 10
-static char def_opts[] = "allow_other,default_permissions,local,";
+static char def_opts[] = "allow_other,local,";
 static char def_opts_rd[] = "noappledouble,";
 #else
-static char def_opts[] = "allow_other,default_permissions,";
+static char def_opts[] = "allow_other,";
 static char def_opts_rd[] = "";
 #endif
 
@@ -39,7 +45,9 @@ static const char *usage_msg =
 "\n"
 "Usage:    %s <device|image_file> <mount_point> [-o option[,...]]\n"
 "\n"
-"Options:  ro, force, allow_other\n"
+"Options:  ro, force, allow_other, no_default_permissions\n"
+"          no_default_permissions: skip kernel mode-bit checks so files owned by\n"
+"          a uid absent on this system (e.g. recovered data) stay readable.\n"
 "          Please see details in the manual.\n"
 "\n"
 "Example:  fuse-ext2 /dev/sda1 /mnt/sda1\n"
@@ -222,6 +230,12 @@ static char * parse_mount_options (const char *orig_opts, struct extfs_data *opt
 				goto err_exit;
 			}
 			opts->silent = 1;
+		} else if (!strcmp(opt, "no_default_permissions")) { /* skip kernel mode-bit checks */
+			if (val) {
+				debugf_main("'no_default_permissions' option should not have value");
+				goto err_exit;
+			}
+			opts->no_default_permissions = 1;
 		} else if (!strcmp(opt, "force")) { /* enable read/write */
 			if (val) {
 				debugf_main("'force option should no have value");
@@ -247,6 +261,9 @@ static char * parse_mount_options (const char *orig_opts, struct extfs_data *opt
 	}
 
 	strcat(ret, def_opts);
+	if (!opts->no_default_permissions) {
+		strcat(ret, "default_permissions,");
+	}
 	if (opts->readonly == 1) {
 		strcat(ret, def_opts_rd);
 		strcat(ret, "ro,");
@@ -277,6 +294,19 @@ err_exit:
 	goto exit;
 }
 
+#ifdef __APPLE__
+/* macOS FUSE (macFUSE / FUSE-T) declares getxattr with an extra trailing
+ * `position` argument, for the Darwin resource-fork xattr convention. ext2 has
+ * no such concept, so this shim drops `position` and defers to the shared
+ * Linux-style op_getxattr. Without it the build fails with an incompatible
+ * function-pointer-type error assigning op_getxattr to .getxattr. */
+static int op_getxattr_darwin(const char *path, const char *name, char *value,
+		size_t size, uint32_t position) {
+	(void) position;
+	return op_getxattr(path, name, value, size);
+}
+#endif
+
 static const struct fuse_operations ext2fs_ops = {
 	.getattr        = op_getattr,
 	.readlink       = op_readlink,
@@ -298,7 +328,11 @@ static const struct fuse_operations ext2fs_ops = {
 	.release	= op_release,
 	.fsync          = op_fsync,
 	.setxattr       = NULL,
+#ifdef __APPLE__
+	.getxattr       = op_getxattr_darwin,
+#else
 	.getxattr       = op_getxattr,
+#endif
 	.listxattr      = NULL,
 	.removexattr    = NULL,
 	.opendir        = op_open,
