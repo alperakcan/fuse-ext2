@@ -51,6 +51,16 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 		debugf("ext2fs_file_write(edile, tmp, size, &wr); failed");
 		return -EIO;
 	}
+	/*
+	 * A full filesystem surfaces as EXT2_ET_BLOCK_ALLOC_FAIL. Returning a
+	 * zero-length write for that leaves the caller to guess, and it reaches
+	 * applications as EIO, which means "the disk is broken" rather than
+	 * "the disk is full". Report ENOSPC so callers can act on it.
+	 */
+	if (rt == EXT2_ET_BLOCK_ALLOC_FAIL && wsize == 0) {
+		debugf("no space left on device");
+		return -ENOSPC;
+	}
 
 	if (offset + wsize > fsize) {
 		rt = ext2fs_file_set_size2(efile, offset + wsize);
