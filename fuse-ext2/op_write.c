@@ -82,7 +82,8 @@ size_t do_write (ext2_file_t efile, const char *buf, size_t size, off_t offset)
 
 int op_write (const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
-	size_t rt;
+	/* do_write() returns a byte count or a negative errno; size_t is unsigned. */
+	int rt;
 	ext2_file_t efile = EXT2FS_FILE(fi->fh);
 	ext2_filsys e2fs = current_ext2fs();
 
