@@ -75,7 +75,20 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 	debugf("enter");
 	debugf("path = %s, mode: 0%o", path, mode);
 
-	rt=do_check_split(path, &p_path, &r_path);
+	/*
+	 * do_check_split() rejects a name component longer than EXT2_NAME_LEN
+	 * with -ENAMETOOLONG, but leaves p_path/r_path untouched when it does.
+	 * Every other caller checks this; op_create did not, and then used both
+	 * uninitialised pointers, which crashes the driver and takes the mount
+	 * down. macOS reaches this constantly: it creates an AppleDouble "._"
+	 * companion for every file, adding two bytes, so any name of 254 bytes
+	 * or more lands here.
+	 */
+	rt = do_check_split(path, &p_path, &r_path);
+	if (rt != 0) {
+		debugf("do_check_split(%s); failed", path);
+		return rt;
+	}
 
 	debugf("parent: %s, child: %s", p_path, r_path);
 
