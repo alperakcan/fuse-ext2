@@ -75,7 +75,20 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 	debugf("enter");
 	debugf("path = %s, mode: 0%o", path, mode);
 
-	rt=do_check_split(path, &p_path, &r_path);
+	/*
+	 * do_check_split() rejects a name component longer than EXT2_NAME_LEN
+	 * with -ENAMETOOLONG, but leaves p_path/r_path untouched when it does.
+	 * Every other caller checks this; op_create did not, and then used both
+	 * uninitialised pointers, which crashes the driver and takes the mount
+	 * down. macOS reaches this constantly: it creates an AppleDouble "._"
+	 * companion for every file, adding two bytes, so any name of 254 bytes
+	 * or more lands here.
+	 */
+	rt = do_check_split(path, &p_path, &r_path);
+	if (rt != 0) {
+		debugf("do_check_split(%s); failed", path);
+		return rt;
+	}
 
 	debugf("parent: %s, child: %s", p_path, r_path);
 
@@ -127,8 +140,17 @@ int do_create (ext2_filsys e2fs, const char *path, mode_t mode, dev_t dev, const
 		ext2_write_uid(&inode, ctx->uid);
 		ext2_write_gid(&inode, ctx->gid);
 	}
-	if (e2fs->super->s_feature_incompat &
-	    EXT3_FEATURE_INCOMPAT_EXTENTS) {
+	/*
+	 * Extents apply to regular files, directories and slow symlinks only.
+	 * A fast symlink keeps its target in i_block and a device node keeps the
+	 * encoded dev there; initialising an extent header and setting
+	 * EXT4_EXTENTS_FL for those leaves an inode whose flag contradicts its
+	 * i_block contents, which e2fsck reports as corruption.
+	 */
+	if ((e2fs->super->s_feature_incompat &
+	     EXT3_FEATURE_INCOMPAT_EXTENTS) &&
+	    (S_ISREG(mode) || S_ISDIR(mode) ||
+	     (S_ISLNK(mode) && fastsymlink == NULL))) {
 		int i;
 		struct ext3_extent_header *eh;
 
